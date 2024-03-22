@@ -14,8 +14,7 @@ The Advent Calendar App is a web application that allows users to countdown to C
 - **Frontend:**
   - React.js
   - TypeScript
-  - HTML
-  - CSS
+  - Material-UI
 
 - **Backend:**
   - Node.js
@@ -27,7 +26,7 @@ The Advent Calendar App is a web application that allows users to countdown to C
 1. **Clone the repository:**
 
     ```bash
-    git clone https://github.com/your-username/advent-calendar.git
+    git clone https://github.com/meJubair/swtp2.git
     ```
 
 2. **Install dependencies for frontend and backend:**
