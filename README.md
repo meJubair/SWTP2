@@ -51,7 +51,7 @@ The Advent Calendar App is a web application that allows users to countdown to C
     ```
 
 5. **Access the application:**
-   - Open your browser and navigate to `http://localhost:3000` to access the frontend.
+   - Open your browser and navigate to `http://localhost:5173` to access the frontend.
    - The backend API endpoints will be available at `http://localhost:4000/api`.
 
 ## License
