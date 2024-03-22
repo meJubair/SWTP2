@@ -44,13 +44,9 @@ The Advent Calendar App is a web application that allows users to countdown to C
    - Create `.env` files in both `frontend` and `backend` directories.
    - Define environment variables such as database connection URI, JWT secret, etc.
 
-4. **Start the frontend and backend servers:**
+4. **Start the frontend and backend servers concurrently:**
 
     ```bash
-    cd frontend
-    npm start
-
-    cd ../backend
     npm start
     ```
 
