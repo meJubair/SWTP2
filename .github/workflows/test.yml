@@ -1,5 +1,5 @@
 name: Unit tests
-run-name: ${{ github.actor }} is learning Github Actions
+run-name: Unit tests
 on: #Chooses an event when to run actions
   pull_request:
     branches: [main]
