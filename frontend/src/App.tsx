@@ -1,21 +1,31 @@
-import './App.css'
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import CalendarContent from './components/CalendarContent';
+import PublishedContent from './components/PublishedContent';
+import Breadcrumb from './components/Breadcrumb';
+import EditorForm from './components/EditorForm';
 
-function App() {
-
+const App: React.FC = () => {
   return (
-    <>
+    <Router>
       <div>
-        Something GREAT is coming soon!
+        {/* Render Breadcrumb */}
+        <Breadcrumb
+          items={[
+            { label: 'Editor Form', path: '/' },
+            { label: 'Calendar Content', path: '/calendar' },
+            { label: 'Published Content', path: '/published' },
+          ]}
+        />
+        {/* Route definitions */}
+        <Routes>
+          <Route path="/" element={<EditorForm />} />
+          <Route path="/calendar" element={<CalendarContent startDate={null} endDate={null} calendarData={[]}/>} />
+          <Route path="/published" element={<PublishedContent />} />
+        </Routes>
       </div>
-      <h1>Team 6</h1>
-      <div className="card">
-        Just wait for it!
-      </div>
-      <p className="read-the-docs">
-        We will be back soon!
-      </p>
-    </>
-  )
-}
+    </Router>
+  );
+};
 
-export default App
+export default App;
