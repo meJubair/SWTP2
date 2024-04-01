@@ -11,6 +11,7 @@ interface FormData {
   endDate: Date | null;
 }
 
+
 const EditorForm: React.FC = () => {
   const [formData, setFormData] = useState<FormData>({
     author: '',
@@ -20,6 +21,7 @@ const EditorForm: React.FC = () => {
   });
   const [calendarData, setCalendarData] = useState<Date[]>([]);
   const [error, setError] = useState<string>('');
+ 
 
   const handleChange = (name: keyof FormData) => (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
