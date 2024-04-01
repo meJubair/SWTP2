@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Paper, Typography, Grid, IconButton, Modal, Box, Button, TextField } from '@mui/material';
 import { InsertDriveFile as TextIcon, Image as ImageIcon, VideoLibrary as VideoIcon } from '@mui/icons-material';
+import { addDoc, collection } from 'firebase/firestore';
+import  db  from '../storage/firebaseConfig';  
 
 
 interface CalendarContentProps {
@@ -53,12 +55,20 @@ const CalendarContent: React.FC<CalendarContentProps> = ({ startDate, endDate })
     closeModal();
   };
 
-  const handleSubmitAll = () => {
-
-    // Send all calendar data to the backend or perform any desired action
-    console.log('Submitting all calendar data..', allCalendarData);
-
+  const handleSubmitAll = async () => {
+      try {
+      // Loop through allCalendarData and add each item to Firestore
+      await Promise.all(allCalendarData.map(async (item) => {
+        // Add a new document to the "calendars" collection with the item data
+        await addDoc(collection(db, 'calenders'), item);
+      }));
+  
+      console.log('Data successfully submitted to Firestore!');
+    } catch (error) {
+      console.error('Error submitting data to Firestore:', error);
+    }  
   };
+  
 
   const renderModal = () => {
     const modalTitle = `Upload ${activeModal === 'text' ? 'Text' : activeModal === 'image' ? 'Image' : 'Video'} Content for ${selectedDate?.toLocaleDateString()}`;
