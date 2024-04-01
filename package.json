@@ -13,6 +13,13 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/react-datepicker": "^6.2.0",
     "concurrently": "^8.2.2"
+  },
+  "dependencies": {
+    "material-ui-dropzone": "^3.5.0",
+    "react-calendar": "^4.8.0",
+    "react-quill": "^2.0.0",
+    "react-router-dom": "^6.22.3"
   }
 }
