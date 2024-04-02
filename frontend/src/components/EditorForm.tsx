@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { TextField, Button, Grid, Typography, Paper, Container, Box } from '@mui/material';
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css'; 
+import DatePicker from 'react-datepicker'; 
 import CalendarContent from './CalendarContent';
 
 interface FormData {
