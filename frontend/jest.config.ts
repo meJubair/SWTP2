@@ -10,10 +10,6 @@ const config: Config.InitialOptions = {
     transform: {
         "^.+\\.(js|jsx|ts|tsx)$": "ts-jest",
     },
-    transformIgnorePatterns: [
-        "/node_modules/",
-        "/src/.+\\.css$" // Include .css files inside src directory
-    ],
     //transformIgnorePatterns: ["[/\\\\]node_modules[/\\\\].+\\.(js|jsx|ts|tsx)$"],
     moduleNameMapper: {
         '^@testing-library/jest-dom/extend-expect$': '<rootDir>/node_modules/@testing-library/jest-dom/',
