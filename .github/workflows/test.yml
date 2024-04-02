@@ -1,0 +1,28 @@
+name: Unit tests
+run-name: ${{ github.actor }} is learning Github Actions
+on: #Chooses an event when to run actions
+  pull_request:
+    branches: [main]
+
+jobs: # Jobs consist different of different steps to test/simulate something. If all steps pass, the job is successful.
+  salute: # Job name
+    runs-on: ubuntu-latest # Simulates an environment where the job gets executed. Here we have chosen Linux distribution called Ubuntu
+    steps: # Define steps of the job
+      - name: Show event type # Step name
+        run: echo "Triggered by Event type ${{ github.event_name }}" # Run command runs a bash script/prompt
+      - name: Say hello to person who triggered the actions!
+        run: echo Hello ${{ github.actor }}!
+        
+  frontend-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Acces project frontend project files in runner environment
+        uses: actions/checkout@v4
+      - name: Setup node.js environment
+        uses: actions/setup-node@v4
+      - name: Navigate to frontend folder and install node modules
+        run: cd frontend && npm install
+      - name: Run tests 
+        run: cd frontend && npm run test
+
+  # Implement unit tests for backend later

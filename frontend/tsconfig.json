@@ -5,6 +5,7 @@
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "module": "ESNext",
     "skipLibCheck": true,
+    "esModuleInterop": true, // This is required for Jest to work with TypeScript
 
     /* Bundler mode */
     "moduleResolution": "bundler",
@@ -20,6 +21,9 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src"],
+  "types": ["node", "jest"], // This is required for Jest to work with TypeScript
+  "exclude": ["node_modules", "dist", "build", "coverage", "jestTests/__snapshots__"], // This is required for TypeScript to work with Vite and Jest
+  "include": ["src/**/*", "jestTests/**/*"], // This is required for TypeScript to work with Vite and Jest
+  "files": ["vite.config.ts"], // This is required for Vite to work with TypeScript
   "references": [{ "path": "./tsconfig.node.json" }]
 }
