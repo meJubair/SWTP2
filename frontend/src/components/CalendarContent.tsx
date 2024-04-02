@@ -47,7 +47,6 @@ const CalendarContent: React.FC<CalendarContentProps> = ({ startDate, endDate })
     setAllCalendarData(prevData => [...prevData, calendarContent]);
 
     // Send the calendar content to the backend or perform any desired action
-    // console.log('Calendar content submitted:', calendarContent); 
 
     // Reset state
     closeModal();
