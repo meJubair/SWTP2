@@ -10,7 +10,6 @@ interface FormData {
   endDate: Date | null;
 }
 
-
 const EditorForm: React.FC = () => {
   const [formData, setFormData] = useState<FormData>({
     author: '',
