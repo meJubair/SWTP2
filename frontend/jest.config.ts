@@ -8,8 +8,8 @@ const config: Config.InitialOptions = {
     testMatch: ["<rootDir>/jestTests/**/*.test.{js,jsx,ts,tsx}"],
     setupFilesAfterEnv: ["<rootDir>/src/jestSetup.tsx"],
     transform: {
-        "^.+\\.(js|jsx|ts|tsx)$": "ts-jest",
-    },
+        // This is a regular expression that tells Jest to use ts-jest to transform TypeScript files
+        "^.+\\.(js|jsx|ts|tsx)$": "ts-jest"},
     //transformIgnorePatterns: ["[/\\\\]node_modules[/\\\\].+\\.(js|jsx|ts|tsx)$"],
     moduleNameMapper: {
         '^@testing-library/jest-dom/extend-expect$': '<rootDir>/node_modules/@testing-library/jest-dom/',
