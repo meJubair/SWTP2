@@ -1,6 +1,6 @@
 const express = require("express");
-const expressApp = express();
+const application = express();
 
-expressApp.use(express.json())
+application.use(express.json())
 
-module.exports = expressApp
+module.exports = application
