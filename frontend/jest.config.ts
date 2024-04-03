@@ -9,15 +9,7 @@ const config: Config.InitialOptions = {
     setupFilesAfterEnv: ["<rootDir>/src/jestSetup.tsx"],
     transform: {
         // This is a regular expression that tells Jest to use ts-jest to transform TypeScript files
-        "^.+\\.(js|jsx|ts|tsx)$": ["ts-jest", {
-          diagnostics: {
-            // Suppress warnings related to unused variables
-            warnOnly: true,
-            // Optionally, we can also silence all TypeScript diagnostics
-            //silent: true,
-          },
-        }],
-      },
+        "^.+\\.(js|jsx|ts|tsx)$": "ts-jest"},
     //transformIgnorePatterns: ["[/\\\\]node_modules[/\\\\].+\\.(js|jsx|ts|tsx)$"],
     moduleNameMapper: {
         '^@testing-library/jest-dom/extend-expect$': '<rootDir>/node_modules/@testing-library/jest-dom/',
