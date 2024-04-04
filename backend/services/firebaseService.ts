@@ -23,7 +23,7 @@ const getCalendarDataFromFirebase = async () => {
     const calendars = querySnapshot.docs.map((doc) => doc.data());
     return calendars;
   } catch (error) {
-    throw error;
+    console.log("Error when fetching data from firebase:", error);
   }
 };
 
