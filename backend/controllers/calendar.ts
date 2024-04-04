@@ -9,7 +9,8 @@ calendarRouter.get("/", async (request: Request, response: Response) => {
     response.json(calendarData);
     return calendarData;
   } catch (error) {
-    throw error;
+    console.error("Error when fetching calendar data:", error);
+    response.status(500).json({ error: "Internal server error"})
   }
 });
 
