@@ -1,11 +1,13 @@
 import express, { Request, Response } from "express";
+import { getCalendarDataFromFirebase } from "../services/firebaseService";
 
 const calendarRouter = express.Router();
 
 calendarRouter.get("/", async (request: Request, response: Response) => {
   try {
-    console.log("get request received");
-    response.sendStatus(200);
+    const calendarData = await getCalendarDataFromFirebase();
+    response.json(calendarData);
+    return calendarData;
   } catch (error) {
     throw error;
   }
