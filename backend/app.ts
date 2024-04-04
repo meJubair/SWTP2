@@ -1,8 +1,10 @@
-const helmet = require("helmet");
-const express = require("express");
-const application = express();
+import helmet from "helmet";
+import express from "express";
+const app = express();
+import calendarRouter from "./controllers/calendar";
 
-application.use(helmet());
-application.use(express.json());
+app.use(helmet());
+app.use(express.json());
+app.use("/api/calendars", calendarRouter);
 
-module.exports = application;
+export default app;
