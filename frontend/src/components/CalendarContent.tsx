@@ -1,9 +1,6 @@
 import React, { useState } from 'react';
 import { Paper, Typography, Grid, IconButton, Modal, Box, Button, TextField } from '@mui/material';
 import { InsertDriveFile as TextIcon, Image as ImageIcon, VideoLibrary as VideoIcon } from '@mui/icons-material';
-import { addDoc, collection } from 'firebase/firestore';
-import  db  from '../storage/firebaseConfig';  
-
 
 interface CalendarContentProps {
   startDate: Date | null;
@@ -11,17 +8,19 @@ interface CalendarContentProps {
   calendarData: Date[];
 }
 
-interface CalendarData {
+interface DoorContent {
   date: Date | null;
-  content: string;
-  type: 'text' | 'image' | 'video' | null;
+  textContent: string;
+  imageContent: string;
+  videoContent: string;
+  [key: string]: string | Date | null;
 }
 
 const CalendarContent: React.FC<CalendarContentProps> = ({ startDate, endDate }) => {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [activeModal, setActiveModal] = useState<'text' | 'image' | 'video' | null>(null);
   const [modalContent, setModalContent] = useState<string>('');
-  const [allCalendarData, setAllCalendarData] = useState<CalendarData[]>([]);
+  const [doorContent, setDoorContent] = useState<DoorContent[]>([]);
 
   const openModal = (modalType: 'text' | 'image' | 'video', date: Date) => {
     setSelectedDate(date);
@@ -38,36 +37,36 @@ const CalendarContent: React.FC<CalendarContentProps> = ({ startDate, endDate })
   };
 
   const handleSubmit = () => {
-    // Assemble the calendar content
-    const calendarContent = {
-      date: selectedDate,
-      content: modalContent,
-      type: activeModal
-    };
+    if (!selectedDate) return;
 
-    // Update calendar data state
-    setAllCalendarData(prevData => [...prevData, calendarContent]);
+    // Update day content for the selected date
+    const updatedDoorContent = [...doorContent];
+    const index = updatedDoorContent.findIndex(door => door.date?.getTime() === selectedDate.getTime());
 
-    // Send the calendar content to the backend or perform any desired action
+    if (index !== -1) {
+      // If content exists for the selected date, update it
+      updatedDoorContent[index] = {
+        ...updatedDoorContent[index],
+        [activeModal + 'Content']: modalContent
+      };
+    } else {
+      // If no content exists for the selected date, create a new entry
+      updatedDoorContent.push({
+        date: selectedDate,
+        textContent: '',
+        imageContent: '',
+        videoContent: ''
+      });
+      updatedDoorContent[updatedDoorContent.length - 1][activeModal + 'Content'] = modalContent;
+    }
 
-    // Reset state
+    setDoorContent(updatedDoorContent);
     closeModal();
   };
 
-  const handleSubmitAll = async () => {
-      try {
-      // Loop through allCalendarData and add each item to Firestore
-      await Promise.all(allCalendarData.map(async (item) => {
-        // Add a new document to the "calendars" collection with the item data
-        await addDoc(collection(db, 'calenders'), item);
-      }));
-  
-      console.log('Data successfully submitted to Firestore!');
-    } catch (error) {
-      console.error('Error submitting data to Firestore:', error);
-    }  
+  const handleSubmitAll = () => {
+    console.log('All calendar data:', doorContent);
   };
-  
 
   const renderModal = () => {
     const modalTitle = `Upload ${activeModal === 'text' ? 'Text' : activeModal === 'image' ? 'Image' : 'Video'} Content for ${selectedDate?.toLocaleDateString()}`;
@@ -157,3 +156,4 @@ const CalendarContent: React.FC<CalendarContentProps> = ({ startDate, endDate })
 };
 
 export default CalendarContent;
+ 
