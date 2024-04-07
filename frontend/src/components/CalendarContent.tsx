@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Paper, Typography, Grid, IconButton, Modal, Box, Button, TextField } from '@mui/material';
 import { InsertDriveFile as TextIcon, Image as ImageIcon, VideoLibrary as VideoIcon } from '@mui/icons-material';
+import axios from 'axios';
 
 interface CalendarContentProps {
   startDate: Date | null;
@@ -65,7 +66,18 @@ const CalendarContent: React.FC<CalendarContentProps> = ({ startDate, endDate })
   };
 
   const handleSubmitAll = () => {
-    console.log('All calendar data:', doorContent);
+    if (doorContent.length === 0) {
+      console.error('No calendar data to submit');
+      return;
+    }
+    // Example POST request to send data to JSON server
+    axios.post('http://localhost:3000/calendars', doorContent)
+      .then(response => {
+        console.log('Data successfully submitted to JSON Server:', response.data);
+      })
+      .catch(error => {
+        console.error('Error submitting data to JSON Server:', error);
+      });
   };
 
   const renderModal = () => {
