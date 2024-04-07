@@ -1,6 +1,12 @@
-import { render } from '@testing-library/react';
-import App from '../src/App';
+import { render } from "@testing-library/react";
+import App from "../src/App";
+import { test } from "@jest/globals";
+import React from "react";
 
-test('renders App component', () => {
-  render(<App />);
+test("renders App component", () => {
+  render(
+    <React.StrictMode>
+      <App />
+    </React.StrictMode>
+  );
 });
