@@ -10,7 +10,7 @@ const App: React.FC = () => {
         {/* Route definitions */}
         <Routes>
           <Route path="/" element={<EditorForm />} />
-          <Route path="/calendar" element={<CalendarContent startDate={null} endDate={null} calendarData={[]}/>} />
+          <Route path="/calendar" element={<CalendarContent author='' title='' startDate={null} endDate={null} calendarData={[]}/>} />
         </Routes>
       </div>
     </Router>
