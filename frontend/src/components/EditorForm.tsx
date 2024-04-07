@@ -130,7 +130,7 @@ const EditorForm: React.FC = () => {
         </Grid>
       </form>
       {calendarData.length > 0 && 
-      <CalendarContent startDate={formData.startDate} endDate={formData.endDate} calendarData={calendarData} />}
+      <CalendarContent author={formData.author} title={formData.title} startDate={formData.startDate} endDate={formData.endDate} calendarData={calendarData} />}
     </Container>
   );
 };
