@@ -4,6 +4,8 @@ import { InsertDriveFile as TextIcon, Image as ImageIcon, VideoLibrary as VideoI
 import axios from 'axios';
 
 interface CalendarContentProps {
+  author: string;
+  title: string;
   startDate: Date | null;
   endDate: Date | null;
   calendarData: Date[];
@@ -17,7 +19,7 @@ interface DoorContent {
   [key: string]: string | Date | null;
 }
 
-const CalendarContent: React.FC<CalendarContentProps> = ({ startDate, endDate }) => {
+const CalendarContent: React.FC<CalendarContentProps> = ({ author, title, startDate, endDate }) => {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [activeModal, setActiveModal] = useState<'text' | 'image' | 'video' | null>(null);
   const [modalContent, setModalContent] = useState<string>('');
@@ -48,7 +50,7 @@ const CalendarContent: React.FC<CalendarContentProps> = ({ startDate, endDate })
       // If content exists for the selected date, update it
       updatedDoorContent[index] = {
         ...updatedDoorContent[index],
-        [activeModal + 'Content']: modalContent
+        [activeModal + 'Content']: modalContent,
       };
     } else {
       // If no content exists for the selected date, create a new entry
@@ -70,8 +72,24 @@ const CalendarContent: React.FC<CalendarContentProps> = ({ startDate, endDate })
       console.error('No calendar data to submit');
       return;
     }
+  
+    // Map doorContent to match the desired structure
+    const formattedData = doorContent.map((item, index) => ({
+      doorNumber: index + 1,
+      textContent: item.textContent || '',
+      imageContent: item.imageContent || '',
+      videoContent: item.videoContent || ''
+    }));
+  
+    // Assemble the data to be posted
+    const postData = {
+      author,
+      title,
+      calendarDoors: formattedData
+    };
+  
     // Example POST request to send data to JSON server
-    axios.post('http://localhost:3000/calendars', doorContent)
+    axios.post('http://localhost:3001/calendars', postData)
       .then(response => {
         console.log('Data successfully submitted to JSON Server:', response.data);
       })
