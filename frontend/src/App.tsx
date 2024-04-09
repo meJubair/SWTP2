@@ -1,30 +1,25 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import CalendarContent from './components/CalendarContent';
-import PublishedContent from './components/PublishedContent';
-import Breadcrumb from './components/Breadcrumb';
-import EditorForm from './components/EditorForm';
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Homepage from "./routes/Homepage";
+import About from "./routes/About";
+import Login from "./routes/Login";
+import Register from "./routes/Register";
+import Box from "@mui/material/Box";
+import CssBaseline from "@mui/material/CssBaseline";
 
 const App: React.FC = () => {
   return (
-    <Router>
-      <div>
-        {/* Render Breadcrumb */}
-        <Breadcrumb
-          items={[
-            { label: 'Editor Form', path: '/' },
-            { label: 'Calendar Content', path: '/calendar' },
-            { label: 'Published Content', path: '/published' },
-          ]}
-        />
-        {/* Route definitions */}
+    <Box>
+      <CssBaseline />
+      <Router>
         <Routes>
-          <Route path="/" element={<EditorForm />} />
-          <Route path="/calendar" element={<CalendarContent startDate={null} endDate={null} calendarData={[]}/>} />
-          <Route path="/published" element={<PublishedContent />} />
+          <Route path="/" element={<Homepage />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
         </Routes>
-      </div>
-    </Router>
+      </Router>
+    </Box>
   );
 };
 
