@@ -1,6 +1,11 @@
-import { FIREBASE_API_KEY } from "../utils/config";
 import { initializeApp } from "firebase/app";
-import { collection, getDocs, getFirestore } from "firebase/firestore";
+import {
+  createUserWithEmailAndPassword,
+  getAuth,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
+import { collection, getDocs, addDoc, getFirestore } from "firebase/firestore";
+import { FIREBASE_API_KEY } from "../utils/config";
 
 const firebaseConfig = {
   apiKey: FIREBASE_API_KEY,
@@ -14,6 +19,11 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
+
+// Access to the project authentication
+const auth = getAuth(app);
+
+// Access to the database
 const db = getFirestore(app);
 
 // Get all from "calendars"
@@ -27,4 +37,46 @@ const getCalendarDataFromFirebase = async () => {
   }
 };
 
-export { getCalendarDataFromFirebase };
+// Authenticate a new user and create a new document in the "users" collection
+const registerWithEmailAndPassword = async (
+  name: string,
+  email: string,
+  password: string
+) => {
+  try {
+    if (!name || !email || !password) {
+      throw new Error("missing parameter");
+    }
+    const response = await createUserWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
+    const user = response.user;
+    await addDoc(collection(db, "users"), {
+      uid: user.uid,
+      name,
+      authProvider: "local",
+      email,
+    });
+    console.log("Succesfully registered to database");
+  } catch (error) {
+    console.log("Error registering new user:", error);
+  }
+};
+
+const loginWithEmailAndPassword = async (email: string, password: string) => {
+  try {
+    await signInWithEmailAndPassword(auth, email, password);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export {
+  auth,
+  db,
+  getCalendarDataFromFirebase,
+  registerWithEmailAndPassword,
+  loginWithEmailAndPassword,
+};
