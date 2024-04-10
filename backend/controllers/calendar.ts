@@ -17,7 +17,7 @@ calendarRouter.get("/", async (request: Request, response: Response) => {
 });
 
 calendarRouter.post(
-  "/createuser",
+  "/register",
   async (request: Request, response: Response) => {
     try {
       const { username, email, password } = request.body;
