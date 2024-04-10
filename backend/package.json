@@ -13,6 +13,8 @@
   "license": "ISC",
   "dependencies": {
     "@firebase/firestore": "^4.5.1",
+    "@types/cors": "^2.8.17",
+    "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "firebase": "^10.10.0",
