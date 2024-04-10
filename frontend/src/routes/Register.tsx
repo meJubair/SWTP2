@@ -5,16 +5,30 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import { Link } from "react-router-dom";
+import { registerUser } from "../services/calendarService";
 
 const Register = () => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("Username:", username, "Email:", email, "Password:", password);
+    try {
+      await registerUser({username, email, password});
+      resetStates();
+      }
+    catch(error) {
+      console.log(error)
+    }
   };
+
+  // Used to clear the inputfields and states after succsful registartion
+  const resetStates = () => {
+    setUsername("");
+    setEmail("");
+    setPassword("");
+  }
 
   return (
     <Box>
@@ -41,6 +55,7 @@ const Register = () => {
             label="Username"
             fullWidth
             required
+            value={username}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               setUsername(e.target.value)
             }
@@ -49,6 +64,7 @@ const Register = () => {
             label="Email"
             fullWidth
             required
+            value={email}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               setEmail(e.target.value)
             }
@@ -58,6 +74,7 @@ const Register = () => {
             type="password"
             fullWidth
             required
+            value={password}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               setPassword(e.target.value)
             }
