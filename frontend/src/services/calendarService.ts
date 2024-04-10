@@ -7,7 +7,7 @@ const registerUser = async (userObject: {
 }) => {
   try {
     await axios.post(`http://localhost:3001/api/calendars/register`, userObject);
-    console.log("User registered succesfully")
+    console.log("User registered successfully")
   } catch (error) {
     console.log("Error registering user:", error);
   }
