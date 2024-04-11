@@ -15,4 +15,16 @@ const registerUser = async (userObject: {
   }
 };
 
-export { registerUser };
+const loginUser = async (userObject: { email: string, password: string}) => {
+  try {
+    const response = await axios.post(`${baseUrl}/login`, userObject);
+    if (response.status === 200) {
+      return console.log("Login succesful")
+    }
+  }
+  catch(error) {
+    console.log("Login failed:", error)
+  }
+}
+
+export { registerUser, loginUser };
