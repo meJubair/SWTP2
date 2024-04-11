@@ -6,18 +6,32 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import { loginUser } from "../services/calendarService";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const navigate = useNavigate();
 
+  const resetStates = () => {
+    setEmail("");
+    setPassword("");
+  };
+
+  // Send credentials to the server. If response is 200 then redirect to /calendars.
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      await loginUser({email, password})
-    }
-    catch(error) {
-      window.alert(error)
+      const response = await loginUser({ email, password });
+      if (response && response.status === 200) {
+        resetStates();
+        navigate("/calendars");
+      } else {
+        resetStates();
+        window.alert("Login failed. Please check your credentials.");
+      }
+    } catch (error) {
+      console.error("Error during login", error);
     }
   };
 
@@ -46,6 +60,7 @@ const Login = () => {
             label="Email"
             fullWidth
             required
+            value={email}
             color="secondary"
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               setEmail(e.target.value)
@@ -56,6 +71,7 @@ const Login = () => {
             type="password"
             fullWidth
             required
+            value={password}
             color="secondary"
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               setPassword(e.target.value)
