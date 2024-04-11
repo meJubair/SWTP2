@@ -2,7 +2,7 @@ import express, { Request, Response } from "express";
 import {
   getCalendarDataFromFirebase,
   registerWithEmailAndPassword,
-  loginWithEmailAndPassword
+  loginWithEmailAndPassword,
 } from "../services/firebaseService";
 
 const calendarRouter = express.Router();
@@ -30,16 +30,15 @@ calendarRouter.post(
   }
 );
 
-calendarRouter.post("/login", async(request: Request, response: Response) => {
+calendarRouter.post("/login", async (request: Request, response: Response) => {
   try {
-    const {email, password} = request.body;
+    const { email, password } = request.body;
     await loginWithEmailAndPassword(email, password);
     response.status(200).end("Login succesful");
+  } catch (error) {
+    console.log(error);
+    response.status(500).json({ error: error });
   }
-  catch(error) {
-    console.log(error)
-    response.status(500).json({error: error})
-  }
-})
+});
 
 export default calendarRouter;
