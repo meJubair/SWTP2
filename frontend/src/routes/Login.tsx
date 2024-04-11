@@ -5,14 +5,20 @@ import Header from "../components/Header";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
+import { loginUser } from "../services/calendarService";
 
 const Login = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("Email:", email, "Password:", password);
+    try {
+      await loginUser({email, password})
+    }
+    catch(error) {
+      window.alert(error)
+    }
   };
 
   return (
@@ -40,6 +46,7 @@ const Login = () => {
             label="Email"
             fullWidth
             required
+            color="secondary"
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               setEmail(e.target.value)
             }
@@ -49,6 +56,7 @@ const Login = () => {
             type="password"
             fullWidth
             required
+            color="secondary"
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               setPassword(e.target.value)
             }
