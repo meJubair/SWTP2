@@ -1,6 +1,5 @@
 import axios from "axios";
-
-const baseUrl: string = "http://localhost:3001/api/calendars"
+const baseUrl: string = "http://localhost:3001/api/calendars";
 
 const registerUser = async (userObject: {
   username: string;
@@ -9,10 +8,19 @@ const registerUser = async (userObject: {
 }) => {
   try {
     await axios.post(`${baseUrl}/register`, userObject);
-    console.log("User registered successfully")
+    console.log("User registered successfully");
   } catch (error) {
     console.log("Error registering user:", error);
   }
 };
 
-export { registerUser };
+const loginUser = async (userObject: { email: string; password: string }) => {
+  try {
+    const response = await axios.post(`${baseUrl}/login`, userObject);
+    return response;
+  } catch (error) {
+    console.error("Login failed:", error);
+  }
+};
+
+export { registerUser, loginUser };
