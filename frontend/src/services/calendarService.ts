@@ -10,7 +10,7 @@ const registerUser = async (userObject: {
     await axios.post(`${baseUrl}/register`, userObject);
     console.log("User registered successfully");
   } catch (error) {
-    console.log("Error registering user:", error);
+    console.error("Error registering user:", error);
   }
 };
 
@@ -23,4 +23,14 @@ const loginUser = async (userObject: { email: string; password: string }) => {
   }
 };
 
-export { registerUser, loginUser };
+const getAuth = async() => {
+  try {
+    const response = await axios.get(`${baseUrl}/auth`)
+    return response
+  }
+  catch (error) {
+    console.error(error)
+  }
+}
+
+export { registerUser, loginUser, getAuth };

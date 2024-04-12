@@ -4,7 +4,14 @@ import {
   getAuth,
   signInWithEmailAndPassword,
 } from "firebase/auth";
-import { collection, getDocs, addDoc, getFirestore } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  addDoc,
+  getFirestore,
+  query,
+  where,
+} from "firebase/firestore";
 import { FIREBASE_API_KEY } from "../utils/config";
 
 const firebaseConfig = {
@@ -74,10 +81,40 @@ const loginWithEmailAndPassword = async (email: string, password: string) => {
   }
 };
 
+// Returns the username of currently signed in user
+const getLoggedUserName = async () => {
+  try {
+    if (auth.currentUser) {
+      let loggedUserName = "";
+
+      // Reference to the 'users' collection in Firestore
+      const userRef = collection(db, "users");
+
+      // Query that checks the userRef collection for UID property of current user
+      const q = query(userRef, where("uid", "==", auth.currentUser.uid));
+
+      // Execute the query and get the query snapshot
+      const querySnapshot = await getDocs(q);
+
+      // Extract the 'name' field from the user document and assign it to loggedUserName
+      querySnapshot.forEach((doc) => {
+        loggedUserName = doc.data().name;
+      });
+      return loggedUserName;
+    } else {
+      return null;
+    }
+  } catch (error) {
+    console.log("Error getting logged-in user's name:", error);
+    throw error;
+  }
+};
+
 export {
   auth,
   db,
   getCalendarDataFromFirebase,
   registerWithEmailAndPassword,
   loginWithEmailAndPassword,
+  getLoggedUserName,
 };
