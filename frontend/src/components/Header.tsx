@@ -29,6 +29,7 @@ function Header() {
       try {
         const response = await getAuth();
         if (response && response.status === 200) {
+          // Used login here because isLoggedIn is reserved for the state
           const { login, loggedUserName } = response.data;
           setIsLoggedIn(login);
           setUsername(loggedUserName);
@@ -51,54 +52,58 @@ function Header() {
         textAlign: "center",
       }}
     >
-      <Link to="/" style={{ textDecoration: "none", color: "#0B2027" }}>
-        <Typography
-          variant="h6"
-          sx={{ m: 2, width: "400px", textAlign: "left" }}
-        >
-          Home
-        </Typography>
-      </Link>
-      <Divider />
-      <List>
-        {isLoggedIn ? (
-          <>
-            <ListItem disablePadding>
-              <ListItemButton sx={{ textAlign: "center" }}>
-                <Link
-                  to={"/calendars"}
-                  style={{ textDecoration: "none", color: "#0B2027" }}
-                >
-                  <ListItemText primary={"My Calendars"} />
-                </Link>
-              </ListItemButton>
-            </ListItem>
-            <ListItem disablePadding>
-              <ListItemButton sx={{ textAlign: "center" }}>
-                <Link
-                  to={"/calendars"}
-                  style={{ textDecoration: "none", color: "#0B2027" }}
-                >
-                  <ListItemText primary={"Sign out"} />
-                </Link>
-              </ListItemButton>
-            </ListItem>
-          </>
-        ) : (
-          navItems.map((item) => (
-            <ListItem key={item} disablePadding>
-              <ListItemButton sx={{ textAlign: "center" }}>
-                <Link
-                  to={`/${item.toLowerCase()}`}
-                  style={{ textDecoration: "none", color: "#0B2027" }}
-                >
-                  <ListItemText primary={item} />
-                </Link>
-              </ListItemButton>
-            </ListItem>
-          ))
-        )}
-      </List>
+      {isLoggedIn ? (
+        <List>
+          <ListItem disablePadding>
+            <ListItemButton sx={{ textAlign: "center" }}>
+              <Link
+                to={"/calendars"}
+                style={{ textDecoration: "none", color: "#0B2027" }}
+              >
+                <ListItemText primary={"My Calendars"} />
+              </Link>
+            </ListItemButton>
+          </ListItem>
+          <ListItem disablePadding>
+            <ListItemButton sx={{ textAlign: "center" }}>
+              <Link
+                to={"/logout"} // Change the route to logout
+                style={{ textDecoration: "none", color: "#0B2027" }}
+              >
+                <ListItemText primary={"Sign out"} />
+              </Link>
+            </ListItemButton>
+          </ListItem>
+        </List>
+      ) : (
+        <List>
+          <Link to="/" style={{ textDecoration: "none", color: "#0B2027" }}>
+            <Typography
+              variant="h6"
+              sx={{ m: 2, width: "400px", textAlign: "left" }}
+            >
+              Home
+            </Typography>
+          </Link>
+          <Divider />
+          {navItems.map(
+            (
+              item // Added curly braces for JavaScript code
+            ) => (
+              <ListItem key={item} disablePadding>
+                <ListItemButton sx={{ textAlign: "center" }}>
+                  <Link
+                    to={`/${item.toLowerCase()}`}
+                    style={{ textDecoration: "none", color: "#0B2027" }}
+                  >
+                    <ListItemText primary={item} />
+                  </Link>
+                </ListItemButton>
+              </ListItem>
+            )
+          )}
+        </List>
+      )}
     </Box>
   );
 
@@ -157,7 +162,7 @@ function Header() {
       </AppBar>
       <nav>
         <Drawer
-        anchor="right"
+          anchor="right"
           variant="temporary"
           open={mobileOpen}
           onClose={handleDrawerToggle}
