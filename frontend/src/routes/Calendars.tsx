@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import Header from "../components/Header";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
@@ -32,9 +33,11 @@ const Calendars = () => {
             <Typography variant="h2" sx={{ opacity: "60%" }}>
               No calendars found
             </Typography>
-            <Button color="secondary" variant="contained">
-              create calendar
-            </Button>
+            <Link to="/editor">
+              <Button color="secondary" variant="contained">
+                create calendar
+              </Button>
+            </Link>
           </Box>
         </Box>
       </Box>

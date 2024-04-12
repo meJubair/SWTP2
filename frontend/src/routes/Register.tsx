@@ -8,18 +8,17 @@ import { Link } from "react-router-dom";
 import { registerUser } from "../services/calendarService";
 
 const Register = () => {
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [username, setUsername] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      await registerUser({username, email, password});
+      await registerUser({ username, email, password });
       resetStates();
-      }
-    catch(error) {
-      console.log(error)
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -28,7 +27,7 @@ const Register = () => {
     setUsername("");
     setEmail("");
     setPassword("");
-  }
+  };
 
   return (
     <Box>

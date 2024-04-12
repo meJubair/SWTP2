@@ -7,6 +7,7 @@ import Register from "./routes/Register";
 import Calendars from "./routes/Calendars";
 import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
+import EditorViewMain from "./routes/EditorViewMain";
 
 const App: React.FC = () => {
   return (
@@ -18,7 +19,8 @@ const App: React.FC = () => {
           <Route path="/about" element={<About />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/calendars" element={<Calendars />}></Route>
+          <Route path="/calendars" element={<Calendars />} />
+          <Route path="/editor" element={<EditorViewMain />} />
         </Routes>
       </Router>
     </Box>
