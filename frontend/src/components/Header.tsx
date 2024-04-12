@@ -22,7 +22,7 @@ const navItems = ["Login", "Register", "About"];
 function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [userName, setUsername] = useState("");
+  const [userName, setUserName] = useState("");
 
   useEffect(() => {
     const getAuthData = async () => {
@@ -32,7 +32,7 @@ function Header() {
           // Used login here because isLoggedIn is reserved for the state
           const { login, loggedUserName } = response.data;
           setIsLoggedIn(login);
-          setUsername(loggedUserName);
+          setUserName(loggedUserName);
         }
       } catch (error) {
         console.log(error);
