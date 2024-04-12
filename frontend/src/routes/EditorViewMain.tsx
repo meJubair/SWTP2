@@ -38,16 +38,13 @@ const EditorViewMain: React.FC = () => {
 
     if (optionName === "Date") {
       setShowDatePicker(true);
-      // TODO: Set showBackgroundColor and showUploadImage to false
     }
 
     if (optionName === "Background color") {
-      // TODO: Set showBackgroundColor to true and showUploadImage to false
       setShowDatePicker(false);
     }
 
     if (optionName === "Upload image") {
-      // TODO: Set showUploadImage to true and showBackgroundColor to false
       setShowDatePicker(false);
     }
   };
@@ -56,7 +53,7 @@ const EditorViewMain: React.FC = () => {
     <Box>
       <Header />
       <Box component="h2" sx={{ textAlign: "center" }}>
-        {isTyping ? "Typing..." : calendarTitle ? calendarTitle : "Untitled"}
+        {isTyping ? "Typing..." : calendarTitle}
       </Box>
       <Box
         sx={{
@@ -124,8 +121,8 @@ const EditorViewMain: React.FC = () => {
         </Box>
         {dateArray?.length > 0 && (
           <Box sx={{ display: "flex", gap: "20px", margin: "20px 0" }}>
-            {dateArray?.map((_, i) => (
-              <Box key={i}>{i + 1}</Box>
+            {dateArray?.map((date) => (
+              <Box key={date.getDate()}>{date.toLocaleDateString()}</Box>
             ))}
           </Box>
         )}

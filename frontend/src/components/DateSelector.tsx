@@ -104,7 +104,7 @@ const DateSelector: React.FC<DateSelectorProps> = ({
             placeholderText="Start Date"
             selected={date.startDate}
             onChange={handleStartDateChange}
-            dateFormat="MM/dd/yyyy"
+            dateFormat="dd/MM/yyyy"
             minDate={new Date()} // Set minimum date to current date
             required
           />
@@ -114,7 +114,7 @@ const DateSelector: React.FC<DateSelectorProps> = ({
             placeholderText="End Date"
             selected={date.endDate}
             onChange={handleEndDateChange}
-            dateFormat="MM/dd/yyyy"
+            dateFormat="dd/MM/yyyy"
             minDate={date.startDate} // Set minimum date to start date
             maxDate={
               new Date(
