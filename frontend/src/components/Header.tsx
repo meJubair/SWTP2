@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
 import Drawer from "@mui/material/Drawer";
 import IconButton from "@mui/material/IconButton";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
@@ -13,12 +14,31 @@ import MenuIcon from "@mui/icons-material/Menu";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
+import { getAuth } from "../services/calendarService";
 
 const drawerWidth = 240;
-const navItems = ["About", "Login", "Register"];
+const navItems = ["Login", "Register", "About"];
 
 function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userName, setUsername] = useState("");
+
+  useEffect(() => {
+    const getAuthData = async () => {
+      try {
+        const response = await getAuth();
+        if (response && response.status === 200) {
+          const { login, loggedUserName } = response.data;
+          setIsLoggedIn(login);
+          setUsername(loggedUserName);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getAuthData();
+  }, [isLoggedIn]);
 
   const handleDrawerToggle = () => {
     setMobileOpen((prevState) => !prevState);
@@ -41,18 +61,43 @@ function Header() {
       </Link>
       <Divider />
       <List>
-        {navItems.map((item) => (
-          <ListItem key={item} disablePadding>
-            <ListItemButton sx={{ textAlign: "center" }}>
-              <Link
-                to={`/${item.toLowerCase()}`}
-                style={{ textDecoration: "none", color: "#0B2027" }}
-              >
-                <ListItemText primary={item} />
-              </Link>
-            </ListItemButton>
-          </ListItem>
-        ))}
+        {isLoggedIn ? (
+          <>
+            <ListItem disablePadding>
+              <ListItemButton sx={{ textAlign: "center" }}>
+                <Link
+                  to={"/calendars"}
+                  style={{ textDecoration: "none", color: "#0B2027" }}
+                >
+                  <ListItemText primary={"My Calendars"} />
+                </Link>
+              </ListItemButton>
+            </ListItem>
+            <ListItem disablePadding>
+              <ListItemButton sx={{ textAlign: "center" }}>
+                <Link
+                  to={"/calendars"}
+                  style={{ textDecoration: "none", color: "#0B2027" }}
+                >
+                  <ListItemText primary={"Sign out"} />
+                </Link>
+              </ListItemButton>
+            </ListItem>
+          </>
+        ) : (
+          navItems.map((item) => (
+            <ListItem key={item} disablePadding>
+              <ListItemButton sx={{ textAlign: "center" }}>
+                <Link
+                  to={`/${item.toLowerCase()}`}
+                  style={{ textDecoration: "none", color: "#0B2027" }}
+                >
+                  <ListItemText primary={item} />
+                </Link>
+              </ListItemButton>
+            </ListItem>
+          ))
+        )}
       </List>
     </Box>
   );
@@ -64,6 +109,22 @@ function Header() {
         sx={{ position: "static", background: "#8affe8" }}
       >
         <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
+          {userName ? (
+            <Box sx={{ display: "flex", gap: "0.5rem" }}>
+              <AccountCircleIcon />
+              <Typography>{userName}</Typography>
+            </Box>
+          ) : (
+            <Link to="/" style={{ textDecoration: "none", color: "white" }}>
+              <Typography
+                variant="h6"
+                component="div"
+                sx={{ display: { xs: "none", sm: "block" }, color: "#0b2027" }}
+              >
+                Home
+              </Typography>
+            </Link>
+          )}
           <IconButton
             color="inherit"
             aria-label="open drawer"
@@ -73,26 +134,30 @@ function Header() {
           >
             <MenuIcon />
           </IconButton>
-          <Link to="/" style={{ textDecoration: "none", color: "white" }}>
-            <Typography
-              variant="h6"
-              component="div"
-              sx={{ display: { xs: "none", sm: "block" }, color: "#0b2027" }}
-            >
-              Home
-            </Typography>
-          </Link>
+
           <Box sx={{ display: { xs: "none", sm: "block" } }}>
-            {navItems.map((item) => (
-              <Link key={item} to={`/${item.toLocaleLowerCase()}`}>
-                <Button sx={{ color: "#0b2027" }}>{item}</Button>
-              </Link>
-            ))}
+            {isLoggedIn ? (
+              <>
+                <Link to={""}>
+                  <Button sx={{ color: "#0b2027" }}>My Calendars</Button>
+                </Link>
+                <Link to={""}>
+                  <Button sx={{ color: "#0b2027" }}>Sign out</Button>
+                </Link>
+              </>
+            ) : (
+              navItems.map((item) => (
+                <Link key={item} to={`/${item.toLocaleLowerCase()}`}>
+                  <Button sx={{ color: "#0b2027" }}>{item}</Button>
+                </Link>
+              ))
+            )}
           </Box>
         </Toolbar>
       </AppBar>
       <nav>
         <Drawer
+        anchor="right"
           variant="temporary"
           open={mobileOpen}
           onClose={handleDrawerToggle}
