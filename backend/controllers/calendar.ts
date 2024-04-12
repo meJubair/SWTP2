@@ -24,6 +24,7 @@ calendarRouter.get("/auth", async (request: Request, response: Response) => {
     if (loggedUserName === null) {
       response.status(401).json({ isLoggedIn: false });
     } else {
+      // Used login here because isLoggedIn is reserved for the state
       response.json({ login: true, loggedUserName });
     }
   } catch (error) {
