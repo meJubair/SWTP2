@@ -6,6 +6,7 @@ import Login from "./routes/Login";
 import Register from "./routes/Register";
 import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
+import SingleCalendarDoor from "./components/SingleCalendarDoor";
 
 const App: React.FC = () => {
   return (
@@ -17,6 +18,8 @@ const App: React.FC = () => {
           <Route path="/about" element={<About />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/layout" element={<SingleCalendarDoor />} />
+
         </Routes>
       </Router>
     </Box>
