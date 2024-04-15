@@ -87,7 +87,7 @@ const DoorContent: React.FC<DoorContentProps> = () => {
     <Grid container spacing={2} direction="column" alignItems="flex-start">
       {Object.values(ContentType).map(type => (
         <Grid item key={type}>
-          <Button onClick={() => handleTypeSelection(type)} fullWidth style={{ color: '#ffffff' }}> {/* Text color */}
+          <Button onClick={() => handleTypeSelection(type)} fullWidth style={{ color: '#ffffff' }}>
             {type}
           </Button>
         </Grid>
@@ -96,7 +96,7 @@ const DoorContent: React.FC<DoorContentProps> = () => {
   </Paper>
 </Grid>
         <Grid item xs={4}>
-          <Paper style={{ padding: '20px' }}>
+          <Paper style={{ padding: '20px', backgroundColor: '70A9A1' }}>
             <Typography variant="h6" gutterBottom>
               {activeType && `${activeType.charAt(0).toUpperCase()}${activeType.slice(1)} Content`}
             </Typography>
