@@ -32,5 +32,20 @@ const getAuth = async() => {
     console.error(error)
   }
 }
+  
+// Return true if request to /logout was succesful
+const signOut = async() => {
+  try {
+    const response = await axios.get(`${baseUrl}/logout`)
+    if (response.status === 200) {
+      return (true)
+    } else {
+      return false
+    }
+  }
+  catch(error) {
+    console.error(error)
+  }
+}
 
-export { registerUser, loginUser, getAuth };
+export { registerUser, loginUser, getAuth, signOut };

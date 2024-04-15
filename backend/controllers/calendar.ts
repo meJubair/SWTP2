@@ -4,6 +4,7 @@ import {
   registerWithEmailAndPassword,
   loginWithEmailAndPassword,
   getLoggedUserName,
+  logout,
 } from "../services/firebaseService";
 
 const calendarRouter = express.Router();
@@ -29,6 +30,16 @@ calendarRouter.get("/auth", async (request: Request, response: Response) => {
     }
   } catch (error) {
     console.log("Error checking authentication status:", error);
+    response.status(500).json({ error: "Internal server error" });
+  }
+});
+
+calendarRouter.get("/logout", async (request: Request, response: Response) => {
+  try {
+    await logout();
+    response.status(200).json({ message: "User successfully logged out" });
+  } catch (error) {
+    console.error("Error during logout", error);
     response.status(500).json({ error: "Internal server error" });
   }
 });
