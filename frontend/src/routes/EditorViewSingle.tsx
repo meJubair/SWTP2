@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Paper, Typography, Button, TextField, Grid } from '@mui/material';
-import TextConfig, { TextConfigType } from './TextConfig';
+import TextConfig, { TextConfigType } from '../components/TextConfig';
 
 enum ContentType {
   Text = 'text',
