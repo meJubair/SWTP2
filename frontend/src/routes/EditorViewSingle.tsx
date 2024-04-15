@@ -82,17 +82,22 @@ const DoorContent: React.FC<DoorContentProps> = () => {
   return (
     <div>
       <Grid container spacing={2}>
-        <Grid item xs={4}>
-          <Paper style={{ padding: '20px' }}>
-            <div style={{ display: 'flex', flexDirection: 'column' }}>
-              {Object.values(ContentType).map(type => (
-                <Button key={type} onClick={() => handleTypeSelection(type)}>
-                  {type}
-                </Button>
-              ))}
-            </div>
-          </Paper>
+      <Grid item xs={1.5}>
+  <Paper style={{ padding: '20px', height: '100%', backgroundColor: '#0091AD' }}>
+    <Grid container spacing={2} direction="column" alignItems="flex-start">
+      {Object.values(ContentType).map(type => (
+        <Grid item key={type}>
+          <Button onClick={() => handleTypeSelection(type)} fullWidth style={{ color: '#ffffff' }}> {/* Text color */}
+            {type}
+          </Button>
         </Grid>
+      ))}
+    </Grid>
+  </Paper>
+</Grid>
+
+
+
         <Grid item xs={4}>
           <Paper style={{ padding: '20px' }}>
             <Typography variant="h6" gutterBottom>
