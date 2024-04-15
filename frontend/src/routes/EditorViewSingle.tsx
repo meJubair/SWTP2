@@ -95,9 +95,6 @@ const DoorContent: React.FC<DoorContentProps> = () => {
     </Grid>
   </Paper>
 </Grid>
-
-
-
         <Grid item xs={4}>
           <Paper style={{ padding: '20px' }}>
             <Typography variant="h6" gutterBottom>
