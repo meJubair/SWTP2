@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Paper, Typography, Button, TextField, Grid } from '@mui/material';
+import { Paper, Typography, Button, TextField, Grid, Box } from '@mui/material';
 import TextConfig, { TextConfigType } from '../components/TextConfig';
 
 enum ContentType {
@@ -96,7 +96,7 @@ const DoorContent: React.FC<DoorContentProps> = () => {
   </Paper>
 </Grid>
         <Grid item xs={4}>
-          <Paper style={{ padding: '20px', backgroundColor: '70A9A1' }}>
+          <Paper style={{ padding: '20px'}}>
             <Typography variant="h6" gutterBottom>
               {activeType && `${activeType.charAt(0).toUpperCase()}${activeType.slice(1)} Content`}
             </Typography>
@@ -119,16 +119,23 @@ const DoorContent: React.FC<DoorContentProps> = () => {
           </Paper>
         </Grid>
         <Grid item xs={4}>
-          {activeType === ContentType.Text && (
-            <div>
-              {validInputLabels.map(label => (
-                <Typography key={label} variant="body1" style={generateTextStyle(label)}>
-                  {textConfig[label]}
-                </Typography>
-              ))}
-            </div>
-          )}
-        </Grid>
+  {activeType === ContentType.Text && (
+    <Grid container direction="column" alignItems="center" spacing={2}>
+      <Grid item>
+      </Grid>
+      <Grid item>
+        <Box bgcolor="#ffffff" p={2}>
+          {validInputLabels.map(label => (
+            <Typography key={label} variant="body1" style={generateTextStyle(label)}>
+              {textConfig[label]}
+            </Typography>
+          ))}
+        </Box>
+      </Grid>
+    </Grid>
+  )}
+</Grid>
+
       </Grid>
     </div>
   );
