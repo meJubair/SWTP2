@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
@@ -14,7 +14,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
-import { getAuth } from "../services/calendarService";
+import { getAuth, signOut } from "../services/calendarService";
 
 const drawerWidth = 240;
 const navItems = ["Login", "Register", "About"];
@@ -24,10 +24,15 @@ function Header() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userName, setUserName] = useState("");
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     const getAuthData = async () => {
       try {
         const response = await getAuth();
+        if (response && response.status === 401) {
+          setUserName("");
+        }
         if (response && response.status === 200) {
           // Used login here because isLoggedIn is reserved for the state
           const { login, loggedUserName } = response.data;
@@ -40,6 +45,21 @@ function Header() {
     };
     getAuthData();
   }, [isLoggedIn]);
+
+  // If request to api/calendars/login was a success redirects you to "/login"
+  const logUserOut = async () => {
+    try {
+      const response = await signOut();
+      if (response) {
+        setIsLoggedIn(false);
+        navigate("/login");
+      } else {
+        console.error("Sign out failed");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const handleDrawerToggle = () => {
     setMobileOpen((prevState) => !prevState);
@@ -65,13 +85,8 @@ function Header() {
             </ListItemButton>
           </ListItem>
           <ListItem disablePadding>
-            <ListItemButton sx={{ textAlign: "center" }}>
-              <Link
-                to={"/logout"} // Change the route to logout
-                style={{ textDecoration: "none", color: "#0B2027" }}
-              >
-                <ListItemText primary={"Sign out"} />
-              </Link>
+            <ListItemButton>
+              <ListItemText primary={"Sign out"} onClick={logUserOut} />
             </ListItemButton>
           </ListItem>
         </List>
@@ -149,6 +164,9 @@ function Header() {
                 <Link to={""}>
                   <Button sx={{ color: "#0b2027" }}>Sign out</Button>
                 </Link>
+                <Button sx={{ color: "#0b2027" }} onClick={logUserOut}>
+                  Sign out
+                </Button>
               </>
             ) : (
               navItems.map((item) => (

@@ -110,6 +110,17 @@ const getLoggedUserName = async () => {
   }
 };
 
+// Log current user out
+const logout = async () => {
+  try {
+    await auth.signOut()
+    console.log("User successfully logged out");
+  }
+  catch(error) {
+    console.error("Error signing out:", error);
+  }
+}
+
 export {
   auth,
   db,
@@ -117,4 +128,5 @@ export {
   registerWithEmailAndPassword,
   loginWithEmailAndPassword,
   getLoggedUserName,
+  logout
 };

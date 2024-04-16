@@ -4,13 +4,18 @@ import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import DateSelector from "../components/DateSelector";
+import BackgroundColourSelector from "../components/BackgroundColourSelector";
+import CalendarDoor from "../components/CalendarDoor";
 
 const EditorViewMain: React.FC = () => {
   const [calendarTitle, setCalendarTitle] = useState<string>("");
   const [isTyping, setIsTyping] = useState<boolean>(false);
-  const [showDatePicker, setShowDatePicker] = useState<boolean>(false);
-  const [activeOption, setActiveOption] = useState<string | null>(null);
+  const [showDatePicker, setShowDatePicker] = useState<boolean>(true);
+  const [showBgColourSelector, setShowBgColourSelector] =
+    useState<boolean>(false);
+  const [activeOption, setActiveOption] = useState<string | null>("Date");
   const [dateArray, setDateArray] = useState<Date[]>([]);
+  const [background, setBackground] = useState<string>("#ffffff");
 
   // The logic to update the dateArray state is passed down to the DateSelector component
   const handleSetDateArray = (newDateArray: Date[]) => {
@@ -34,19 +39,28 @@ const EditorViewMain: React.FC = () => {
   ];
 
   const handleClick = (optionName: string) => {
-    setActiveOption(optionName === activeOption ? null : optionName);
-
     if (optionName === "Date") {
+      setActiveOption(optionName);
       setShowDatePicker(true);
+      setShowBgColourSelector(false);
     }
 
     if (optionName === "Background color") {
+      setActiveOption(optionName);
+      setShowBgColourSelector(true);
       setShowDatePicker(false);
     }
 
     if (optionName === "Upload image") {
+      setActiveOption(optionName);
       setShowDatePicker(false);
+      setShowBgColourSelector(false);
     }
+  };
+
+  // Set background colour of the calendar
+  const handleColorChange = (color: string) => {
+    setBackground(color);
   };
 
   return (
@@ -78,6 +92,7 @@ const EditorViewMain: React.FC = () => {
             width: "80%",
             padding: "0 50px",
             borderRadius: "5px",
+            height: "400px",
           }}
         >
           <Box
@@ -95,6 +110,8 @@ const EditorViewMain: React.FC = () => {
                   padding: "20px 0 10px",
                   color: activeOption === option?.name ? "#0b2027" : "white",
                   fontWeight: activeOption === option?.name ? "bold" : "normal",
+                  width: "33%",
+                  textAlign: "center",
                 }}
                 onClick={() => handleClick(option?.name)}
               >
@@ -117,12 +134,27 @@ const EditorViewMain: React.FC = () => {
                 dateArray={dateArray}
               />
             )}
+            {showBgColourSelector && (
+              <BackgroundColourSelector onColorChange={handleColorChange} />
+            )}
           </Box>
         </Box>
         {dateArray?.length > 0 && (
-          <Box sx={{ display: "flex", gap: "20px", margin: "20px 0" }}>
+          <Box
+            sx={{
+              display: "grid",
+              gridTemplateColumns: "repeat(4, 1fr)",
+              gap: "20px",
+              margin: "50px 0",
+              background: background,
+              padding: "2rem",
+              width: "80%",
+              border: "1px solid black",
+              borderRadius: "5px",
+            }}
+          >
             {dateArray?.map((date) => (
-              <Box key={date.getDate()}>{date.toLocaleDateString()}</Box>
+              <CalendarDoor key={date.getDate()} value={date} />
             ))}
           </Box>
         )}
