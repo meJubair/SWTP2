@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Box from "@mui/material/Box";
-import Header from "../components/Header";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
@@ -36,7 +35,6 @@ const Login = () => {
 
   return (
     <Box>
-      <Header />
       <Box component="h2" sx={{ textAlign: "center" }}>
         Login
       </Box>

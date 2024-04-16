@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import Header from "../components/Header";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
@@ -7,7 +6,6 @@ import Box from "@mui/material/Box";
 const Calendars = () => {
   return (
     <Box>
-      <Header />
       <Box sx={{ height: "calc(100vh - 64px)" }}>
         <Typography variant="h1" sx={{ textAlign: "center", py: "1rem" }}>
           My calendars

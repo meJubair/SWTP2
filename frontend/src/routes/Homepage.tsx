@@ -1,5 +1,4 @@
 import { Box, Typography, Button } from "@mui/material";
-import Header from "../components/Header";
 import { Link } from "react-router-dom";
 import TextFieldsIcon from "@mui/icons-material/TextFields";
 import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
@@ -11,7 +10,6 @@ import CheckIcon from "@mui/icons-material/Check";
 const Homepage: React.FC = () => {
   return (
     <Box>
-      <Header />
       <Box
         sx={{
           height: "95vh",
