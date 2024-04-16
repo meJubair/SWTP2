@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import Box from "@mui/material/Box";
-import Header from "../components/Header";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
@@ -31,7 +30,6 @@ const Register = () => {
 
   return (
     <Box>
-      <Header />
       <Box component="h2" sx={{ textAlign: "center" }}>
         Register
       </Box>
