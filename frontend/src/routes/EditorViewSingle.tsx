@@ -122,8 +122,6 @@ const DoorContent: React.FC<DoorContentProps> = () => {
   {activeType === ContentType.Text && (
     <Grid container direction="column" alignItems="center" spacing={2}>
       <Grid item>
-      </Grid>
-      <Grid item>
         <Box bgcolor="#ffffff" p={2}>
           {validInputLabels.map(label => (
             <Typography key={label} variant="body1" style={generateTextStyle(label)}>
