@@ -1,0 +1,224 @@
+{
+  "calendars": [
+    {
+      "title": "Family summer",
+      "authorName": "Barney Boddingtion",
+      "userId": "",
+      "startDate": "1.6.2025",
+      "endDate": "4.6.2025",
+      "published": true,
+      "tags": ["Summer", "Vacation"],
+      "backgroundUrl": "",
+      "calendarDoors": [
+        {
+          "doorNumber": "1",
+          "textContent": "",
+          "youtubeVideoId": "",
+          "imageFileUrl": "",
+          "videoFileUrl": ""
+        },
+        {
+          "doorNumber": "2",
+          "textContent": "",
+          "youtubeVideoId": "",
+          "imageFileUrl": "",
+          "videoFileUrl": ""
+        },
+        {
+          "doorNumber": "3",
+          "textContent": "",
+          "youtubeVideoId": "",
+          "imageFileUrl": "",
+          "videoFileUrl": ""
+        },
+        {
+          "doorNumber": "4",
+          "textContent": "",
+          "youtubeVideoId": "",
+          "imageFileUrl": "",
+          "videoFileUrl": ""
+        }
+      ]
+    },
+    {
+      "title": "Christmas 2025",
+      "authorName": "Barney Boddingtion",
+      "userId": "",
+      "startDate": "1.12.2025",
+      "endDate": "24.12.2025",
+      "published": false,
+      "tags": ["Christmas"],
+      "backgroundUrl": "",
+      "calendarDoors": [
+        {
+          "doorNumber": "1",
+          "textContent": "",
+          "youtubeVideoId": "",
+          "imageFileUrl": "",
+          "videoFileUrl": ""
+        },
+        {
+          "doorNumber": "2",
+          "textContent": "",
+          "youtubeVideoId": "",
+          "imageFileUrl": "",
+          "videoFileUrl": ""
+        },
+        {
+          "doorNumber": "3",
+          "textContent": "",
+          "youtubeVideoId": "",
+          "imageFileUrl": "",
+          "videoFileUrl": ""
+        },
+        {
+          "doorNumber": "4",
+          "textContent": "",
+          "youtubeVideoId": "",
+          "imageFileUrl": "",
+          "videoFileUrl": ""
+        },
+        {
+          "doorNumber": "5",
+          "textContent": "",
+          "youtubeVideoId": "",
+          "imageFileUrl": "",
+          "videoFileUrl": ""
+        },
+        {
+          "doorNumber": "6",
+          "textContent": "",
+          "youtubeVideoId": "",
+          "imageFileUrl": "",
+          "videoFileUrl": ""
+        },
+        {
+          "doorNumber": "7",
+          "textContent": "",
+          "youtubeVideoId": "",
+          "imageFileUrl": "",
+          "videoFileUrl": ""
+        },
+        {
+          "doorNumber": "8",
+          "textContent": "",
+          "youtubeVideoId": "",
+          "imageFileUrl": "",
+          "videoFileUrl": ""
+        },
+        {
+          "doorNumber": "9",
+          "textContent": "",
+          "youtubeVideoId": "",
+          "imageFileUrl": "",
+          "videoFileUrl": ""
+        },
+        {
+          "doorNumber": "10",
+          "textContent": "",
+          "youtubeVideoId": "",
+          "imageFileUrl": "",
+          "videoFileUrl": ""
+        },
+        {
+          "doorNumber": "11",
+          "textContent": "",
+          "youtubeVideoId": "",
+          "imageFileUrl": "",
+          "videoFileUrl": ""
+        },
+        {
+          "doorNumber": "12",
+          "textContent": "",
+          "youtubeVideoId": "",
+          "imageFileUrl": "",
+          "videoFileUrl": ""
+        },
+        {
+          "doorNumber": "13",
+          "textContent": "",
+          "youtubeVideoId": "",
+          "imageFileUrl": "",
+          "videoFileUrl": ""
+        },
+        {
+          "doorNumber": "14",
+          "textContent": "",
+          "youtubeVideoId": "",
+          "imageFileUrl": "",
+          "videoFileUrl": ""
+        },
+        {
+          "doorNumber": "15",
+          "textContent": "",
+          "youtubeVideoId": "",
+          "imageFileUrl": "",
+          "videoFileUrl": ""
+        },
+        {
+          "doorNumber": "16",
+          "textContent": "",
+          "youtubeVideoId": "",
+          "imageFileUrl": "",
+          "videoFileUrl": ""
+        },
+        {
+          "doorNumber": "17",
+          "textContent": "",
+          "youtubeVideoId": "",
+          "imageFileUrl": "",
+          "videoFileUrl": ""
+        },
+        {
+          "doorNumber": "18",
+          "textContent": "",
+          "youtubeVideoId": "",
+          "imageFileUrl": "",
+          "videoFileUrl": ""
+        },
+        {
+          "doorNumber": "19",
+          "textContent": "",
+          "youtubeVideoId": "",
+          "imageFileUrl": "",
+          "videoFileUrl": ""
+        },
+        {
+          "doorNumber": "20",
+          "textContent": "",
+          "youtubeVideoId": "",
+          "imageFileUrl": "",
+          "videoFileUrl": ""
+        },
+        {
+          "doorNumber": "21",
+          "textContent": "",
+          "youtubeVideoId": "",
+          "imageFileUrl": "",
+          "videoFileUrl": ""
+        },
+        {
+          "doorNumber": "22",
+          "textContent": "",
+          "youtubeVideoId": "",
+          "imageFileUrl": "",
+          "videoFileUrl": ""
+        },
+        {
+          "doorNumber": "23",
+          "textContent": "",
+          "youtubeVideoId": "",
+          "imageFileUrl": "",
+          "videoFileUrl": ""
+        },
+        {
+          "doorNumber": "24",
+          "textContent": "",
+          "youtubeVideoId": "",
+          "imageFileUrl": "",
+          "videoFileUrl": ""
+        }
+      ]
+    }
+  ]
+}
