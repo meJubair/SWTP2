@@ -133,7 +133,6 @@ const DoorContent: React.FC<DoorContentProps> = () => {
     </Grid>
   )}
 </Grid>
-
       </Grid>
     </div>
   );
