@@ -81,14 +81,14 @@ const DoorContent: React.FC<DoorContentProps> = () => {
   
    useEffect(() => {
     setActiveType(ContentType.Text);
-  }, []); 
+  }, []);
 
   return (
     <div>
       <Grid container spacing={2} style={{height: '100vh'}}>
         {/* First Column: Side Menu */}
-        <Grid item xs={3}>
-          <Paper style={{ padding: '20px', height: '100%', backgroundColor: '#0091AD' }}>
+        <Grid item xs={3} alignItems="center" justifyContent="center">
+          <Paper style={{ paddingTop: '20px', height: '100%', backgroundColor: '#0091AD' }}>
             <Grid container spacing={2} direction="column" alignItems="flex-start">
               {Object.values(ContentType).map(type => (
                 <Grid item key={type}>
@@ -151,5 +151,3 @@ const DoorContent: React.FC<DoorContentProps> = () => {
 };
 
 export default DoorContent;
-
-
