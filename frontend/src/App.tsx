@@ -26,6 +26,7 @@ const App: React.FC = () => {
             <Route path="/editor" element={<EditorViewMain />} />
             <Route path="/layout" element={<EditorViewSingle />} />
           </Route>
+          <Route path="/editor" element={<EditorViewMain />} />
         </Routes>
       </Router>
     </Box>
