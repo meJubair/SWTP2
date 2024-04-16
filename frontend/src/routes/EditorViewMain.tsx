@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import Header from "../components/Header";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
@@ -65,7 +64,6 @@ const EditorViewMain: React.FC = () => {
 
   return (
     <Box>
-      <Header />
       <Box component="h2" sx={{ textAlign: "center" }}>
         {isTyping ? "Typing..." : calendarTitle}
       </Box>
