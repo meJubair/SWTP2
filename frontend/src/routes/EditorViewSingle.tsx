@@ -81,61 +81,68 @@ const DoorContent: React.FC<DoorContentProps> = () => {
 
   return (
     <div>
-      <Grid container spacing={2}>
-      <Grid item xs={1.5}>
-  <Paper style={{ padding: '20px', height: '100%', backgroundColor: '#0091AD' }}>
-    <Grid container spacing={2} direction="column" alignItems="flex-start">
-      {Object.values(ContentType).map(type => (
-        <Grid item key={type}>
-          <Button onClick={() => handleTypeSelection(type)} fullWidth style={{ color: '#ffffff' }}>
-            {type}
-          </Button>
+      <Grid container spacing={2} style={{height: '100vh'}}>
+        {/* First Column: Side Menu */}
+        <Grid item xs={3}>
+          <Paper style={{ padding: '20px', height: '100%', backgroundColor: '#0091AD' }}>
+            <Grid container spacing={2} direction="column" alignItems="flex-start">
+              {Object.values(ContentType).map(type => (
+                <Grid item key={type}>
+                  <Button onClick={() => handleTypeSelection(type)} fullWidth style={{ color: '#ffffff' }}>
+                    {type}
+                  </Button>
+                </Grid>
+              ))}
+            </Grid>
+          </Paper>
         </Grid>
-      ))}
-    </Grid>
-  </Paper>
-</Grid>
-        <Grid item xs={4}>
-          <Paper style={{ padding: '20px'}}>
+
+        {/* Second Column: Content Editor (Hidden until ActiveType is selected) */}
+        {activeType && (
+          <Grid item xs={6}>
+          <Paper style={{ padding: '20px' }}>
             <Typography variant="h6" gutterBottom>
-              {activeType && `${activeType.charAt(0).toUpperCase()}${activeType.slice(1)} Content`}
-            </Typography>
-            {activeType && (
-              <>
-                {activeType === ContentType.Text ? (
-                  <TextConfig values={textConfig} onChange={handleTextConfigChange} />
-                ) : (
-                  <TextField
-                    label={activeType === ContentType.Background ? 'Background' : 'Content'}
-                    fullWidth
-                    value={modalContent[activeType] || ''}
-                    onChange={(e) => handleContentChange(activeType, e.target.value)}
-                    multiline
-                    minRows={4}
-                  />
-                )}
-              </>
+                {activeType && `${activeType.charAt(0).toUpperCase()}${activeType.slice(1)} Content`}
+              </Typography>
+              {activeType === ContentType.Text ? (
+                <TextConfig values={textConfig} onChange={handleTextConfigChange} />
+              ) : (
+                <TextField
+                  label={activeType === ContentType.Background ? 'Background' : 'Content'}
+                  fullWidth
+                  value={modalContent[activeType] || ''}
+                  onChange={(e) => handleContentChange(activeType, e.target.value)}
+                  multiline
+                  minRows={4}
+                />
+              )}
+            </Paper>
+          </Grid>
+        )}
+
+        {/* Third Column for End Users */}
+        <Grid item xs={3}>
+          <Paper style={{ padding: '20px', height: '100%', backgroundColor: '#eeeeee'}}>
+            {activeType === ContentType.Text && (
+              <Grid container direction="column" alignItems="center" spacing={2}>
+                <Grid item>
+                  <Box bgcolor="#ffffff" p={2}>
+                    {validInputLabels.map(label => (
+                      <Typography key={label} variant="body1" style={generateTextStyle(label)}>
+                        {textConfig[label]}
+                      </Typography>
+                    ))}
+                  </Box>
+                </Grid>
+              </Grid>
             )}
           </Paper>
         </Grid>
-        <Grid item xs={4}>
-  {activeType === ContentType.Text && (
-    <Grid container direction="column" alignItems="center" spacing={2}>
-      <Grid item>
-        <Box bgcolor="#ffffff" p={2}>
-          {validInputLabels.map(label => (
-            <Typography key={label} variant="body1" style={generateTextStyle(label)}>
-              {textConfig[label]}
-            </Typography>
-          ))}
-        </Box>
-      </Grid>
-    </Grid>
-  )}
-</Grid>
       </Grid>
     </div>
   );
 };
 
 export default DoorContent;
+
+
