@@ -79,22 +79,22 @@ const DoorContent: React.FC<DoorContentProps> = () => {
     return {};
   };
   
- /*  useEffect(() => {
+   useEffect(() => {
     setActiveType(ContentType.Text);
-  }, []); */
+  }, []); 
 
   return (
     <div>
       <Grid container spacing={2} style={{height: '100vh'}}>
         {/* First Column: Side Menu */}
         <Grid item xs={3}>
-          <Paper style={{ padding: '20px', height: '100%', backgroundColor: '#0B2027' }}>
+          <Paper style={{ padding: '20px', height: '100%', backgroundColor: '#0091AD' }}>
             <Grid container spacing={2} direction="column" alignItems="flex-start">
               {Object.values(ContentType).map(type => (
                 <Grid item key={type}>
                   <Button onClick={() => handleTypeSelection(type)} fullWidth  style={{
                       color: '#ffffff',
-                      backgroundColor: activeType === type ? '#004165' : 'transparent',
+                      backgroundColor: activeType === type ? '#0B2027' : 'transparent',
                     }}>
                     {type}
                   </Button>
