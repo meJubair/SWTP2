@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Paper, Typography, Button, TextField, Grid, Box } from '@mui/material';
 import TextConfig, { TextConfigType } from '../components/TextConfig';
 
@@ -78,17 +78,24 @@ const DoorContent: React.FC<DoorContentProps> = () => {
     }
     return {};
   };
+  
+ /*  useEffect(() => {
+    setActiveType(ContentType.Text);
+  }, []); */
 
   return (
     <div>
       <Grid container spacing={2} style={{height: '100vh'}}>
         {/* First Column: Side Menu */}
         <Grid item xs={3}>
-          <Paper style={{ padding: '20px', height: '100%', backgroundColor: '#0091AD' }}>
+          <Paper style={{ padding: '20px', height: '100%', backgroundColor: '#0B2027' }}>
             <Grid container spacing={2} direction="column" alignItems="flex-start">
               {Object.values(ContentType).map(type => (
                 <Grid item key={type}>
-                  <Button onClick={() => handleTypeSelection(type)} fullWidth style={{ color: '#ffffff' }}>
+                  <Button onClick={() => handleTypeSelection(type)} fullWidth  style={{
+                      color: '#ffffff',
+                      backgroundColor: activeType === type ? '#004165' : 'transparent',
+                    }}>
                     {type}
                   </Button>
                 </Grid>
