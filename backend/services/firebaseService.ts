@@ -13,6 +13,7 @@ import {
   where,
 } from "firebase/firestore";
 import { FIREBASE_API_KEY } from "../utils/config";
+import { CalendarData } from "../types/calendarInterface";
 
 const firebaseConfig = {
   apiKey: FIREBASE_API_KEY,
@@ -113,13 +114,22 @@ const getLoggedUserName = async () => {
 // Log current user out
 const logout = async () => {
   try {
-    await auth.signOut()
+    await auth.signOut();
     console.log("User successfully logged out");
-  }
-  catch(error) {
+  } catch (error) {
     console.error("Error signing out:", error);
   }
-}
+};
+
+// Create a new calendar document in calendars/uid/calendars
+const addCalendarToFirebase = async (uid: string, calendar: CalendarData) => {
+  try {
+    const calendarRef = collection(db, `calendars/${uid}/calendars`);
+    await addDoc(calendarRef, calendar);
+  } catch (error) {
+    console.error("Error creating new calendar:", error);
+  }
+};
 
 export {
   auth,
@@ -128,5 +138,6 @@ export {
   registerWithEmailAndPassword,
   loginWithEmailAndPassword,
   getLoggedUserName,
-  logout
+  logout,
+  addCalendarToFirebase,
 };
