@@ -1,16 +1,20 @@
-interface Calendar {
+interface CalendarData {
   title: string;
   authorName: string;
   userId: string;
-  calendarDoors: CalendarDoors[];
+  startDate: string;
+  endDate: string;
+  published: boolean;
+  tags: string[];
+  calendarDoors: DoorData[];
 }
 
-interface CalendarDoors {
+interface DoorData {
   doorNumber: number;
   textContent: string;
-  youtubeVideoId?: string;
-  imageFileUrl?: string;
-  videoFileUrl?: string;
+  youtubeVideoId: string;
+  imageFileUrl: string;
+  videFileUrl: string;
 }
 
-export { Calendar, CalendarDoors };
+export { CalendarData, DoorData };
