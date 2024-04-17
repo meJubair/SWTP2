@@ -64,7 +64,7 @@ const DoorContent: React.FC<DoorContentProps> = () => {
   
   const handleTypeSelection = (type: ContentType) => {
     setActiveType(type);
-  };
+      }
 
   const generateTextStyle = (label: keyof TextConfigType): React.CSSProperties => {
     if (currentInputLabel === label) {
@@ -80,8 +80,8 @@ const DoorContent: React.FC<DoorContentProps> = () => {
   };
   
    useEffect(() => {
-    setActiveType(ContentType.Text);
-  }, []);
+    setActiveType(ContentType.Text);;
+  }, [doorData]);
 
   return (
     <div>
