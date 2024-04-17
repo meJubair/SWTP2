@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import DateSelector from "../components/DateSelector";
 import BackgroundColourSelector from "../components/BackgroundColourSelector";
 import CalendarDoor from "../components/CalendarDoor";
+import UploadImage from "../components/UploadImage";
 
 const EditorViewMain: React.FC = () => {
   const [calendarTitle, setCalendarTitle] = useState<string>("");
@@ -15,6 +16,10 @@ const EditorViewMain: React.FC = () => {
   const [activeOption, setActiveOption] = useState<string | null>("Date");
   const [dateArray, setDateArray] = useState<Date[]>([]);
   const [background, setBackground] = useState<string>("#ffffff");
+  const [showImageUpload, setShowImageUpload] = useState<boolean>(false);
+  const [uploadedImageUrl, setUploadedImageUrl] = useState<string | null>(null);
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // The logic to update the dateArray state is passed down to the DateSelector component
   const handleSetDateArray = (newDateArray: Date[]) => {
@@ -42,16 +47,19 @@ const EditorViewMain: React.FC = () => {
       setActiveOption(optionName);
       setShowDatePicker(true);
       setShowBgColourSelector(false);
+      setShowImageUpload(false);
     }
 
     if (optionName === "Background color") {
       setActiveOption(optionName);
       setShowBgColourSelector(true);
       setShowDatePicker(false);
+      setShowImageUpload(false);
     }
 
     if (optionName === "Upload image") {
       setActiveOption(optionName);
+      setShowImageUpload(true);
       setShowDatePicker(false);
       setShowBgColourSelector(false);
     }
@@ -60,6 +68,30 @@ const EditorViewMain: React.FC = () => {
   // Set background colour of the calendar
   const handleColorChange = (color: string) => {
     setBackground(color);
+  };
+
+  // Handle image upload from device or URL
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files?.[0];
+    const imageUrl = e.target.value;
+
+    if (files) {
+      const imageUrl = URL.createObjectURL(files);
+      setUploadedImageUrl(imageUrl);
+
+      console.log("Image url:", imageUrl);
+      console.log("Uploaded image:", files);
+    } else if (imageUrl) {
+      setUploadedImageUrl(imageUrl);
+    }
+  };
+
+  // Reset the uploaded image
+  const handleReset = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+    setUploadedImageUrl(null);
   };
 
   return (
@@ -122,8 +154,9 @@ const EditorViewMain: React.FC = () => {
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              margin: "20px 0",
-              width: "100%",
+              margin: "20px auto",
+              width: "60%",
+              textAlign: "center",
             }}
           >
             {showDatePicker && (
@@ -134,6 +167,14 @@ const EditorViewMain: React.FC = () => {
             )}
             {showBgColourSelector && (
               <BackgroundColourSelector onColorChange={handleColorChange} />
+            )}
+            {showImageUpload && (
+              <UploadImage
+                handleImageUpload={handleImageUpload}
+                handleReset={handleReset}
+                imageUrl={uploadedImageUrl || ""}
+                fileInputRef={fileInputRef}
+              />
             )}
           </Box>
         </Box>
@@ -149,6 +190,11 @@ const EditorViewMain: React.FC = () => {
               width: "80%",
               border: "1px solid black",
               borderRadius: "5px",
+              backgroundImage: uploadedImageUrl
+                ? `url(${uploadedImageUrl})`
+                : "none",
+              backgroundSize: "cover",
+              backgroundPosition: "center",
             }}
           >
             {dateArray?.map((date) => (

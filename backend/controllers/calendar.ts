@@ -5,6 +5,7 @@ import {
   loginWithEmailAndPassword,
   getLoggedUserName,
   logout,
+  addCalendarToFirebase,
 } from "../services/firebaseService";
 
 const calendarRouter = express.Router();
@@ -62,6 +63,18 @@ calendarRouter.post("/login", async (request: Request, response: Response) => {
     const { email, password } = request.body;
     await loginWithEmailAndPassword(email, password);
     response.status(200).end("Login succesful");
+  } catch (error) {
+    console.log(error);
+    response.status(500).json({ error: error });
+  }
+});
+
+// Create new calendar instance
+calendarRouter.post("/new", async (request: Request, response: Response) => {
+  try {
+    const body = request.body;
+    await addCalendarToFirebase(body.id, body);
+    response.json(body);
   } catch (error) {
     console.log(error);
     response.status(500).json({ error: error });
