@@ -178,30 +178,33 @@ const EditorViewMain: React.FC = () => {
             )}
           </Box>
         </Box>
-        {dateArray?.length > 0 && (
-          <Box
-            sx={{
-              display: "grid",
-              gridTemplateColumns: "repeat(4, 1fr)",
-              gap: "20px",
-              margin: "50px 0",
-              background: background,
-              padding: "2rem",
-              width: "80%",
-              border: "1px solid black",
-              borderRadius: "5px",
-              backgroundImage: uploadedImageUrl
-                ? `url(${uploadedImageUrl})`
-                : "none",
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-            }}
-          >
-            {dateArray?.map((date) => (
-              <CalendarDoor key={date.getDate()} value={date} />
-            ))}
-          </Box>
-        )}
+        <Box
+          sx={{
+            display: "grid",
+            gridTemplateColumns: "repeat(4, 1fr)",
+            gap: "20px",
+            margin: "50px 0",
+            background: background,
+            padding: "2rem",
+            width: "80%",
+            height: "800px",
+            border: "1px solid black",
+            borderRadius: "5px",
+            backgroundImage: uploadedImageUrl
+              ? `url(${uploadedImageUrl})`
+              : "none",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+          }}
+        >
+          {dateArray?.map((date) => (
+            <CalendarDoor
+              key={date.getDate()}
+              value={date}
+              dateArray={dateArray}
+            />
+          ))}
+        </Box>
       </Box>
     </Box>
   );
