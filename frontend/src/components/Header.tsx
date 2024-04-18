@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
@@ -14,44 +14,31 @@ import MenuIcon from "@mui/icons-material/Menu";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
-import { getAuth, signOut } from "../services/calendarService";
+import { signOut } from "../services/calendarService";
+import { useSelector, useDispatch } from "react-redux";
+import { setUserLogin } from "../store/userSlice";
+import { ReduxUserState } from "../store/stateTypes";
 
 const drawerWidth = 240;
 const navItems = ["Login", "Register", "About"];
 
 function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [userName, setUserName] = useState("");
+
+  const isLoggedIn = useSelector(
+    (state: ReduxUserState) => state.user.userLoggedIn
+  );
+  const userName = useSelector((state: ReduxUserState) => state.user.userName);
 
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const getAuthData = async () => {
-      try {
-        const response = await getAuth();
-        if (response && response.status === 401) {
-          setUserName("");
-        }
-        if (response && response.status === 200) {
-          // Used login here because isLoggedIn is reserved for the state
-          const { login, loggedUserName } = response.data;
-          setIsLoggedIn(login);
-          setUserName(loggedUserName);
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    getAuthData();
-  }, [isLoggedIn]);
+  const dispatch = useDispatch();
 
   // If request to api/calendars/login was a success redirects you to "/login"
   const logUserOut = async () => {
     try {
       const response = await signOut();
       if (response) {
-        setIsLoggedIn(false);
+        dispatch(setUserLogin(false));
         navigate("/login");
       } else {
         console.error("Sign out failed");
@@ -129,7 +116,7 @@ function Header() {
         sx={{ position: "static", background: "#8affe8" }}
       >
         <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
-          {userName ? (
+          {isLoggedIn ? (
             <Box sx={{ display: "flex", gap: "0.5rem" }}>
               <AccountCircleIcon />
               <Typography>{userName}</Typography>
@@ -160,9 +147,6 @@ function Header() {
               <>
                 <Link to={""}>
                   <Button sx={{ color: "#0b2027" }}>My Calendars</Button>
-                </Link>
-                <Link to={""}>
-                  <Button sx={{ color: "#0b2027" }}>Sign out</Button>
                 </Link>
                 <Button sx={{ color: "#0b2027" }} onClick={logUserOut}>
                   Sign out

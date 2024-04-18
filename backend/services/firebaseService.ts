@@ -82,8 +82,8 @@ const loginWithEmailAndPassword = async (email: string, password: string) => {
   }
 };
 
-// Returns the username of currently signed in user
-const getLoggedUserName = async () => {
+// Returns the username and auth data of currently signed in user
+const getAuthData = async () => {
   try {
     if (auth.currentUser) {
       let loggedUserName = "";
@@ -101,12 +101,14 @@ const getLoggedUserName = async () => {
       querySnapshot.forEach((doc) => {
         loggedUserName = doc.data().name;
       });
-      return loggedUserName;
+
+      const authData = { auth: auth.currentUser, loggedUserName };
+      return authData;
     } else {
       return null;
     }
   } catch (error) {
-    console.log("Error getting logged-in user's name:", error);
+    console.log("Error getting logged-in user's name and auth data:", error);
     throw error;
   }
 };
@@ -137,7 +139,7 @@ export {
   getCalendarDataFromFirebase,
   registerWithEmailAndPassword,
   loginWithEmailAndPassword,
-  getLoggedUserName,
+  getAuthData,
   logout,
   addCalendarToFirebase,
 };
