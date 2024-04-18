@@ -145,7 +145,7 @@ function Header() {
           <Box sx={{ display: { xs: "none", sm: "block" } }}>
             {isLoggedIn ? (
               <>
-                <Link to={""}>
+                <Link to={"/calendars"}>
                   <Button sx={{ color: "#0b2027" }}>My Calendars</Button>
                 </Link>
                 <Button sx={{ color: "#0b2027" }} onClick={logUserOut}>
