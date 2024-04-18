@@ -4,9 +4,12 @@ import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
-import { loginUser } from "../services/calendarService";
+import { loginUser, getAuth } from "../services/calendarService";
+import { useDispatch } from "react-redux";
+import { setUserLogin, setUid, setUserName } from "../store/userSlice";
 
 const Login = () => {
+  const dispatch = useDispatch();
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const navigate = useNavigate();
@@ -16,13 +19,17 @@ const Login = () => {
     setPassword("");
   };
 
-  // Send credentials to the server. If response is 200 then redirect to /calendars.
+  // Send credentials to the server. If response is 200 then update auth data to Redux state and redirect to /calendars.
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       const response = await loginUser({ email, password });
       if (response && response.status === 200) {
-        resetStates();
+        const data = await getAuth();
+        const authData = data?.data.authData;
+        dispatch(setUserLogin(data?.data.login));
+        dispatch(setUid(authData.auth.uid));
+        dispatch(setUserName(authData.loggedUserName));
         navigate("/calendars");
       } else {
         resetStates();
