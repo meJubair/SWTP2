@@ -52,11 +52,6 @@ const Calendars = () => {
             <Typography variant="h2" sx={{ opacity: "60%" }}>
               No calendars found
             </Typography>
-            <Link to="/editor">
-              <Button color="secondary" variant="contained">
-                create calendar
-              </Button>
-            </Link>
           </Box>
         ) : (
           <TableContainer
@@ -85,7 +80,9 @@ const Calendars = () => {
               <TableBody>
                 {calendars.map((calendar) => (
                   <TableRow key={calendar.title}>
-                    <TableCell>{calendar.title}</TableCell>
+                    <Link to={`/calendars/${calendar.title}`}>
+                      <TableCell>{calendar.title}</TableCell>
+                    </Link>
                     <TableCell>
                       {calendar.startDate} - {calendar.endDate}
                     </TableCell>
@@ -100,6 +97,11 @@ const Calendars = () => {
             </Table>
           </TableContainer>
         )}
+        <Link to="/calendars/newcalendar" style={{ margin: "20px 0" }}>
+          <Button color="secondary" variant="contained">
+            create calendar
+          </Button>
+        </Link>
       </Box>
     </Box>
   );
