@@ -1,3 +1,5 @@
+import CalendarData from "../../../backend/types/calendarInterface"
+
 interface ReduxUserState {
   user: {
     userLoggedIn: boolean;
@@ -6,4 +8,10 @@ interface ReduxUserState {
   };
 }
 
-export { ReduxUserState }
+interface ReduxCalendarState {
+  calendar: {
+    calendars: CalendarData[]
+  }
+}
+
+export { ReduxUserState, ReduxCalendarState }
