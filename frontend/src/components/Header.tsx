@@ -38,7 +38,6 @@ function Header() {
     try {
       const response = await signOut();
       if (response) {
-        // setIsLoggedIn(false);
         dispatch(setUserLogin(false));
         navigate("/login");
       } else {
