@@ -3,7 +3,7 @@ import {
   getCalendarDataFromFirebase,
   registerWithEmailAndPassword,
   loginWithEmailAndPassword,
-  getLoggedUserName,
+  getAuthData,
   logout,
   addCalendarToFirebase,
 } from "../services/firebaseService";
@@ -20,14 +20,15 @@ calendarRouter.get("/", async (request: Request, response: Response) => {
   }
 });
 
+// Return user auth data, username and a boolean for updating login state on front end
 calendarRouter.get("/auth", async (request: Request, response: Response) => {
   try {
-    const loggedUserName = await getLoggedUserName();
-    if (loggedUserName === null) {
+    const authData = await getAuthData();
+    if (authData === null) {
       response.status(401).json({ isLoggedIn: false });
     } else {
       // Used login here because isLoggedIn is reserved for the state
-      response.json({ login: true, loggedUserName });
+      response.json({ login: true, authData });
     }
   } catch (error) {
     console.log("Error checking authentication status:", error);
