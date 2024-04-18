@@ -9,21 +9,27 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import axios from "axios";
-import { CalendarData } from "../../../backend/types/calendarInterface";
+import { useDispatch, useSelector } from "react-redux";
+import { setCalendars } from "../store/calendarSlice";
+import { ReduxCalendarState } from "../store/stateTypes";
 
 const Calendars = () => {
-  const [calendars, setCalendars] = useState<CalendarData[]>([]);
+  const dispatch = useDispatch();
+  const calendars = useSelector(
+    (state: ReduxCalendarState) => state.calendar.calendars
+  );
 
   useEffect(() => {
     const fetchCalendarData = async () => {
+      // Change this to fetch data from the REST server once we have initiated the endpoint to fetch editor user's calendars
       const response = await axios.get("http://localhost:3000/calendars");
       const data = response.data;
-      setCalendars(data);
+      dispatch(setCalendars(data));
     };
     fetchCalendarData();
-  }, []);
+  }, [dispatch]);
 
   return (
     <Box sx={{ height: "calc(100vh - 64px)" }}>
