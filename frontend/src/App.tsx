@@ -11,6 +11,7 @@ import EditorViewMain from "./routes/EditorViewMain";
 import Root from "./routes/Root";
 import store from "./store/store";
 import { Provider } from "react-redux";
+import EditorViewSingle from "./routes/EditorViewSingle";
 
 const App: React.FC = () => {
   return (
@@ -25,7 +26,12 @@ const App: React.FC = () => {
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route path="/calendars" element={<Calendars />} />
-              <Route path="/editor" element={<EditorViewMain />} />
+              <Route path="/calendars/:new" element={<EditorViewMain />} />
+              <Route path="/calendars/:title" element={<EditorViewMain />} />
+              <Route
+                path="/calendars/:title/:id"
+                element={<EditorViewSingle />}
+              />
             </Route>
           </Routes>
         </Router>
