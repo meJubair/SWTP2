@@ -161,6 +161,9 @@ function Header() {
                 <Link to={""}>
                   <Button sx={{ color: "#0b2027" }}>My Calendars</Button>
                 </Link>
+                <Link to={""}>
+                  <Button sx={{ color: "#0b2027" }}>Sign out</Button>
+                </Link>
                 <Button sx={{ color: "#0b2027" }} onClick={logUserOut}>
                   Sign out
                 </Button>
