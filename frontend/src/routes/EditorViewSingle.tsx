@@ -77,7 +77,7 @@ const DoorContent: React.FC<DoorContentProps> = () => {
     <div>
       <Grid container spacing={2} style={{ height: '100vh' }}>
         {/* First Column: Side Menu */}
-        <Grid item xs={menuExpanded ? 3 : 2}>
+        <Grid item xs={menuExpanded ? 3 : 1}>
           <Paper
             style={{
               paddingTop: '20px',
