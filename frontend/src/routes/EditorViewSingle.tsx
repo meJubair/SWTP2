@@ -28,8 +28,8 @@ const DoorContent: React.FC<DoorContentProps> = () => {
   const [activeType, setActiveType] = useState<ContentType | null>(null);
   const [modalContent, setModalContent] = useState<{ [key: string]: string }>({});
   const [textConfig, setTextConfig] = useState<TextConfigType>(defaultTextConfig);
-  const [menuExpanded, setMenuExpanded] = useState<boolean>(false); // Track menu expansion state
-  const [hoveredType, setHoveredType] = useState<ContentType | null>(null); // Track hovered type
+  const [menuExpanded, setMenuExpanded] = useState<boolean>(false);
+  const [hoveredType, setHoveredType] = useState<ContentType | null>(null); 
 
   const validInputLabels: Array<keyof TextConfigType> = ['title', 'subtitle', 'description'];
   const [currentInputLabel, setCurrentInputLabel] = useState<keyof TextConfigType | null>(null);
@@ -100,8 +100,8 @@ const DoorContent: React.FC<DoorContentProps> = () => {
                         color: '#ffffff',
                         backgroundColor: activeType === type ? '#0B2027' : 'transparent',
                       }}
-                      onMouseEnter={() => setHoveredType(type)} // Track hover state
-                      onMouseLeave={() => setHoveredType(null)} // Reset hover state
+                      onMouseEnter={() => setHoveredType(type)}
+                      onMouseLeave={() => setHoveredType(null)}
                     >
                       {type}
                     </Button>
