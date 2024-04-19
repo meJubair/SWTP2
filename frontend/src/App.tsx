@@ -12,6 +12,7 @@ import Root from "./routes/Root";
 import store from "./store/store";
 import { Provider } from "react-redux";
 import EditorViewSingle from "./routes/EditorViewSingle";
+import ProtectedRoute from "./routes/ProtectedRoutes";
 
 const App: React.FC = () => {
   return (
@@ -25,9 +26,18 @@ const App: React.FC = () => {
               <Route path="/about" element={<About />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
-              <Route path="/calendars" element={<Calendars />} />
-              <Route path="/calendars/:new" element={<EditorViewMain />} />
-              <Route path="/calendars/:title" element={<EditorViewMain />} />
+              <Route
+                path="/calendars"
+                element={<ProtectedRoute component={Calendars} />}
+              />
+              <Route
+                path="/calendars/:new"
+                element={<ProtectedRoute component={EditorViewMain} />}
+              />
+              <Route
+                path="/calendars/:title"
+                element={<ProtectedRoute component={EditorViewMain} />}
+              />
               <Route
                 path="/calendars/:title/:id"
                 element={<EditorViewSingle />}

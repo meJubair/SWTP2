@@ -16,7 +16,7 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import { signOut } from "../services/calendarService";
 import { useSelector, useDispatch } from "react-redux";
-import { setUserLogin } from "../store/userSlice";
+import { setUserLogin, setUid, setUserName } from "../store/userSlice";
 import { ReduxUserState } from "../store/stateTypes";
 
 const drawerWidth = 240;
@@ -33,12 +33,14 @@ function Header() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  // If request to api/calendars/login was a success redirects you to "/login"
+  // If request to api/calendars/login was a success redirects you to "/login" and reset Redux user state
   const logUserOut = async () => {
     try {
       const response = await signOut();
       if (response) {
         dispatch(setUserLogin(false));
+        dispatch(setUid(""));
+        dispatch(setUserName(""));
         navigate("/login");
       } else {
         console.error("Sign out failed");
