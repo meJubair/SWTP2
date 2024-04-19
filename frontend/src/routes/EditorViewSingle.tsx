@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Paper, Typography, Button, TextField, Grid, Box, IconButton, Tooltip } from '@mui/material';
-import { TextFields, FormatPaint, Image, Videocam, Code } from '@mui/icons-material'; // Import Material-UI icons
+import { TextFields, FormatPaint, Image, Videocam, Code } from '@mui/icons-material';
 import TextConfig, { TextConfigType } from '../components/TextConfig';
 
 enum ContentType {
@@ -77,7 +77,7 @@ const DoorContent: React.FC<DoorContentProps> = () => {
     <div>
       <Grid container spacing={2} style={{ height: '100vh' }}>
         {/* First Column: Side Menu */}
-        <Grid item xs={menuExpanded ? 3 : 'auto'}>
+        <Grid item xs={menuExpanded ? 3 : 2}>
           <Paper
             style={{
               paddingTop: '20px',
@@ -99,6 +99,7 @@ const DoorContent: React.FC<DoorContentProps> = () => {
                       style={{
                         color: '#ffffff',
                         backgroundColor: activeType === type ? '#0B2027' : 'transparent',
+                        padding: '5px'
                       }}
                       onMouseEnter={() => setHoveredType(type)}
                       onMouseLeave={() => setHoveredType(null)}
@@ -109,7 +110,8 @@ const DoorContent: React.FC<DoorContentProps> = () => {
                     <Tooltip title={type.charAt(0).toUpperCase() + type.slice(1)} placement="right">
                       <IconButton onClick={() => handleTypeSelection(type)} style={{ 
                         color: '#ffffff',
-                        backgroundColor: activeType === type ? '#0B2027' : 'transparent' }}
+                        backgroundColor: activeType === type ? '#0B2027' : 'transparent',
+                        }}
                         >
                         {type === ContentType.Text ? (
                           <TextFields />
@@ -133,7 +135,7 @@ const DoorContent: React.FC<DoorContentProps> = () => {
 
         {/* Second Column: Content Editor */}
         {activeType && (
-          <Grid item xs={menuExpanded ? 6 : 3}>
+          <Grid item xs={menuExpanded ? 3 : 3}>
           <Paper style={{ padding: '20px', height: '100%', backgroundColor: '#eeeeee' }}>
             <Typography variant="h6" gutterBottom>
               {activeType.charAt(0).toUpperCase() + activeType.slice(1)} Content
@@ -155,7 +157,7 @@ const DoorContent: React.FC<DoorContentProps> = () => {
         )}
 
         {/* Third Column for End Users */}
-        <Grid item xs={menuExpanded ? 3 : 7}>
+        <Grid item xs={menuExpanded ? 6 : 7}>
           <Paper style={{ padding: '20px', height: '100%', backgroundColor: '#eeeeee' }}>
             <Grid container direction="column" alignItems="center" spacing={2}>
               <Grid item>
