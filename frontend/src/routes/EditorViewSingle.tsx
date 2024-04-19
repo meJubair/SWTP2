@@ -77,7 +77,7 @@ const DoorContent: React.FC<DoorContentProps> = () => {
     <div>
       <Grid container spacing={2} style={{ height: '100vh' }}>
         {/* First Column: Side Menu */}
-        <Grid item xs={menuExpanded ? 3 : 'auto'}>
+        <Grid item xs={menuExpanded ? 3 : 2}>
           <Paper
             style={{
               paddingTop: '20px',
@@ -133,7 +133,7 @@ const DoorContent: React.FC<DoorContentProps> = () => {
 
         {/* Second Column: Content Editor */}
         {activeType && (
-          <Grid item xs={menuExpanded ? 6 : 3}>
+          <Grid item xs={menuExpanded ? 3 : 3}>
           <Paper style={{ padding: '20px', height: '100%', backgroundColor: '#eeeeee' }}>
             <Typography variant="h6" gutterBottom>
               {activeType.charAt(0).toUpperCase() + activeType.slice(1)} Content
@@ -155,7 +155,7 @@ const DoorContent: React.FC<DoorContentProps> = () => {
         )}
 
         {/* Third Column for End Users */}
-        <Grid item xs={menuExpanded ? 3 : 7}>
+        <Grid item xs={menuExpanded ? 6 : 7}>
           <Paper style={{ padding: '20px', height: '100%', backgroundColor: '#eeeeee' }}>
             <Grid container direction="column" alignItems="center" spacing={2}>
               <Grid item>
