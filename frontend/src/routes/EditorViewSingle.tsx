@@ -15,9 +15,9 @@ interface DoorContentProps {}
 
 const DoorContent: React.FC<DoorContentProps> = () => {
   const defaultTextConfig: TextConfigType = {
-    title: 'Title',
-    subtitle: 'Subtitle',
-    description: 'Description',
+    title: 'Waiting starts',
+    subtitle: 'Almost there...',
+    description: "I can't wait our vacation to start. Only 3 more days to go!",
     fontSize: 24,
     fontWeight: 'normal',
     fontFamily: 'Arial',
