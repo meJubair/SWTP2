@@ -142,7 +142,7 @@ const DoorContent: React.FC<DoorContentProps> = () => {
               <TextConfig values={textConfig} onChange={handleTextConfigChange} />
             ) : (
               <TextField
-                label={activeType === ContentType.Background ? 'Background' : 'Content'}
+              label={activeType.charAt(0).toUpperCase() + activeType.slice(1)}
                 fullWidth
                 value={modalContent[activeType] || ''}
                 onChange={(e) => handleContentChange(activeType, e.target.value)}
