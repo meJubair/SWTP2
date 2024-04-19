@@ -155,7 +155,7 @@ const DoorContent: React.FC<DoorContentProps> = () => {
         )}
 
         {/* Third Column for End Users */}
-        <Grid item xs={menuExpanded ? 3 : 8}>
+        <Grid item xs={menuExpanded ? 3 : 7}>
           <Paper style={{ padding: '20px', height: '100%', backgroundColor: '#eeeeee' }}>
             <Grid container direction="column" alignItems="center" spacing={2}>
               <Grid item>
