@@ -77,7 +77,7 @@ const DoorContent: React.FC<DoorContentProps> = () => {
     <div>
       <Grid container spacing={2} style={{ height: '100vh' }}>
         {/* First Column: Side Menu */}
-        <Grid item xs={menuExpanded ? 3 : 1}>
+        <Grid item xs={menuExpanded ? 3 : 2}>
           <Paper
             style={{
               paddingTop: '20px',
@@ -99,7 +99,6 @@ const DoorContent: React.FC<DoorContentProps> = () => {
                       style={{
                         color: '#ffffff',
                         backgroundColor: activeType === type ? '#0B2027' : 'transparent',
-                        padding: '5px'
                       }}
                       onMouseEnter={() => setHoveredType(type)}
                       onMouseLeave={() => setHoveredType(null)}
@@ -110,8 +109,7 @@ const DoorContent: React.FC<DoorContentProps> = () => {
                     <Tooltip title={type.charAt(0).toUpperCase() + type.slice(1)} placement="right">
                       <IconButton onClick={() => handleTypeSelection(type)} style={{ 
                         color: '#ffffff',
-                        backgroundColor: activeType === type ? '#0B2027' : 'transparent',
-                        }}
+                        backgroundColor: activeType === type ? '#0B2027' : 'transparent' }}
                         >
                         {type === ContentType.Text ? (
                           <TextFields />
@@ -135,7 +133,7 @@ const DoorContent: React.FC<DoorContentProps> = () => {
 
         {/* Second Column: Content Editor */}
         {activeType && (
-          <Grid item xs={menuExpanded ? 3 : 3}>
+          <Grid item xs={3}>
           <Paper style={{ padding: '20px', height: '100%', backgroundColor: '#eeeeee' }}>
             <Typography variant="h6" gutterBottom>
               {activeType.charAt(0).toUpperCase() + activeType.slice(1)} Content
@@ -144,7 +142,7 @@ const DoorContent: React.FC<DoorContentProps> = () => {
               <TextConfig values={textConfig} onChange={handleTextConfigChange} />
             ) : (
               <TextField
-                label={activeType === ContentType.Background ? 'Background' : 'Content'}
+              label={activeType.charAt(0).toUpperCase() + activeType.slice(1)}
                 fullWidth
                 value={modalContent[activeType] || ''}
                 onChange={(e) => handleContentChange(activeType, e.target.value)}
