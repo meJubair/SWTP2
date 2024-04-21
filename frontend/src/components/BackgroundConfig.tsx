@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Paper, Typography, Tab, Tabs } from '@mui/material';
 import BackgroundColourSelector from './BackgroundColourSelector';
+import UploadImage from './UploadImage';
 
 interface BackGroundConfigProps {
     onConfigChange: (config: BackgroundConfigType) => void;
@@ -14,6 +15,9 @@ export interface BackgroundConfigType {
 
 const BackGroundConfig: React.FC<BackGroundConfigProps> = ({onConfigChange}) => {
     const [activeOption, setActiveOption] = useState<string>('color');
+    const [uploadedImageUrl, setUploadedImageUrl] = useState<string | null>(null);
+
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     const handleTabChange = (_event: React.ChangeEvent<{}>, newValue: string) => {
         setActiveOption(newValue);
@@ -23,9 +27,29 @@ const BackGroundConfig: React.FC<BackGroundConfigProps> = ({onConfigChange}) => 
   const handleColorChange = (color: string) => {
     onConfigChange({
         color,
-        gradient: '',
+        gradient: "",
         image: null,
         });
+  };
+
+   // Handle image upload from device or URL
+    const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const files = e.target.files?.[0];
+        const imageUrl = files ? URL.createObjectURL(files) : e.target.value ? e.target.value : null;
+        setUploadedImageUrl(imageUrl);
+        onConfigChange({
+            color: "",
+            gradient: "",
+            image: imageUrl as File | null,
+        });
+    };
+
+  // Reset the uploaded image
+  const handleReset = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+    setUploadedImageUrl(null);
   };
 
     return (
@@ -48,7 +72,15 @@ const BackGroundConfig: React.FC<BackGroundConfigProps> = ({onConfigChange}) => 
                 <Typography variant="body1">Configure Gradient</Typography>
             )}
             {activeOption === 'image' && (
-                <Typography variant="body1">Upload Background Image</Typography>
+                   <>
+                   <Typography variant="body1">Upload Image</Typography>
+                   <UploadImage
+                   handleImageUpload={handleImageUpload}
+                   handleReset={handleReset}
+                   imageUrl={uploadedImageUrl || ""}
+                   fileInputRef={fileInputRef}
+                 />
+                 </>
             )}
             
         </Paper>
