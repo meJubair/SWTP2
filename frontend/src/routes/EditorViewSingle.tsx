@@ -169,11 +169,12 @@ const DoorContent: React.FC<DoorContentProps> = () => {
             <Grid container direction="column" alignItems="center" spacing={2}>
               <Grid item>
                 <Box 
-                  p={2} 
+                  p={15} 
                   sx={{
                     backgroundColor: background.color,
                     backgroundImage: background.image ? `url(${background.image})` : 'none',
-                    backgroundSize: 'cover',
+                    backgroundSize: 'contain',
+                    backgroundPosition: 'center',
                     backgroundRepeat: 'no-repeat',
                   }}
                 >
