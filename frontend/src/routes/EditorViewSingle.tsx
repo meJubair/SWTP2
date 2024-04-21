@@ -168,7 +168,7 @@ const DoorContent: React.FC<DoorContentProps> = () => {
           <Paper style={{ padding: '20px', height: '100%', backgroundColor: '#eeeeee' }}>
             <Grid container direction="column" alignItems="center" spacing={2}>
               <Grid item>
-                <Box bgcolor="#ffffff" p={2}>
+                <Box component="div" bgcolor={backgroundConfig.color} p={2}>
                   {validInputLabels.map((label) => (
                     <Typography key={label} variant="body1" style={generateTextStyle(label)}>
                       {textConfig[label]}
