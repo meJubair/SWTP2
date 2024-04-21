@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Paper, Typography, Button, TextField, Grid, Box, IconButton, Tooltip } from '@mui/material';
 import { TextFields, FormatPaint, Image, Videocam, Code } from '@mui/icons-material'; // Import Material-UI icons
 import TextConfig, { TextConfigType } from '../components/TextConfig';
+import BackGroundConfig, {BackgroundConfigType} from '../components/BackgroundConfig';
 
 enum ContentType {
   Text = 'text',
@@ -33,6 +34,12 @@ const DoorContent: React.FC<DoorContentProps> = () => {
 
   const validInputLabels: Array<keyof TextConfigType> = ['title', 'subtitle', 'description'];
   const [currentInputLabel, setCurrentInputLabel] = useState<keyof TextConfigType | null>(null);
+
+  const [backgroundConfig, setBackgroundConfig] = useState<BackgroundConfigType>({
+    color: '#ffffff',
+    gradient: '',
+    image: null,
+  });
 
   const handleTextConfigChange = (field: keyof TextConfigType, value: any) => {
     setTextConfig((prevConfig: TextConfigType) => ({
@@ -139,17 +146,19 @@ const DoorContent: React.FC<DoorContentProps> = () => {
               {activeType.charAt(0).toUpperCase() + activeType.slice(1)} Content
             </Typography>
             {activeType === ContentType.Text ? (
-              <TextConfig values={textConfig} onChange={handleTextConfigChange} />
-            ) : (
-              <TextField
-              label={activeType.charAt(0).toUpperCase() + activeType.slice(1)}
-                fullWidth
-                value={modalContent[activeType] || ''}
-                onChange={(e) => handleContentChange(activeType, e.target.value)}
-                multiline
-                minRows={4}
-              />
-            )}
+                <TextConfig values={textConfig} onChange={handleTextConfigChange} />
+              ) : activeType === ContentType.Background ? (
+                <BackGroundConfig onConfigChange={setBackgroundConfig} />
+              ) : (
+                <TextField
+                  label={activeType.charAt(0).toUpperCase() + activeType.slice(1)}
+                  fullWidth
+                  value={modalContent[activeType] || ''}
+                  onChange={(e) => handleContentChange(activeType, e.target.value)}
+                  multiline
+                  minRows={4}
+                />
+              )}
           </Paper>
         </Grid>
         )}
