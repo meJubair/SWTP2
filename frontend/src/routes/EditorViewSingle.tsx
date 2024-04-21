@@ -35,8 +35,8 @@ const DoorContent: React.FC<DoorContentProps> = () => {
   const validInputLabels: Array<keyof TextConfigType> = ['title', 'subtitle', 'description'];
   const [currentInputLabel, setCurrentInputLabel] = useState<keyof TextConfigType | null>(null);
 
-  const [backgroundConfig, setBackgroundConfig] = useState<BackgroundConfigType>({
-    color: '#ffffff',
+  const [background, setBackground] = useState<BackgroundConfigType>({
+    color: '#50E3C2',
     gradient: '',
     image: null,
   });
@@ -148,7 +148,7 @@ const DoorContent: React.FC<DoorContentProps> = () => {
             {activeType === ContentType.Text ? (
                 <TextConfig values={textConfig} onChange={handleTextConfigChange} />
               ) : activeType === ContentType.Background ? (
-                <BackGroundConfig onConfigChange={setBackgroundConfig} />
+                <BackGroundConfig onConfigChange={setBackground} />
               ) : (
                 <TextField
                   label={activeType.charAt(0).toUpperCase() + activeType.slice(1)}
@@ -168,7 +168,7 @@ const DoorContent: React.FC<DoorContentProps> = () => {
           <Paper style={{ padding: '20px', height: '100%', backgroundColor: '#eeeeee' }}>
             <Grid container direction="column" alignItems="center" spacing={2}>
               <Grid item>
-                <Box component="div" bgcolor={backgroundConfig.color} p={2}>
+                <Box component="div" bgcolor={background.color} p={2}>
                   {validInputLabels.map((label) => (
                     <Typography key={label} variant="body1" style={generateTextStyle(label)}>
                       {textConfig[label]}
