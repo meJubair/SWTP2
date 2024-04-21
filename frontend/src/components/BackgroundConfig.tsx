@@ -40,7 +40,7 @@ const BackGroundConfig: React.FC<BackGroundConfigProps> = ({onConfigChange}) => 
             {/* Render active configuration option */}
             {activeOption === 'color' && (
                 <>
-                <Typography variant="body1" my={2}>Select Color</Typography>
+                <Typography variant="body1" my={2} mx={2}>Select Color</Typography>
                  <BackgroundColourSelector onColorChange={handleColorChange} />
                 </>
             )}
