@@ -73,7 +73,7 @@ const BackGroundConfig: React.FC<BackGroundConfigProps> = ({onConfigChange}) => 
             )}
             {activeOption === 'image' && (
                    <>
-                   <Typography variant="body1">Upload Image</Typography>
+                   <Typography variant="body1" my={2} mx={2}>Upload Image</Typography>
                    <UploadImage
                    handleImageUpload={handleImageUpload}
                    handleReset={handleReset}
