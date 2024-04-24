@@ -1,4 +1,5 @@
 import { initializeApp } from "firebase/app";
+import { getStorage, ref, uploadBytes, uploadString } from "firebase/storage";
 import {
   createUserWithEmailAndPassword,
   getAuth,
@@ -27,6 +28,9 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
+
+// Initialize storage
+const storage = getStorage();
 
 // Access to the project authentication
 const auth = getAuth(app);
@@ -61,6 +65,13 @@ const registerWithEmailAndPassword = async (
       password
     );
     const user = response.user;
+
+    // Create a folder with the user's UID as the foldername
+    const userStorageRef = ref(storage, `users/${user.uid}`);
+    const testString = `Hello ${name} this is a test`;
+    // Upload the test string in the user's folder
+    await uploadString(userStorageRef, testString);
+
     await addDoc(collection(db, "users"), {
       uid: user.uid,
       name,
@@ -133,6 +144,21 @@ const addCalendarToFirebase = async (uid: string, calendar: CalendarData) => {
   }
 };
 
+// Upload user's files to FirebaseStorage in users/<uid>/<filename>
+const uploadToFirebaseStorage = async (
+  file: Express.Multer.File,
+  uid: string
+) => {
+  try {
+    // Create a reference to user's storage location/path
+    const userStorageRef = ref(storage, `users/${uid}/${file.originalname}`);
+    await uploadBytes(userStorageRef, file.buffer); // Upload the file in to the storage
+  } catch (error) {
+    console.error("Error uploading file:", error);
+    throw error;
+  }
+};
+
 export {
   auth,
   db,
@@ -142,4 +168,5 @@ export {
   getAuthData,
   logout,
   addCalendarToFirebase,
+  uploadToFirebaseStorage,
 };
