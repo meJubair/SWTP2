@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getStorage, ref, uploadBytes, uploadString } from "firebase/storage";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import {
   createUserWithEmailAndPassword,
   getAuth,
@@ -65,12 +65,6 @@ const registerWithEmailAndPassword = async (
       password
     );
     const user = response.user;
-
-    // Create a folder with the user's UID as the foldername
-    const userStorageRef = ref(storage, `users/${user.uid}`);
-    const testString = `Hello ${name} this is a test`;
-    // Upload the test string in the user's folder
-    await uploadString(userStorageRef, testString);
 
     await addDoc(collection(db, "users"), {
       uid: user.uid,
@@ -152,9 +146,24 @@ const uploadToFirebaseStorage = async (
   try {
     // Create a reference to user's storage location/path
     const userStorageRef = ref(storage, `users/${uid}/${file.originalname}`);
-    await uploadBytes(userStorageRef, file.buffer); // Upload the file in to the storage
+
+    // Determine the correct MIME type or use "default"
+    const mimeType = file.mimetype || "application/octet-stream";
+
+    await uploadBytes(userStorageRef, file.buffer, { contentType: mimeType }); // Upload the file in to the storage
   } catch (error) {
     console.error("Error uploading file:", error);
+    throw error;
+  }
+};
+
+const getFileDownloadUrl = async (uid: string, fileName: string) => {
+  try {
+    const fileRef = ref(storage, `users/${uid}/${fileName}`);
+    const fileUrl = await getDownloadURL(fileRef);
+    return fileUrl;
+  } catch (error) {
+    console.error("Error when fetching URL data:", error);
     throw error;
   }
 };
@@ -169,4 +178,5 @@ export {
   logout,
   addCalendarToFirebase,
   uploadToFirebaseStorage,
+  getFileDownloadUrl,
 };
