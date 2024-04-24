@@ -69,6 +69,11 @@ const DoorContent: React.FC<DoorContentProps> = () => {
     return {};
   };
 
+  // Toggle the visibility of the second column
+  const handleToggleSlideOut = () => {
+    setSlideOut(prevSlideOut => !prevSlideOut);
+  };
+
   useEffect(() => {
     setActiveType(ContentType.Text);
   }, []);
@@ -88,7 +93,7 @@ const DoorContent: React.FC<DoorContentProps> = () => {
               <Grid item key={type}>
                 <Tooltip title={type.charAt(0).toUpperCase() + type.slice(1)} placement="right">
                   <IconButton
-                    onClick={() => handleTypeSelection(type)} // Handle the type selection here
+                    onClick={() => handleTypeSelection(type)}
                     style={{
                       color: '#ffffff',
                       backgroundColor: activeType === type ? '#0B2027' : 'transparent',
@@ -115,7 +120,7 @@ const DoorContent: React.FC<DoorContentProps> = () => {
         </Drawer>
 
         {/* Second Column: Content Editor */}
-        {activeType && (
+        {activeType && !slideOut && (
           <Grid item xs={3} style={{ transform: slideOut ? 'translateX(-100%)' : 'none' }}>
             <Paper style={{ padding: '20px', height: '100%', backgroundColor: '#eeeeee' }}>
               <Typography variant="h6" gutterBottom>
@@ -136,28 +141,26 @@ const DoorContent: React.FC<DoorContentProps> = () => {
             </Paper>
           </Grid>
         )}
-
+        
         {/* Third Column for End Users */}
-        <Grid item xs={9}>
-          <div style={{ display: 'flex', height: '100%' }} onClick={() => {
-            setSlideOut(prevSlideOut => !prevSlideOut);
-          }}>
-      <Paper style={{ flex: 1, padding: '20px', backgroundColor: '#eeeeee' }}>
-        <Grid container direction="column" alignItems="center" spacing={2}>
-          <Box bgcolor="#ffffff" p={2}>
-            {validInputLabels.map((label) => (
-              <Typography key={label} variant="body1" style={generateTextStyle(label)}>
-                {textConfig[label]}
-              </Typography>
-            ))}
-          </Box>
-        </Grid>
-      </Paper>
+          <Grid item xs={slideOut ? 12 : 9}
+            onClick={() => {
+              setSlideOut(prevSlideOut => !prevSlideOut);
+            }}>
+          <Paper style={{ padding: '20px', backgroundColor: '#eeeeee', display: 'flex', justifyContent: 'center' }}>
+              <Box bgcolor="#ffffff" p={2}>
+                {validInputLabels.map((label) => (
+                  <Typography key={label} variant="body1" style={generateTextStyle(label)}>
+                    {textConfig[label]}
+                  </Typography>
+                ))}
+              </Box>
+          </Paper>
+      </Grid>
+
+      </Grid>
     </div>
-  </Grid>
-</Grid>
-</div>
   );
-}
+};
 
 export default DoorContent;
