@@ -1,4 +1,5 @@
 import express, { Request, Response } from "express";
+import multer from "multer";
 import {
   getCalendarDataFromFirebase,
   registerWithEmailAndPassword,
@@ -6,9 +7,11 @@ import {
   getAuthData,
   logout,
   addCalendarToFirebase,
+  uploadToFirebaseStorage,
 } from "../services/firebaseService";
 
 const calendarRouter = express.Router();
+const upload = multer();
 
 calendarRouter.get("/", async (request: Request, response: Response) => {
   try {
@@ -81,5 +84,25 @@ calendarRouter.post("/new", async (request: Request, response: Response) => {
     response.status(500).json({ error: error });
   }
 });
+
+// Handle file upload using Multer (upload.single("file"))
+calendarRouter.post(
+  "/upload",
+  upload.single("file"),
+  async (request: Request, response: Response) => {
+    try {
+      const file = request.file;
+      const { uid } = request.body;
+      if (!file || !uid) {
+        response.json(400).json({ error: "File or UID not provided" });
+        return;
+      }
+      await uploadToFirebaseStorage(file, uid); // Upload the file in to Firebase Storage
+      response.status(200).end("File succesfully uploaded");
+    } catch (error) {
+      response.json(500).json({ error: error });
+    }
+  }
+);
 
 export default calendarRouter;
