@@ -29,9 +29,7 @@ const DoorContent: React.FC<DoorContentProps> = () => {
   const [modalContent, setModalContent] = useState<{ [key: string]: string }>({});
   const [textConfig, setTextConfig] = useState<TextConfigType>(defaultTextConfig);
   const [hoveredType, setHoveredType] = useState<ContentType | null>(null);
-  const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
   const [slideOut, setSlideOut] = useState<boolean>(false); 
-  const [thirdColumnWidth, setThirdColumnWidth] = useState<number>(9); 
 
   const validInputLabels: Array<keyof TextConfigType> = ['title', 'subtitle', 'description'];
   const [currentInputLabel, setCurrentInputLabel] = useState<keyof TextConfigType | null>(null);
@@ -72,15 +70,8 @@ const DoorContent: React.FC<DoorContentProps> = () => {
   };
 
   useEffect(() => {
-    setActiveType(ContentType.Text);;
+    setActiveType(ContentType.Text);
   }, []);
-
-  const toggleDrawer = () => {
-    const newDrawerOpen = !drawerOpen;
-    setDrawerOpen(newDrawerOpen);
-    setSlideOut(newDrawerOpen); // Toggle the slideOut state based on the updated drawerOpen state
-    setThirdColumnWidth(newDrawerOpen ? 12 : 9); // Expand the third column to full width when the drawer is open
-  };
 
   return (
     <div>
@@ -147,32 +138,26 @@ const DoorContent: React.FC<DoorContentProps> = () => {
         )}
 
         {/* Third Column for End Users */}
-        <Grid item xs={thirdColumnWidth} onClick={toggleDrawer}>
-          <div style={{ display: 'flex', height: '100%' }}>
-            <Paper
-              style={{
-                flex: 1,
-                padding: '20px',
-                backgroundColor: '#eeeeee',
-              }}
-            >
-              <Grid container direction="column" alignItems="center" spacing={2}>
-                <Grid item>
-                  <Box bgcolor="#ffffff" p={2}>
-                    {validInputLabels.map((label) => (
-                      <Typography key={label} variant="body1" style={generateTextStyle(label)}>
-                        {textConfig[label]}
-                      </Typography>
-                    ))}
-                  </Box>
-                </Grid>
-              </Grid>
-            </Paper>
-          </div>
+        <Grid item xs={9}>
+          <div style={{ display: 'flex', height: '100%' }} onClick={() => {
+            setSlideOut(prevSlideOut => !prevSlideOut);
+          }}>
+      <Paper style={{ flex: 1, padding: '20px', backgroundColor: '#eeeeee' }}>
+        <Grid container direction="column" alignItems="center" spacing={2}>
+          <Box bgcolor="#ffffff" p={2}>
+            {validInputLabels.map((label) => (
+              <Typography key={label} variant="body1" style={generateTextStyle(label)}>
+                {textConfig[label]}
+              </Typography>
+            ))}
+          </Box>
         </Grid>
-      </Grid>
+      </Paper>
     </div>
+  </Grid>
+</Grid>
+</div>
   );
-};
+}
 
 export default DoorContent;
