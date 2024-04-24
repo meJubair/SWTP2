@@ -12,7 +12,9 @@ import {
 } from "../services/firebaseService";
 
 const calendarRouter = express.Router();
-const upload = multer();
+const upload = multer({
+  limits: { fileSize: 1024 * 1024 * 5 }, // max file size 1024 bytes * 1024 bytes = 5 megabytes
+});
 
 calendarRouter.get("/", async (request: Request, response: Response) => {
   try {
