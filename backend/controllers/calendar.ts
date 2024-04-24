@@ -8,6 +8,7 @@ import {
   logout,
   addCalendarToFirebase,
   uploadToFirebaseStorage,
+  getFileDownloadUrl,
 } from "../services/firebaseService";
 
 const calendarRouter = express.Router();
@@ -100,7 +101,22 @@ calendarRouter.post(
       await uploadToFirebaseStorage(file, uid); // Upload the file in to Firebase Storage
       response.status(200).end("File succesfully uploaded");
     } catch (error) {
-      response.json(500).json({ error: error });
+      response.status(500).json({ error: error });
+    }
+  }
+);
+
+// Endpoint for getting file download URL from the storage
+calendarRouter.get(
+  "/getfileurl",
+  async (request: Request, response: Response) => {
+    try {
+      const { uid, fileName } = request.body;
+      const fileUrl = await getFileDownloadUrl(uid, fileName);
+      response.json(fileUrl);
+    } catch (error) {
+      console.log(error);
+      response.json({ message: error });
     }
   }
 );
