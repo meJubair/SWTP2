@@ -69,29 +69,24 @@ const DoorContent: React.FC<DoorContentProps> = () => {
     return {};
   };
 
-  // Toggle the visibility of the second column
-  const handleToggleSlideOut = () => {
-    setSlideOut(prevSlideOut => !prevSlideOut);
-  };
-
   useEffect(() => {
     setActiveType(ContentType.Text);
   }, []);
 
   return (
     <div>
-      <Grid container spacing={2} style={{ height: '100vh' }}>
+      <Grid container spacing={2} style={{ height: '100vh'}}>
         {/* First Column: Side Menu */}
         <Drawer
           open={Boolean(hoveredType)}
           onClose={() => setHoveredType(null)}
           variant="permanent"
-          PaperProps={{ style: { width: 'fit-content', backgroundColor: '#0091AD' } }}
+          PaperProps={{ style: { width: 'fit-content', backgroundColor: '#0091AD', marginTop: '64px', paddingTop: '20px' } }}
         >
           <Grid container direction="column" alignItems="center">
             {Object.values(ContentType).map((type) => (
               <Grid item key={type}>
-                <Tooltip title={type.charAt(0).toUpperCase() + type.slice(1)} placement="right">
+                <Tooltip title={type.charAt(0).toUpperCase() + type.slice(1)} placement='right'>
                   <IconButton
                     onClick={() => handleTypeSelection(type)}
                     style={{
