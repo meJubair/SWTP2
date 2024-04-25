@@ -12,6 +12,7 @@ import {
   getFirestore,
   query,
   where,
+  updateDoc,
 } from "firebase/firestore";
 import { FIREBASE_API_KEY } from "../utils/config";
 import { CalendarData } from "../types/calendarInterface";
@@ -129,10 +130,32 @@ const logout = async () => {
 };
 
 // Create a new calendar document in calendars/uid/calendars
-const addCalendarToFirebase = async (uid: string, calendar: CalendarData) => {
+const addCalendarToFirebase = async (uid: string) => {
+  // Create a new blank calendar object in the
+  const calendar: CalendarData = {
+    calendarId: "",
+    title: "",
+    authorName: "",
+    startDate: "",
+    endDate: "",
+    published: false,
+    tags: [],
+    backgroundUrl: "",
+    backgroundColour: "",
+    calendarDoors: [],
+  };
   try {
+    // Reference the calendars collection
     const calendarRef = collection(db, `calendars/${uid}/calendars`);
-    await addDoc(calendarRef, calendar);
+    // Add a new calendar document to the collection
+    const docRef = await addDoc(calendarRef, calendar);
+
+    // Set the newly created document's id to calendarId property
+    const calendarId = docRef.id;
+    calendar.calendarId = calendarId;
+
+    // Update the document's calendarId in the document
+    await updateDoc(docRef, { calendarId });
   } catch (error) {
     console.error("Error creating new calendar:", error);
   }

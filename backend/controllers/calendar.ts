@@ -79,9 +79,8 @@ calendarRouter.post("/login", async (request: Request, response: Response) => {
 // Create new calendar instance
 calendarRouter.post("/new", async (request: Request, response: Response) => {
   try {
-    const body = request.body;
-    await addCalendarToFirebase(body.id, body);
-    response.json(body);
+    await addCalendarToFirebase(request.body.uid);
+    response.status(201).end("New calendar created");
   } catch (error) {
     console.log(error);
     response.status(500).json({ error: error });
