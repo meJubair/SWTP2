@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
@@ -13,15 +13,20 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setCalendars } from "../store/calendarSlice";
 import { ReduxCalendarState, ReduxUserState } from "../store/stateTypes";
-import { getUserCalendarData } from "../services/calendarService";
+import {
+  getUserCalendarData,
+  createNewCalendar,
+} from "../services/calendarService";
 
 const Calendars = () => {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const calendars = useSelector(
     (state: ReduxCalendarState) => state.calendar.calendars
   );
   const uid = useSelector((state: ReduxUserState) => state.user.uid);
 
+  // Fetch user calendars and update the data in the Redux store
   useEffect(() => {
     const fetchCalendarData = async () => {
       const response = await getUserCalendarData(uid);
@@ -31,7 +36,19 @@ const Calendars = () => {
       }
     };
     fetchCalendarData();
-  }, [dispatch, uid]);
+  }, []);
+
+  // Create a new calendar instance in the database and redirect the user into calendars/calendarId
+  const handleCreateCalendar = async (uid: string) => {
+    try {
+      const response = await createNewCalendar(uid);
+      if (response && response.status === 200) {
+        navigate(`${response.data.calendarId}`);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <Box sx={{ height: "calc(100vh - 64px)" }}>
@@ -111,11 +128,14 @@ const Calendars = () => {
             </Table>
           </TableContainer>
         )}
-        <Link to="/calendars/newcalendar" style={{ margin: "20px 0" }}>
-          <Button color="secondary" variant="contained">
-            create calendar
-          </Button>
-        </Link>
+        <Button
+          sx={{ margin: "20px 0" }}
+          color="secondary"
+          variant="contained"
+          onClick={() => handleCreateCalendar(uid)}
+        >
+          create calendar
+        </Button>
       </Box>
     </Box>
   );
