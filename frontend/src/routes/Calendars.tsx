@@ -10,26 +10,28 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { useEffect } from "react";
-import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { setCalendars } from "../store/calendarSlice";
-import { ReduxCalendarState } from "../store/stateTypes";
+import { ReduxCalendarState, ReduxUserState } from "../store/stateTypes";
+import { getUserCalendarData } from "../services/calendarService";
 
 const Calendars = () => {
   const dispatch = useDispatch();
   const calendars = useSelector(
     (state: ReduxCalendarState) => state.calendar.calendars
   );
+  const uid = useSelector((state: ReduxUserState) => state.user.uid);
 
   useEffect(() => {
     const fetchCalendarData = async () => {
-      // Change this to fetch data from the REST server once we have initiated the endpoint to fetch editor user's calendars
-      const response = await axios.get("http://localhost:3000/calendars");
-      const data = response.data;
-      dispatch(setCalendars(data));
+      const response = await getUserCalendarData(uid);
+      if (response && response.status === 200) {
+        const data = response.data;
+        dispatch(setCalendars(data));
+      }
     };
     fetchCalendarData();
-  }, [dispatch]);
+  }, [dispatch, uid]);
 
   return (
     <Box sx={{ height: "calc(100vh - 64px)" }}>
@@ -85,13 +87,13 @@ const Calendars = () => {
               </TableHead>
               <TableBody>
                 {calendars.map((calendar, i) => (
-                  <TableRow key={calendar.title}>
+                  <TableRow key={calendar.calendarId}>
                     <TableCell>
                       <Link
-                        to={`/calendars/${calendar.title}`}
+                        to={`/calendars/${calendar.calendarId}`}
                         state={{ calendar: calendar, index: i }}
                       >
-                        {calendar.title}
+                        {calendar.title ? calendar.title : "Untitled calendar"}
                       </Link>
                     </TableCell>
 
