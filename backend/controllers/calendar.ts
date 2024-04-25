@@ -1,7 +1,7 @@
 import express, { Request, Response } from "express";
 import multer from "multer";
 import {
-  getCalendarDataFromFirebase,
+  getUserCalendarDataFromFirebase,
   registerWithEmailAndPassword,
   loginWithEmailAndPassword,
   getAuthData,
@@ -16,9 +16,11 @@ const upload = multer({
   limits: { fileSize: 1024 * 1024 * 5 }, // max file size 1024 bytes * 1024 bytes = 5 megabytes
 });
 
-calendarRouter.get("/", async (request: Request, response: Response) => {
+// Get user calendars from database
+calendarRouter.get("/:uid", async (request: Request, response: Response) => {
   try {
-    const calendarData = await getCalendarDataFromFirebase();
+    const uid = request.params.uid;
+    const calendarData = await getUserCalendarDataFromFirebase(uid);
     response.json(calendarData);
   } catch (error) {
     console.error("Error when fetching calendar data:", error);
