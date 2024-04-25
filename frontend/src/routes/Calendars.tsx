@@ -84,11 +84,17 @@ const Calendars = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {calendars.map((calendar) => (
+                {calendars.map((calendar, i) => (
                   <TableRow key={calendar.title}>
-                    <Link to={`/calendars/${calendar.title}`}>
-                      <TableCell>{calendar.title}</TableCell>
-                    </Link>
+                    <TableCell>
+                      <Link
+                        to={`/calendars/${calendar.title}`}
+                        state={{ calendar: calendar, index: i }}
+                      >
+                        {calendar.title}
+                      </Link>
+                    </TableCell>
+
                     <TableCell>
                       {calendar.startDate} - {calendar.endDate}
                     </TableCell>

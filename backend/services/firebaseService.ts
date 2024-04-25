@@ -1,4 +1,5 @@
 import { initializeApp } from "firebase/app";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import {
   createUserWithEmailAndPassword,
   getAuth,
@@ -27,6 +28,9 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
+
+// Initialize storage
+const storage = getStorage();
 
 // Access to the project authentication
 const auth = getAuth(app);
@@ -61,6 +65,7 @@ const registerWithEmailAndPassword = async (
       password
     );
     const user = response.user;
+
     await addDoc(collection(db, "users"), {
       uid: user.uid,
       name,
@@ -133,6 +138,36 @@ const addCalendarToFirebase = async (uid: string, calendar: CalendarData) => {
   }
 };
 
+// Upload user's files to FirebaseStorage in users/<uid>/<filename>
+const uploadToFirebaseStorage = async (
+  file: Express.Multer.File,
+  uid: string
+) => {
+  try {
+    // Create a reference to user's storage location/path
+    const userStorageRef = ref(storage, `users/${uid}/${file.originalname}`);
+
+    // Determine the correct MIME type or use "default"
+    const mimeType = file.mimetype || "application/octet-stream";
+
+    await uploadBytes(userStorageRef, file.buffer, { contentType: mimeType }); // Upload the file in to the storage
+  } catch (error) {
+    console.error("Error uploading file:", error);
+    throw error;
+  }
+};
+
+const getFileDownloadUrl = async (uid: string, fileName: string) => {
+  try {
+    const fileRef = ref(storage, `users/${uid}/${fileName}`);
+    const fileUrl = await getDownloadURL(fileRef);
+    return fileUrl;
+  } catch (error) {
+    console.error("Error when fetching URL data:", error);
+    throw error;
+  }
+};
+
 export {
   auth,
   db,
@@ -142,4 +177,6 @@ export {
   getAuthData,
   logout,
   addCalendarToFirebase,
+  uploadToFirebaseStorage,
+  getFileDownloadUrl,
 };

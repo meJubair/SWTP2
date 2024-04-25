@@ -4,11 +4,13 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import DateSelector from "../components/DateSelector";
 import BackgroundColourSelector from "../components/BackgroundColourSelector";
-import CalendarDoor from "../components/CalendarDoor";
 import UploadImage from "../components/UploadImage";
+import { useDispatch, useSelector } from "react-redux";
+import { ReduxCalendarState } from "../store/stateTypes";
+import { useLocation } from "react-router-dom";
+import { setCalendarTitle } from "../store/calendarSlice";
 
 const EditorViewMain: React.FC = () => {
-  const [calendarTitle, setCalendarTitle] = useState<string>("");
   const [isTyping, setIsTyping] = useState<boolean>(false);
   const [showDatePicker, setShowDatePicker] = useState<boolean>(true);
   const [showBgColourSelector, setShowBgColourSelector] =
@@ -26,14 +28,30 @@ const EditorViewMain: React.FC = () => {
     setDateArray(newDateArray);
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setCalendarTitle(e.target.value);
+  const calendarLocation = useLocation().state;
+
+  const dispatch = useDispatch();
+
+  // Calendar object from the Redux store
+  const calendars = useSelector(
+    (state: ReduxCalendarState) => state.calendar.calendars
+  );
+  console.log("Calendars:", calendars);
+
+  // Set the calendar title
+  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setIsTyping(true);
 
     // Timeout to check if user is still typing
     setTimeout(() => {
       setIsTyping(false);
     }, 1500);
+    dispatch(
+      setCalendarTitle({
+        calendarIndex: calendarLocation?.index,
+        newTitle: e.target.value,
+      })
+    );
   };
 
   const calendarOptions = [
@@ -97,7 +115,7 @@ const EditorViewMain: React.FC = () => {
   return (
     <Box>
       <Box component="h2" sx={{ textAlign: "center" }}>
-        {isTyping ? "Typing..." : calendarTitle}
+        {isTyping ? "Typing..." : calendars[calendarLocation?.index]?.title}
       </Box>
       <Box
         sx={{
@@ -110,8 +128,8 @@ const EditorViewMain: React.FC = () => {
       >
         <TextField
           label="Calendar title"
-          value={calendarTitle}
-          onChange={handleChange}
+          value={calendars[calendarLocation?.index]?.title}
+          onChange={handleTitleChange}
         />
         <Typography variant="h3" sx={{ margin: "30px 0 5px" }}>
           Calendar Options
@@ -197,13 +215,20 @@ const EditorViewMain: React.FC = () => {
             backgroundPosition: "center",
           }}
         >
-          {dateArray?.map((date) => (
-            <CalendarDoor
-              key={date.getDate()}
-              value={date}
-              dateArray={dateArray}
-            />
-          ))}
+          {calendars[calendarLocation?.index]?.calendarDoors?.map(
+            (door: any) => (
+              <Box
+                key={door.doorNumber}
+                sx={{
+                  background: "#d9d9d9",
+                  padding: "20px",
+                  borderRadius: "5px",
+                }}
+              >
+                {door.doorNumber}
+              </Box>
+            )
+          )}
         </Box>
       </Box>
     </Box>

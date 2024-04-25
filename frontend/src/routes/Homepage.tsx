@@ -35,6 +35,7 @@ const Homepage: React.FC = () => {
                 sx={{
                   background: "#0b2027",
                   margin: "30px",
+                  color: "#8affe8",
                 }}
               >
                 Get Started
