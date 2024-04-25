@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Paper, Typography, Grid, IconButton, Tooltip, Drawer, Box, TextField } from '@mui/material';
-import { TextFields, FormatPaint, Image, Videocam, Code } from '@mui/icons-material';
+import { TextFields, FormatPaint, Image, Videocam, Code, Padding } from '@mui/icons-material';
 import TextConfig, { TextConfigType } from '../components/TextConfig';
 
 enum ContentType {
@@ -121,7 +121,7 @@ const DoorContent: React.FC<DoorContentProps> = () => {
 
         {/* Second Column: Content Editor */}
         {activeType && !slideOut && (
-          <Grid item xs={3} style={{ transform: slideOut ? 'translateX(-100%)' : 'none' }}>
+          <Grid item xs={3} style={{ paddingLeft: '50px' }}>
             <Paper style={{ padding: '20px', height: '100%', backgroundColor: '#eeeeee' }}>
               <Typography variant="h6" gutterBottom>
                 {activeType.charAt(0).toUpperCase() + activeType.slice(1)} Content
