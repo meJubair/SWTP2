@@ -16,18 +16,6 @@ const upload = multer({
   limits: { fileSize: 1024 * 1024 * 5 }, // max file size 1024 bytes * 1024 bytes = 5 megabytes
 });
 
-// Get user calendars from database
-calendarRouter.get("/:uid", async (request: Request, response: Response) => {
-  try {
-    const uid = request.params.uid;
-    const calendarData = await getUserCalendarDataFromFirebase(uid);
-    response.json(calendarData);
-  } catch (error) {
-    console.error("Error when fetching calendar data:", error);
-    response.status(500).json({ error: "Internal server error" });
-  }
-});
-
 // Return user auth data, username and a boolean for updating login state on front end
 calendarRouter.get("/auth", async (request: Request, response: Response) => {
   try {
@@ -75,6 +63,18 @@ calendarRouter.post("/login", async (request: Request, response: Response) => {
   } catch (error) {
     console.log(error);
     response.status(500).json({ error: error });
+  }
+});
+
+// Get user calendars from database
+calendarRouter.get("/:uid", async (request: Request, response: Response) => {
+  try {
+    const uid = request.params.uid;
+    const calendarData = await getUserCalendarDataFromFirebase(uid);
+    response.json(calendarData);
+  } catch (error) {
+    console.error("Error when fetching calendar data:", error);
+    response.status(500).json({ error: "Internal server error" });
   }
 });
 
