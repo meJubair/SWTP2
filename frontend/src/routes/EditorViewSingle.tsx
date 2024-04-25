@@ -142,8 +142,8 @@ const DoorContent: React.FC<DoorContentProps> = () => {
             onClick={() => {
               setSlideOut(prevSlideOut => !prevSlideOut);
             }}>
-          <Paper style={{ padding: '20px', backgroundColor: '#eeeeee', display: 'flex', justifyContent: 'center' }}>
-              <Box bgcolor="#ffffff" p={2}>
+          <Paper style={{ padding: '20px', backgroundColor: '#eeeeee', height: '100%'}}>
+              <Box bgcolor="#ffffff" p={5}>
                 {validInputLabels.map((label) => (
                   <Typography key={label} variant="body1" style={generateTextStyle(label)}>
                     {textConfig[label]}
