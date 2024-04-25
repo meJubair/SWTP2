@@ -40,9 +40,9 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 
 // Get all from "calendars"
-const getCalendarDataFromFirebase = async () => {
+const getUserCalendarDataFromFirebase = async (uid: string) => {
   try {
-    const querySnapshot = await getDocs(collection(db, "calendars"));
+    const querySnapshot = await getDocs(collection(db, `calendars/${uid}/calendars`));
     const calendars = querySnapshot.docs.map((doc) => doc.data());
     return calendars;
   } catch (error) {
@@ -194,7 +194,7 @@ const getFileDownloadUrl = async (uid: string, fileName: string) => {
 export {
   auth,
   db,
-  getCalendarDataFromFirebase,
+  getUserCalendarDataFromFirebase,
   registerWithEmailAndPassword,
   loginWithEmailAndPassword,
   getAuthData,
