@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Paper, Typography, Grid, IconButton, Tooltip, Drawer, Box, TextField } from '@mui/material';
-import { TextFields, FormatPaint, Image, Videocam, Code, Padding } from '@mui/icons-material';
+import { TextFields, FormatPaint, Image, Videocam, Code } from '@mui/icons-material';
 import TextConfig, { TextConfigType } from '../components/TextConfig';
 
 enum ContentType {
@@ -53,7 +53,7 @@ const DoorContent: React.FC<DoorContentProps> = () => {
 
   const handleTypeSelection = (type: ContentType) => {
     setActiveType(type);
-    setSlideOut(false); // Slide in the second column when a menu item is clicked
+    setSlideOut(false);
   };
 
   const generateTextStyle = (label: keyof TextConfigType): React.CSSProperties => {
@@ -81,7 +81,7 @@ const DoorContent: React.FC<DoorContentProps> = () => {
           open={Boolean(hoveredType)}
           onClose={() => setHoveredType(null)}
           variant="permanent"
-          PaperProps={{ style: { width: 'fit-content', backgroundColor: '#0091AD', marginTop: '64px', paddingTop: '20px' } }}
+          PaperProps={{ style: { width: 'fit-content', backgroundColor: '#0091AD', marginTop: '64px', paddingTop: '20px'} }}
         >
           <Grid container direction="column" alignItems="center">
             {Object.values(ContentType).map((type) => (
