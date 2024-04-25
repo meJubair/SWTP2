@@ -81,8 +81,8 @@ calendarRouter.get("/:uid", async (request: Request, response: Response) => {
 // Create new calendar instance
 calendarRouter.post("/new", async (request: Request, response: Response) => {
   try {
-    await addCalendarToFirebase(request.body.uid);
-    response.status(201).end("New calendar created");
+    const dbResponse = await addCalendarToFirebase(request.body.uid);
+    response.json(dbResponse);
   } catch (error) {
     console.log(error);
     response.status(500).json({ error: error });
