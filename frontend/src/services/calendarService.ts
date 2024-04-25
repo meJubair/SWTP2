@@ -11,6 +11,16 @@ const getUserCalendarData = async (uid: string) => {
   }
 };
 
+// Create a new calendar instance in the database in calendars/uid/calendars collection
+const createNewCalendar = async (uid: string) => {
+  try {
+    const response = await axios.post(`${baseUrl}/new`, { uid: uid });
+    return response;
+  } catch (error) {
+    console.error("Error when creating a new calendar:", error);
+  }
+};
+
 const registerUser = async (userObject: {
   username: string;
   email: string;
@@ -56,4 +66,11 @@ const signOut = async () => {
   }
 };
 
-export { registerUser, loginUser, getAuth, signOut, getUserCalendarData };
+export {
+  registerUser,
+  loginUser,
+  getAuth,
+  signOut,
+  getUserCalendarData,
+  createNewCalendar,
+};
