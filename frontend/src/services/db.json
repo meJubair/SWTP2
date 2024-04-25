@@ -3,12 +3,12 @@
     {
       "title": "Family summer",
       "authorName": "Barney Boddingtion",
-      "userId": "",
-      "startDate": "1.6.2025",
-      "endDate": "4.6.2025",
+      "startDate": "01.06.2025",
+      "endDate": "04.06.2025",
       "published": true,
       "tags": ["Summer", "Vacation"],
       "backgroundUrl": "",
+      "backgroundColour": "",
       "calendarDoors": [
         {
           "doorNumber": "1",

@@ -2,13 +2,18 @@ import React, { useState, useRef } from "react";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
-import DateSelector from "../components/DateSelector";
+import Grid from "@mui/material/Grid";
 import BackgroundColourSelector from "../components/BackgroundColourSelector";
 import UploadImage from "../components/UploadImage";
 import { useDispatch, useSelector } from "react-redux";
 import { ReduxCalendarState } from "../store/stateTypes";
 import { useLocation } from "react-router-dom";
-import { setCalendarTitle } from "../store/calendarSlice";
+import {
+  setCalendarTitle,
+  setStartDate,
+  setEndDate,
+} from "../store/calendarSlice";
+import DatePicker from "react-datepicker";
 
 const EditorViewMain: React.FC = () => {
   const [isTyping, setIsTyping] = useState<boolean>(false);
@@ -16,26 +21,20 @@ const EditorViewMain: React.FC = () => {
   const [showBgColourSelector, setShowBgColourSelector] =
     useState<boolean>(false);
   const [activeOption, setActiveOption] = useState<string | null>("Date");
-  const [dateArray, setDateArray] = useState<Date[]>([]);
   const [background, setBackground] = useState<string>("#ffffff");
   const [showImageUpload, setShowImageUpload] = useState<boolean>(false);
   const [uploadedImageUrl, setUploadedImageUrl] = useState<string | null>(null);
-
-  const fileInputRef = useRef<HTMLInputElement>(null);
-
-  // The logic to update the dateArray state is passed down to the DateSelector component
-  const handleSetDateArray = (newDateArray: Date[]) => {
-    setDateArray(newDateArray);
-  };
-
   const calendarLocation = useLocation().state;
-
-  const dispatch = useDispatch();
 
   // Calendar object from the Redux store
   const calendars = useSelector(
     (state: ReduxCalendarState) => state.calendar.calendars
   );
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const dispatch = useDispatch();
+
   console.log("Calendars:", calendars);
 
   // Set the calendar title
@@ -52,6 +51,30 @@ const EditorViewMain: React.FC = () => {
         newTitle: e.target.value,
       })
     );
+  };
+
+  // Update the start date of the calendar object in the Redux store
+  const handleStartDateChange = (date: Date | null) => {
+    if (calendarLocation?.index !== undefined && date) {
+      dispatch(
+        setStartDate({
+          calendarIndex: calendarLocation?.index,
+          newStartDate: date.toLocaleDateString().split("/").join("."),
+        })
+      );
+    }
+  };
+
+  // Update the end date of the calendar object in the Redux store
+  const handleEndDateChange = (date: Date | null) => {
+    if (calendarLocation?.index !== undefined && date) {
+      dispatch(
+        setEndDate({
+          calendarIndex: calendarLocation?.index,
+          newEndDate: date.toLocaleDateString().split("/").join("."),
+        })
+      );
+    }
   };
 
   const calendarOptions = [
@@ -178,10 +201,30 @@ const EditorViewMain: React.FC = () => {
             }}
           >
             {showDatePicker && (
-              <DateSelector
-                setDateArray={handleSetDateArray}
-                dateArray={dateArray}
-              />
+              <Grid container spacing={3}>
+                <Grid item xs={6}>
+                  <DatePicker
+                    placeholderText="Start Date"
+                    selected={calendars[calendarLocation?.index]?.startDate}
+                    onChange={handleStartDateChange}
+                    dateFormat="dd.MM.yyyy"
+                    minDate={new Date()} // Set minimum date to current date
+                    value={calendars[calendarLocation?.index]?.startDate}
+                    required
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <DatePicker
+                    placeholderText="End Date"
+                    selected={calendars[calendarLocation?.index]?.endDate}
+                    onChange={handleEndDateChange}
+                    dateFormat="dd.MM.yyyy"
+                    minDate={calendars[calendarLocation?.index]?.startDate} // Set minimum date to start date
+                    value={calendars[calendarLocation?.index]?.endDate}
+                    required
+                  />
+                </Grid>
+              </Grid>
             )}
             {showBgColourSelector && (
               <BackgroundColourSelector onColorChange={handleColorChange} />
