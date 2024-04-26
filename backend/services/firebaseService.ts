@@ -40,9 +40,11 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 
 // Get all from "calendars"
-const getCalendarDataFromFirebase = async () => {
+const getUserCalendarDataFromFirebase = async (uid: string) => {
   try {
-    const querySnapshot = await getDocs(collection(db, "calendars"));
+    const querySnapshot = await getDocs(
+      collection(db, `calendars/${uid}/calendars`)
+    );
     const calendars = querySnapshot.docs.map((doc) => doc.data());
     return calendars;
   } catch (error) {
@@ -156,6 +158,8 @@ const addCalendarToFirebase = async (uid: string) => {
 
     // Update the document's calendarId in the document
     await updateDoc(docRef, { calendarId });
+    // Return the new calendar's calendarId
+    return { calendarId: calendarId };
   } catch (error) {
     console.error("Error creating new calendar:", error);
   }
@@ -194,7 +198,7 @@ const getFileDownloadUrl = async (uid: string, fileName: string) => {
 export {
   auth,
   db,
-  getCalendarDataFromFirebase,
+  getUserCalendarDataFromFirebase,
   registerWithEmailAndPassword,
   loginWithEmailAndPassword,
   getAuthData,
