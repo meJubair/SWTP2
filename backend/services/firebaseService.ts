@@ -12,6 +12,7 @@ import {
   getFirestore,
   query,
   where,
+  updateDoc,
 } from "firebase/firestore";
 import { FIREBASE_API_KEY } from "../utils/config";
 import { CalendarData } from "../types/calendarInterface";
@@ -39,9 +40,11 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 
 // Get all from "calendars"
-const getCalendarDataFromFirebase = async () => {
+const getUserCalendarDataFromFirebase = async (uid: string) => {
   try {
-    const querySnapshot = await getDocs(collection(db, "calendars"));
+    const querySnapshot = await getDocs(
+      collection(db, `calendars/${uid}/calendars`)
+    );
     const calendars = querySnapshot.docs.map((doc) => doc.data());
     return calendars;
   } catch (error) {
@@ -129,10 +132,34 @@ const logout = async () => {
 };
 
 // Create a new calendar document in calendars/uid/calendars
-const addCalendarToFirebase = async (uid: string, calendar: CalendarData) => {
+const addCalendarToFirebase = async (uid: string) => {
+  // Create a new blank calendar object in the
+  const calendar: CalendarData = {
+    calendarId: "",
+    title: "",
+    authorName: "",
+    startDate: "",
+    endDate: "",
+    published: false,
+    tags: [],
+    backgroundUrl: "",
+    backgroundColour: "",
+    calendarDoors: [],
+  };
   try {
+    // Reference the calendars collection
     const calendarRef = collection(db, `calendars/${uid}/calendars`);
-    await addDoc(calendarRef, calendar);
+    // Add a new calendar document to the collection
+    const docRef = await addDoc(calendarRef, calendar);
+
+    // Set the newly created document's id to calendarId property
+    const calendarId = docRef.id;
+    calendar.calendarId = calendarId;
+
+    // Update the document's calendarId in the document
+    await updateDoc(docRef, { calendarId });
+    // Return the new calendar's calendarId
+    return { calendarId: calendarId };
   } catch (error) {
     console.error("Error creating new calendar:", error);
   }
@@ -171,7 +198,7 @@ const getFileDownloadUrl = async (uid: string, fileName: string) => {
 export {
   auth,
   db,
-  getCalendarDataFromFirebase,
+  getUserCalendarDataFromFirebase,
   registerWithEmailAndPassword,
   loginWithEmailAndPassword,
   getAuthData,

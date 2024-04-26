@@ -1,11 +1,13 @@
 interface CalendarData {
+  calendarId: string;
   title: string;
   authorName: string;
-  userId: string;
   startDate: string;
   endDate: string;
   published: boolean;
   tags: string[];
+  backgroundUrl: string;
+  backgroundColour: string;
   calendarDoors: DoorData[];
 }
 
