@@ -69,6 +69,15 @@ const DoorContent: React.FC<DoorContentProps> = () => {
     return {};
   };
 
+  const iconMapping = {
+    [ContentType.Text]: <TextFields />,
+    [ContentType.Background]: <FormatPaint />,
+    [ContentType.Image]: <Image />,
+    [ContentType.Video]: <Videocam />,
+    [ContentType.Embed]: <Code />,
+    default: <TextFields />,
+  };
+
   useEffect(() => {
     setActiveType(ContentType.Text);
   }, []);
@@ -87,27 +96,17 @@ const DoorContent: React.FC<DoorContentProps> = () => {
             {Object.values(ContentType).map((type) => (
               <Grid item key={type}>
                 <Tooltip title={type.charAt(0).toUpperCase() + type.slice(1)} placement='right'>
-                  <IconButton
-                    onClick={() => handleTypeSelection(type)}
-                    style={{
-                      color: '#ffffff',
-                      backgroundColor: activeType === type ? '#0B2027' : 'transparent',
-                    }}
-                    onMouseEnter={() => setHoveredType(type)}
-                    onMouseLeave={() => setHoveredType(null)}
-                  >
-                    {type === ContentType.Text ? (
-                      <TextFields />
-                    ) : type === ContentType.Background ? (
-                      <FormatPaint />
-                    ) : type === ContentType.Image ? (
-                      <Image />
-                    ) : type === ContentType.Video ? (
-                      <Videocam />
-                    ) : (
-                      <Code />
-                    )}
-                  </IconButton>
+                <IconButton
+                  onClick={() => handleTypeSelection(type)}
+                  style={{
+                    color: '#ffffff',
+                    backgroundColor: activeType === type ? '#0B2027' : 'transparent',
+                  }}
+                  onMouseEnter={() => setHoveredType(type)}
+                  onMouseLeave={() => setHoveredType(null)}
+                >
+                  {iconMapping[type] || iconMapping.default}
+                </IconButton>
                 </Tooltip>
               </Grid>
             ))}
