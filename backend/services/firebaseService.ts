@@ -18,6 +18,7 @@ import {
 } from "firebase/firestore";
 import { FIREBASE_API_KEY } from "../utils/config";
 import { CalendarData } from "../types/calendarInterface";
+import { getDoc } from "@firebase/firestore/lite";
 
 const firebaseConfig = {
   apiKey: FIREBASE_API_KEY,
@@ -160,8 +161,8 @@ const addCalendarToFirebase = async (uid: string) => {
 
     // Update the document's calendarId in the document
     await updateDoc(docRef, { calendarId });
-    // Return the new calendar's calendarId
-    return { calendarId: calendarId };
+    // Return the newly created calendar
+    return calendar;
   } catch (error) {
     console.error("Error creating new calendar:", error);
   }
