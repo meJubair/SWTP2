@@ -4,7 +4,7 @@ import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
-import { loginUser, getAuth } from "../services/calendarService";
+import { loginUser, getAuth } from "../services/authService";
 import { useDispatch } from "react-redux";
 import { setUserLogin, setUid, setUserName } from "../store/userSlice";
 
