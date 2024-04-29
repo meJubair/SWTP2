@@ -21,4 +21,15 @@ const createNewCalendar = async (uid: string) => {
   }
 };
 
-export { getUserCalendarData, createNewCalendar };
+// Remove calendar from database
+const removeCalendar = async (uid: string, calendarId: string) => {
+  try {
+    const response = await axios.delete(`${baseUrl}/${uid}/${calendarId}`);
+    console.log(response)
+    return response;
+  } catch (error) {
+    console.error("Error when removing calendar:", error);
+  }
+};
+
+export { getUserCalendarData, createNewCalendar, removeCalendar };
