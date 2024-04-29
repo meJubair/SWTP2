@@ -46,6 +46,8 @@ const Calendars = () => {
     try {
       const response = await createNewCalendar(uid);
       if (response && response.status === 200) {
+        // Update the Redux state with the newly created calendar instance
+        dispatch(setCalendars([...calendars, response.data]))
         navigate(`${response.data.calendarId}`);
       }
     } catch (error) {
