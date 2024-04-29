@@ -43,7 +43,7 @@ calendarRouter.delete(
     try {
       const { uid, calendarId } = request.params;
       await removeCalendarFromFirebase(calendarId, uid);
-      response.status(204);
+      response.status(204).end();
     } catch (error) {
       response.status(500).json({ error: error });
     }
