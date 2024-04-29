@@ -2,10 +2,6 @@ import express, { Request, Response } from "express";
 import multer from "multer";
 import {
   getUserCalendarDataFromFirebase,
-  registerWithEmailAndPassword,
-  loginWithEmailAndPassword,
-  getAuthData,
-  logout,
   addCalendarToFirebase,
   uploadToFirebaseStorage,
   getFileDownloadUrl,
@@ -14,56 +10,6 @@ import {
 const calendarRouter = express.Router();
 const upload = multer({
   limits: { fileSize: 1024 * 1024 * 5 }, // max file size 1024 bytes * 1024 bytes = 5 megabytes
-});
-
-// Return user auth data, username and a boolean for updating login state on front end
-calendarRouter.get("/auth", async (request: Request, response: Response) => {
-  try {
-    const authData = await getAuthData();
-    if (authData === null) {
-      response.status(401).json({ isLoggedIn: false });
-    } else {
-      // Used login here because isLoggedIn is reserved for the state
-      response.json({ login: true, authData });
-    }
-  } catch (error) {
-    console.log("Error checking authentication status:", error);
-    response.status(500).json({ error: "Internal server error" });
-  }
-});
-
-calendarRouter.get("/logout", async (request: Request, response: Response) => {
-  try {
-    await logout();
-    response.status(200).json({ message: "User successfully logged out" });
-  } catch (error) {
-    console.error("Error during logout", error);
-    response.status(500).json({ error: "Internal server error" });
-  }
-});
-
-calendarRouter.post(
-  "/register",
-  async (request: Request, response: Response) => {
-    try {
-      const { username, email, password } = request.body;
-      await registerWithEmailAndPassword(username, email, password);
-      response.status(200).end("success");
-    } catch (error) {
-      response.status(500).json({ error: "Internal server error" });
-    }
-  }
-);
-
-calendarRouter.post("/login", async (request: Request, response: Response) => {
-  try {
-    const { email, password } = request.body;
-    await loginWithEmailAndPassword(email, password);
-    response.status(200).end("Login succesful");
-  } catch (error) {
-    console.log(error);
-    response.status(500).json({ error: error });
-  }
 });
 
 // Get user calendars from database
