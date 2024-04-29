@@ -5,6 +5,7 @@ import {
   addCalendarToFirebase,
   uploadToFirebaseStorage,
   getFileDownloadUrl,
+  removeCalendarFromFirebase,
 } from "../services/firebaseService";
 
 const calendarRouter = express.Router();
@@ -34,6 +35,20 @@ calendarRouter.post("/new", async (request: Request, response: Response) => {
     response.status(500).json({ error: error });
   }
 });
+
+// Delete calendar instance
+calendarRouter.delete(
+  "/:uid/:calendarId",
+  async (request: Request, response: Response) => {
+    try {
+      const { uid, calendarId } = request.params;
+      await removeCalendarFromFirebase(calendarId, uid);
+      response.status(204).end();
+    } catch (error) {
+      response.status(500).json({ error: error });
+    }
+  }
+);
 
 // Handle file upload using Multer (upload.single("file"))
 calendarRouter.post(

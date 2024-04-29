@@ -7,12 +7,14 @@ import {
 } from "firebase/auth";
 import {
   collection,
+  doc,
   getDocs,
   addDoc,
   getFirestore,
   query,
   where,
   updateDoc,
+  deleteDoc,
 } from "firebase/firestore";
 import { FIREBASE_API_KEY } from "../utils/config";
 import { CalendarData } from "../types/calendarInterface";
@@ -165,6 +167,22 @@ const addCalendarToFirebase = async (uid: string) => {
   }
 };
 
+// Remove user's calendar from the database
+const removeCalendarFromFirebase = async (calendarId: string, uid: string) => {
+  try {
+    if (!calendarId || !uid) {
+      throw new Error("CalendarId and/or uid are missing");
+    }
+    // Reference to the collection
+    const calendarRef = collection(db, `calendars/${uid}/calendars/`);
+    // Delete the document in the collection
+    await deleteDoc(doc(calendarRef, calendarId));
+  } catch (error) {
+    console.error("Error removing calendar:", error);
+    throw error;
+  }
+};
+
 // Upload user's files to FirebaseStorage in users/<uid>/<filename>
 const uploadToFirebaseStorage = async (
   file: Express.Multer.File,
@@ -206,4 +224,5 @@ export {
   addCalendarToFirebase,
   uploadToFirebaseStorage,
   getFileDownloadUrl,
+  removeCalendarFromFirebase,
 };
