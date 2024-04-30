@@ -202,6 +202,34 @@ const uploadToFirebaseStorage = async (
   }
 };
 
+// Update a single field value in a calendar document
+const updateCalendarField = async (
+  uid: string,
+  calendarId: string,
+  fieldToUpdate: string
+) => {
+  try {
+    if (!uid || !calendarId || !fieldToUpdate) {
+      throw new Error("missing parameter");
+    }
+
+    // Reference to the user's calendar collection
+    const collectionRef = collection(db, `calendars/${uid}/calendars`);
+
+    // Reference to the specific document to be updated
+    const docRef = doc(collectionRef, calendarId);
+
+    // Extract the field name and it's updated value
+    const [property, updatedValue] = Object.entries(fieldToUpdate)[0];
+
+    // Update the specific field in the document with the new value
+    await updateDoc(docRef, { [property]: updatedValue });
+  } catch (error) {
+    console.log("Error when updating a value:", error);
+    throw error;
+  }
+};
+
 const getFileDownloadUrl = async (uid: string, fileName: string) => {
   try {
     const fileRef = ref(storage, `users/${uid}/${fileName}`);
@@ -225,4 +253,5 @@ export {
   uploadToFirebaseStorage,
   getFileDownloadUrl,
   removeCalendarFromFirebase,
+  updateCalendarField,
 };
