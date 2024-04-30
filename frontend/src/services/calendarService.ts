@@ -25,7 +25,6 @@ const createNewCalendar = async (uid: string) => {
 const removeCalendar = async (uid: string, calendarId: string) => {
   try {
     const response = await axios.delete(`${baseUrl}/${uid}/${calendarId}`);
-    console.log(response)
     return response;
   } catch (error) {
     console.error("Error when removing calendar:", error);
