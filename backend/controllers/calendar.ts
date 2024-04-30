@@ -6,7 +6,9 @@ import {
   uploadToFirebaseStorage,
   getFileDownloadUrl,
   removeCalendarFromFirebase,
+  updateCalendarField,
 } from "../services/firebaseService";
+import { CalendarData } from "../types/calendarInterface";
 
 const calendarRouter = express.Router();
 const upload = multer({
@@ -35,6 +37,22 @@ calendarRouter.post("/new", async (request: Request, response: Response) => {
     response.status(500).json({ error: error });
   }
 });
+
+// Update single field in the database
+calendarRouter.patch(
+  "/:uid/:calendarId",
+  async (request: Request, response: Response) => {
+    try {
+      const { uid, calendarId } = request.params;
+      // Expect request body to be type a property of CalendarData
+      const fieldToUpdate: Partial<CalendarData> = request.body;
+      await updateCalendarField(uid, calendarId, fieldToUpdate);
+      response.status(204).end();
+    } catch (error) {
+      response.status(500).json({ error: error });
+    }
+  }
+);
 
 // Delete calendar instance
 calendarRouter.delete(
