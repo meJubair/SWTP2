@@ -18,6 +18,7 @@ import {
 } from "firebase/firestore";
 import { FIREBASE_API_KEY } from "../utils/config";
 import { CalendarData } from "../types/calendarInterface";
+import { getCalendarDataKeys } from "../types/calendarDataHelperFunctions";
 
 const firebaseConfig = {
   apiKey: FIREBASE_API_KEY,
@@ -202,6 +203,42 @@ const uploadToFirebaseStorage = async (
   }
 };
 
+// Update a single field value in a calendar document
+const updateCalendarField = async (
+  uid: string,
+  calendarId: string,
+  fieldToUpdate: Partial<CalendarData> // Expect single field of CalendarData
+) => {
+  try {
+    if (!uid || !calendarId || !fieldToUpdate) {
+      throw new Error("missing parameter");
+    }
+
+    // Reference to the user's calendar collection
+    const collectionRef = collection(db, `calendars/${uid}/calendars`);
+
+    // Reference to the specific document to be updated
+    const docRef = doc(collectionRef, calendarId);
+
+    // Extract the field name and it's updated value
+    const [property, updatedValue] = Object.entries(fieldToUpdate)[0];
+
+    // Get allowed keys from the CalendarData interface
+    const allowedKeys: string[] = getCalendarDataKeys();
+
+    // Check if property exists in allowed keys array
+    if (allowedKeys.includes(property)) {
+      // Update the specific field in the document with the new value
+      await updateDoc(docRef, { [property]: updatedValue });
+    } else {
+      throw new Error(`Invalid key: ${property}`);
+    }
+  } catch (error) {
+    console.log("Error when updating a value:", error);
+    throw error;
+  }
+};
+
 const getFileDownloadUrl = async (uid: string, fileName: string) => {
   try {
     const fileRef = ref(storage, `users/${uid}/${fileName}`);
@@ -225,4 +262,5 @@ export {
   uploadToFirebaseStorage,
   getFileDownloadUrl,
   removeCalendarFromFirebase,
+  updateCalendarField,
 };
