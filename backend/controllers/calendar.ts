@@ -8,6 +8,7 @@ import {
   removeCalendarFromFirebase,
   updateCalendarField,
 } from "../services/firebaseService";
+import { CalendarData } from "../types/calendarInterface";
 
 const calendarRouter = express.Router();
 const upload = multer({
@@ -43,7 +44,9 @@ calendarRouter.patch(
   async (request: Request, response: Response) => {
     try {
       const { uid, calendarId } = request.params;
-      await updateCalendarField(uid, calendarId, request.body);
+      // Expect request body to be type a property of CalendarData
+      const fieldToUpdate: Partial<CalendarData> = request.body;
+      await updateCalendarField(uid, calendarId, fieldToUpdate);
       response.status(204).end();
     } catch (error) {
       response.status(500).json({ error: error });
