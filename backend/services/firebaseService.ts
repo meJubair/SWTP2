@@ -18,6 +18,7 @@ import {
 } from "firebase/firestore";
 import { FIREBASE_API_KEY } from "../utils/config";
 import { CalendarData } from "../types/calendarInterface";
+import { getCalendarDataKeys } from "../types/calendarDataHelperFunctions";
 
 const firebaseConfig = {
   apiKey: FIREBASE_API_KEY,
@@ -206,7 +207,7 @@ const uploadToFirebaseStorage = async (
 const updateCalendarField = async (
   uid: string,
   calendarId: string,
-  fieldToUpdate: string
+  fieldToUpdate: Partial<CalendarData> // Expect single field of CalendarData
 ) => {
   try {
     if (!uid || !calendarId || !fieldToUpdate) {
@@ -222,8 +223,16 @@ const updateCalendarField = async (
     // Extract the field name and it's updated value
     const [property, updatedValue] = Object.entries(fieldToUpdate)[0];
 
-    // Update the specific field in the document with the new value
-    await updateDoc(docRef, { [property]: updatedValue });
+    // Get allowed keys from the CalendarData interface
+    const allowedKeys: string[] = getCalendarDataKeys();
+
+    // Check if property exists in allowed keys array
+    if (allowedKeys.includes(property)) {
+      // Update the specific field in the document with the new value
+      await updateDoc(docRef, { [property]: updatedValue });
+    } else {
+      throw new Error(`Invalid key: ${property}`);
+    }
   } catch (error) {
     console.log("Error when updating a value:", error);
     throw error;
