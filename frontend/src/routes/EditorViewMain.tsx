@@ -8,14 +8,16 @@ import UploadImage from "../components/UploadImage";
 import { useDispatch, useSelector } from "react-redux";
 import { ReduxCalendarState } from "../store/stateTypes";
 import { useLocation } from "react-router-dom";
-import { setCalendarTitle } from "../store/calendarSlice";
+import { setCalendarTitle, setAuthorName } from "../store/calendarSlice";
 
 const EditorViewMain: React.FC = () => {
   const [isTyping, setIsTyping] = useState<boolean>(false);
-  const [showDatePicker, setShowDatePicker] = useState<boolean>(true);
+  const [showGeneralSettings, setShowGeneralSettings] = useState<boolean>(true);
   const [showBgColourSelector, setShowBgColourSelector] =
     useState<boolean>(false);
-  const [activeOption, setActiveOption] = useState<string | null>("Date");
+  const [activeOption, setActiveOption] = useState<string | null>(
+    "General settings"
+  );
   const [dateArray, setDateArray] = useState<Date[]>([]);
   const [background, setBackground] = useState<string>("#ffffff");
   const [showImageUpload, setShowImageUpload] = useState<boolean>(false);
@@ -54,16 +56,25 @@ const EditorViewMain: React.FC = () => {
     );
   };
 
+  const handleAuthorNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    dispatch(
+      setAuthorName({
+        calendarIndex: calendarLocation?.index,
+        newAuthorName: e.target.value,
+      })
+    );
+  };
+
   const calendarOptions = [
-    { id: 1, name: "Date" },
+    { id: 1, name: "General settings" },
     { id: 2, name: "Background color" },
     { id: 3, name: "Upload image" },
   ];
 
   const handleClick = (optionName: string) => {
-    if (optionName === "Date") {
+    if (optionName === "General settings") {
       setActiveOption(optionName);
-      setShowDatePicker(true);
+      setShowGeneralSettings(true);
       setShowBgColourSelector(false);
       setShowImageUpload(false);
     }
@@ -71,14 +82,14 @@ const EditorViewMain: React.FC = () => {
     if (optionName === "Background color") {
       setActiveOption(optionName);
       setShowBgColourSelector(true);
-      setShowDatePicker(false);
+      setShowGeneralSettings(false);
       setShowImageUpload(false);
     }
 
     if (optionName === "Upload image") {
       setActiveOption(optionName);
       setShowImageUpload(true);
-      setShowDatePicker(false);
+      setShowGeneralSettings(false);
       setShowBgColourSelector(false);
     }
   };
@@ -114,9 +125,6 @@ const EditorViewMain: React.FC = () => {
 
   return (
     <Box>
-      <Box component="h2" sx={{ textAlign: "center" }}>
-        {isTyping ? "Typing..." : calendars[calendarLocation?.index]?.title}
-      </Box>
       <Box
         sx={{
           width: "100%",
@@ -126,11 +134,6 @@ const EditorViewMain: React.FC = () => {
           alignItems: "center",
         }}
       >
-        <TextField
-          label="Calendar title"
-          value={calendars[calendarLocation?.index]?.title}
-          onChange={handleTitleChange}
-        />
         <Typography variant="h3" sx={{ margin: "30px 0 5px" }}>
           Calendar Options
         </Typography>
@@ -177,11 +180,23 @@ const EditorViewMain: React.FC = () => {
               textAlign: "center",
             }}
           >
-            {showDatePicker && (
-              <DateSelector
-                setDateArray={handleSetDateArray}
-                dateArray={dateArray}
-              />
+            {showGeneralSettings && (
+              <Box>
+                <TextField
+                  label="Calendar title"
+                  value={calendars[calendarLocation?.index]?.title}
+                  onChange={handleTitleChange}
+                />
+                <TextField
+                  label="Author name"
+                  value={calendars[calendarLocation?.index]?.authorName}
+                  onChange={handleAuthorNameChange}
+                />
+                <DateSelector
+                  setDateArray={handleSetDateArray}
+                  dateArray={dateArray}
+                />
+              </Box>
             )}
             {showBgColourSelector && (
               <BackgroundColourSelector onColorChange={handleColorChange} />
@@ -198,13 +213,13 @@ const EditorViewMain: React.FC = () => {
         </Box>
         <Box
           sx={{
-            display: "grid",
-            gridTemplateColumns: "repeat(4, 1fr)",
-            gap: "20px",
-            margin: "50px 0",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            width: "80%",
             background: background,
             padding: "2rem",
-            width: "80%",
+            margin: "50px 0",
             height: "800px",
             border: "1px solid black",
             borderRadius: "5px",
@@ -215,20 +230,33 @@ const EditorViewMain: React.FC = () => {
             backgroundPosition: "center",
           }}
         >
-          {calendars[calendarLocation?.index]?.calendarDoors?.map(
-            (door: any) => (
-              <Box
-                key={door.doorNumber}
-                sx={{
-                  background: "#d9d9d9",
-                  padding: "20px",
-                  borderRadius: "5px",
-                }}
-              >
-                {door.doorNumber}
-              </Box>
-            )
-          )}
+          <Box component="h2" sx={{ textAlign: "center" }}>
+            {isTyping ? "Typing..." : calendars[calendarLocation?.index]?.title}
+          </Box>
+          <Box
+            sx={{
+              display: "grid",
+              gridTemplateColumns: "repeat(4, 1fr)",
+              gap: "20px",
+              width: "80%",
+              justifyContent: "center",
+            }}
+          >
+            {calendars[calendarLocation?.index]?.calendarDoors?.map(
+              (door: any) => (
+                <Box
+                  key={door.doorNumber}
+                  sx={{
+                    background: "#d9d9d9",
+                    padding: "20px",
+                    borderRadius: "5px",
+                  }}
+                >
+                  {door.doorNumber}
+                </Box>
+              )
+            )}
+          </Box>
         </Box>
       </Box>
     </Box>
