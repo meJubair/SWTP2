@@ -18,7 +18,6 @@ import {
 } from "firebase/firestore";
 import { FIREBASE_API_KEY } from "../utils/config";
 import { CalendarData } from "../types/calendarInterface";
-import { getDoc } from "@firebase/firestore/lite";
 
 const firebaseConfig = {
   apiKey: FIREBASE_API_KEY,
