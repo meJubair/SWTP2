@@ -21,56 +21,14 @@ const createNewCalendar = async (uid: string) => {
   }
 };
 
-const registerUser = async (userObject: {
-  username: string;
-  email: string;
-  password: string;
-}) => {
+// Remove calendar from database
+const removeCalendar = async (uid: string, calendarId: string) => {
   try {
-    await axios.post(`${baseUrl}/register`, userObject);
-    console.log("User registered successfully");
-  } catch (error) {
-    console.error("Error registering user:", error);
-  }
-};
-
-const loginUser = async (userObject: { email: string; password: string }) => {
-  try {
-    const response = await axios.post(`${baseUrl}/login`, userObject);
+    const response = await axios.delete(`${baseUrl}/${uid}/${calendarId}`);
     return response;
   } catch (error) {
-    console.error("Login failed:", error);
+    console.error("Error when removing calendar:", error);
   }
 };
 
-const getAuth = async () => {
-  try {
-    const response = await axios.get(`${baseUrl}/auth`);
-    return response;
-  } catch (error) {
-    console.error(error);
-  }
-};
-
-// Return true if request to /logout was succesful
-const signOut = async () => {
-  try {
-    const response = await axios.get(`${baseUrl}/logout`);
-    if (response.status === 200) {
-      return true;
-    } else {
-      return false;
-    }
-  } catch (error) {
-    console.error(error);
-  }
-};
-
-export {
-  registerUser,
-  loginUser,
-  getAuth,
-  signOut,
-  getUserCalendarData,
-  createNewCalendar,
-};
+export { getUserCalendarData, createNewCalendar, removeCalendar };

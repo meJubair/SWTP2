@@ -3,6 +3,10 @@ import DatePicker from "react-datepicker";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
+import { setStartDate, setEndDate } from "../store/calendarSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { useLocation } from "react-router-dom";
+import { ReduxCalendarState } from "../store/stateTypes";
 
 interface CalendarDate {
   startDate: Date | null;
@@ -22,6 +26,17 @@ const DateSelector: React.FC<DateSelectorProps> = ({
     startDate: null,
     endDate: null,
   });
+
+  const dispatch = useDispatch();
+  const calendarLocation = useLocation().state;
+
+  const calendarStartDate = useSelector(
+    (state: ReduxCalendarState) => state.calendar.calendars[0]?.startDate
+  );
+
+  const calendarEndDate = useSelector(
+    (state: ReduxCalendarState) => state.calendar.calendars[0]?.endDate
+  );
 
   // Create calendar doors based on the date range
   useEffect(() => {
@@ -57,6 +72,13 @@ const DateSelector: React.FC<DateSelectorProps> = ({
 
   const handleStartDateChange = (selectedDate: Date | null) => {
     if (selectedDate) {
+      // The date object is saved in the Redux store in Zulu time format (e.g. "2024-05-01T21:00:00.000Z")
+      dispatch(
+        setStartDate({
+          calendarIndex: calendarLocation?.index,
+          newStartDate: selectedDate,
+        })
+      );
       setDate((prevDate) => ({
         ...prevDate,
         startDate: selectedDate,
@@ -69,12 +91,19 @@ const DateSelector: React.FC<DateSelectorProps> = ({
     if (selectedDate) {
       // Check if the selected end date is within the allowed range
       const endDate = new Date(selectedDate);
-      const startDate = date.startDate || new Date(); // Set current date if start date is not set
+      const startDate = calendarStartDate || new Date(); // Set current date if start date is not set
 
       const maxEndDate = new Date(startDate);
       maxEndDate.setDate(maxEndDate.getDate() + 30); // Set max end date to 31 days from start date
 
       if (endDate <= maxEndDate) {
+        // The date object is saved in the Redux store in Zulu time format (e.g. "2024-05-01T21:00:00.000Z")
+        dispatch(
+          setEndDate({
+            calendarIndex: calendarLocation?.index,
+            newEndDate: selectedDate,
+          })
+        );
         setDate((prevDate) => ({
           ...prevDate,
           endDate: selectedDate,
@@ -101,7 +130,11 @@ const DateSelector: React.FC<DateSelectorProps> = ({
       <Grid container spacing={3}>
         <Grid item xs={6}>
           <DatePicker
-            placeholderText="Start Date"
+            placeholderText={
+              calendarStartDate !== ""
+                ? calendarStartDate.toLocaleDateString()
+                : "Start Date"
+            }
             selected={date.startDate}
             onChange={handleStartDateChange}
             dateFormat="dd/MM/yyyy"
@@ -111,14 +144,20 @@ const DateSelector: React.FC<DateSelectorProps> = ({
         </Grid>
         <Grid item xs={6}>
           <DatePicker
-            placeholderText="End Date"
+            placeholderText={
+              calendarEndDate !== ""
+                ? calendarEndDate.toLocaleDateString()
+                : "End Date"
+            }
             selected={date.endDate}
             onChange={handleEndDateChange}
             dateFormat="dd/MM/yyyy"
-            minDate={date.startDate} // Set minimum date to start date
+            minDate={calendarStartDate} // Set minimum date to start date
             maxDate={
               new Date(
-                (date.startDate || new Date()).getTime() +
+                (calendarStartDate
+                  ? new Date(calendarStartDate).getTime()
+                  : new Date().getTime()) +
                   30 * 24 * 60 * 60 * 1000
               )
             } // Set max date to 31 days from start date

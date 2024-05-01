@@ -14,7 +14,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
-import { signOut, getAuth } from "../services/calendarService";
+import { signOut, getAuth } from "../services/authService";
 import { useSelector, useDispatch } from "react-redux";
 import { setUserLogin, setUid, setUserName } from "../store/userSlice";
 import { ReduxUserState } from "../store/stateTypes";
