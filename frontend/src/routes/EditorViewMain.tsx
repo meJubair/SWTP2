@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { ReduxCalendarState } from "../store/stateTypes";
 import { useLocation } from "react-router-dom";
 import { setCalendarTitle, setAuthorName } from "../store/calendarSlice";
+import { SliderPicker } from "react-color";
 
 const EditorViewMain: React.FC = () => {
   const [isTyping, setIsTyping] = useState<boolean>(false);
@@ -22,6 +23,7 @@ const EditorViewMain: React.FC = () => {
   const [background, setBackground] = useState<string>("#ffffff");
   const [showImageUpload, setShowImageUpload] = useState<boolean>(false);
   const [uploadedImageUrl, setUploadedImageUrl] = useState<string | null>(null);
+  const [textColour, setTextColour] = useState<string>("#000000");
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -63,6 +65,17 @@ const EditorViewMain: React.FC = () => {
         newAuthorName: e.target.value,
       })
     );
+  };
+
+  const handleTagsChange = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      console.log("Tags:", e.currentTarget.value);
+    }
+  };
+
+  const handleTitleColorChange = (colour: any) => {
+    const newColour = colour.hex;
+    setTextColour(newColour);
   };
 
   const calendarOptions = [
@@ -181,16 +194,27 @@ const EditorViewMain: React.FC = () => {
             }}
           >
             {showGeneralSettings && (
-              <Box>
+              <Box sx={{ display: "flex" }}>
+                <Box>
+                  <TextField
+                    label="Calendar title"
+                    value={calendars[calendarLocation?.index]?.title}
+                    onChange={handleTitleChange}
+                  />
+                  <TextField
+                    label="Author name"
+                    value={calendars[calendarLocation?.index]?.authorName}
+                    onChange={handleAuthorNameChange}
+                  />
+                  <SliderPicker
+                    color={textColour}
+                    onChange={handleTitleColorChange}
+                  />
+                </Box>
                 <TextField
-                  label="Calendar title"
-                  value={calendars[calendarLocation?.index]?.title}
-                  onChange={handleTitleChange}
-                />
-                <TextField
-                  label="Author name"
+                  label="Tags"
                   value={calendars[calendarLocation?.index]?.authorName}
-                  onChange={handleAuthorNameChange}
+                  onKeyDown={handleTagsChange}
                 />
                 <DateSelector
                   setDateArray={handleSetDateArray}
@@ -211,6 +235,9 @@ const EditorViewMain: React.FC = () => {
             )}
           </Box>
         </Box>
+        <Typography variant="h3" sx={{ margin: "30px 0 0" }}>
+          Calendar Preview
+        </Typography>
         <Box
           sx={{
             display: "flex",
@@ -218,8 +245,8 @@ const EditorViewMain: React.FC = () => {
             alignItems: "center",
             width: "80%",
             background: background,
-            padding: "2rem",
-            margin: "50px 0",
+            padding: "1rem",
+            margin: "10px 0 50px",
             height: "800px",
             border: "1px solid black",
             borderRadius: "5px",
@@ -230,9 +257,24 @@ const EditorViewMain: React.FC = () => {
             backgroundPosition: "center",
           }}
         >
-          <Box component="h2" sx={{ textAlign: "center" }}>
+          <Box
+            component="h2"
+            sx={{
+              textAlign: "center",
+              color: textColour,
+              fontSize: "2rem",
+              margin: "0",
+            }}
+          >
             {isTyping ? "Typing..." : calendars[calendarLocation?.index]?.title}
           </Box>
+          {calendars[calendarLocation?.index]?.authorName ? (
+            <Typography variant="subtitle2" sx={{ color: textColour }}>
+              By {calendars[calendarLocation?.index]?.authorName}
+            </Typography>
+          ) : (
+            ""
+          )}
           <Box
             sx={{
               display: "grid",

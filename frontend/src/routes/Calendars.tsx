@@ -29,6 +29,11 @@ const Calendars = () => {
   );
   const uid = useSelector((state: ReduxUserState) => state.user.uid);
 
+  console.log(
+    "Calendars:",
+    new Date(calendars[0]?.startDate).toLocaleDateString()
+  );
+
   // Fetch user calendars from database and update the data in the Redux store
   useEffect(() => {
     const fetchCalendarData = async () => {
@@ -136,7 +141,10 @@ const Calendars = () => {
                     </TableCell>
 
                     <TableCell>
-                      {calendar.startDate} - {calendar.endDate}
+                      {new Date(calendar.startDate).toLocaleDateString()} -{" "}
+                      {calendar.endDate
+                        ? new Date(calendar.endDate).toLocaleDateString()
+                        : ""}
                     </TableCell>
                     <TableCell>{calendar.calendarDoors.length}</TableCell>
                     <TableCell>{calendar.tags.join(", ")}</TableCell>

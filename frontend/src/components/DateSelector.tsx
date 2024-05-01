@@ -132,7 +132,7 @@ const DateSelector: React.FC<DateSelectorProps> = ({
           <DatePicker
             placeholderText={
               calendarStartDate !== ""
-                ? calendarStartDate.toLocaleDateString()
+                ? new Date(calendarStartDate).toLocaleDateString()
                 : "Start Date"
             }
             selected={date.startDate}
@@ -146,7 +146,7 @@ const DateSelector: React.FC<DateSelectorProps> = ({
           <DatePicker
             placeholderText={
               calendarEndDate !== ""
-                ? calendarEndDate.toLocaleDateString()
+                ? new Date(calendarEndDate).toLocaleDateString()
                 : "End Date"
             }
             selected={date.endDate}
