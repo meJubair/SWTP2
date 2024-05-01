@@ -7,15 +7,18 @@ import {
 } from "firebase/auth";
 import {
   collection,
+  doc,
   getDocs,
   addDoc,
   getFirestore,
   query,
   where,
   updateDoc,
+  deleteDoc,
 } from "firebase/firestore";
 import { FIREBASE_API_KEY } from "../utils/config";
 import { CalendarData } from "../types/calendarInterface";
+import { getCalendarDataKeys } from "../types/calendarDataHelperFunctions";
 
 const firebaseConfig = {
   apiKey: FIREBASE_API_KEY,
@@ -158,10 +161,26 @@ const addCalendarToFirebase = async (uid: string) => {
 
     // Update the document's calendarId in the document
     await updateDoc(docRef, { calendarId });
-    // Return the new calendar's calendarId
-    return { calendarId: calendarId };
+    // Return the newly created calendar
+    return calendar;
   } catch (error) {
     console.error("Error creating new calendar:", error);
+  }
+};
+
+// Remove user's calendar from the database
+const removeCalendarFromFirebase = async (calendarId: string, uid: string) => {
+  try {
+    if (!calendarId || !uid) {
+      throw new Error("CalendarId and/or uid are missing");
+    }
+    // Reference to the collection
+    const calendarRef = collection(db, `calendars/${uid}/calendars/`);
+    // Delete the document in the collection
+    await deleteDoc(doc(calendarRef, calendarId));
+  } catch (error) {
+    console.error("Error removing calendar:", error);
+    throw error;
   }
 };
 
@@ -180,6 +199,42 @@ const uploadToFirebaseStorage = async (
     await uploadBytes(userStorageRef, file.buffer, { contentType: mimeType }); // Upload the file in to the storage
   } catch (error) {
     console.error("Error uploading file:", error);
+    throw error;
+  }
+};
+
+// Update a single field value in a calendar document
+const updateCalendarField = async (
+  uid: string,
+  calendarId: string,
+  fieldToUpdate: Partial<CalendarData> // Expect single field of CalendarData
+) => {
+  try {
+    if (!uid || !calendarId || !fieldToUpdate) {
+      throw new Error("missing parameter");
+    }
+
+    // Reference to the user's calendar collection
+    const collectionRef = collection(db, `calendars/${uid}/calendars`);
+
+    // Reference to the specific document to be updated
+    const docRef = doc(collectionRef, calendarId);
+
+    // Extract the field name and it's updated value
+    const [property, updatedValue] = Object.entries(fieldToUpdate)[0];
+
+    // Get allowed keys from the CalendarData interface
+    const allowedKeys: string[] = getCalendarDataKeys();
+
+    // Check if property exists in allowed keys array
+    if (allowedKeys.includes(property)) {
+      // Update the specific field in the document with the new value
+      await updateDoc(docRef, { [property]: updatedValue });
+    } else {
+      throw new Error(`Invalid key: ${property}`);
+    }
+  } catch (error) {
+    console.log("Error when updating a value:", error);
     throw error;
   }
 };
@@ -206,4 +261,6 @@ export {
   addCalendarToFirebase,
   uploadToFirebaseStorage,
   getFileDownloadUrl,
+  removeCalendarFromFirebase,
+  updateCalendarField,
 };

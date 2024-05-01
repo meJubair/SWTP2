@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { ReduxUserState } from "../store/stateTypes";
 import { setUserName, setUid, setUserLogin } from "../store/userSlice";
 import CircularProgress from "@mui/material/CircularProgress";
-import { getAuth } from "../services/calendarService";
+import { getAuth } from "../services/authService";
 import Box from "@mui/material/Box";
 
 interface ProtectedRouteProps {

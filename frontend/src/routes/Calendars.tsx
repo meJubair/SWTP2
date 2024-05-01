@@ -1,6 +1,8 @@
 import { Link, useNavigate } from "react-router-dom";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
+import IconButton from "@mui/material/IconButton";
+import DeleteIcon from "@mui/icons-material/Delete";
 import Box from "@mui/material/Box";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -16,6 +18,7 @@ import { ReduxCalendarState, ReduxUserState } from "../store/stateTypes";
 import {
   getUserCalendarData,
   createNewCalendar,
+  removeCalendar,
 } from "../services/calendarService";
 
 const Calendars = () => {
@@ -26,7 +29,7 @@ const Calendars = () => {
   );
   const uid = useSelector((state: ReduxUserState) => state.user.uid);
 
-  // Fetch user calendars and update the data in the Redux store
+  // Fetch user calendars from database and update the data in the Redux store
   useEffect(() => {
     const fetchCalendarData = async () => {
       const response = await getUserCalendarData(uid);
@@ -36,15 +39,32 @@ const Calendars = () => {
       }
     };
     fetchCalendarData();
-  }, []);
+  }, [dispatch]);
 
   // Create a new calendar instance in the database and redirect the user into calendars/calendarId
   const handleCreateCalendar = async (uid: string) => {
     try {
       const response = await createNewCalendar(uid);
       if (response && response.status === 200) {
+        // Update the Redux state with the newly created calendar instance
+        dispatch(setCalendars([...calendars, response.data]));
         navigate(`${response.data.calendarId}`);
       }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleDeleteCalendar = async (uid: string, calendarId: string) => {
+    try {
+      // Remove calendar from database
+      await removeCalendar(uid, calendarId);
+      // Remove calendar from Redux state
+      dispatch(
+        setCalendars(
+          calendars.filter((calendar) => calendar.calendarId !== calendarId)
+        )
+      );
     } catch (error) {
       console.log(error);
     }
@@ -100,6 +120,7 @@ const Calendars = () => {
                   <TableCell sx={{ fontWeight: "bold" }}>
                     Publish status
                   </TableCell>
+                  <TableCell />
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -121,6 +142,15 @@ const Calendars = () => {
                     <TableCell>{calendar.tags.join(", ")}</TableCell>
                     <TableCell>
                       {calendar.published ? "Published" : "Unpublished"}
+                    </TableCell>
+                    <TableCell>
+                      <IconButton
+                        onClick={() =>
+                          handleDeleteCalendar(uid, calendar.calendarId)
+                        }
+                      >
+                        <DeleteIcon />
+                      </IconButton>
                     </TableCell>
                   </TableRow>
                 ))}
