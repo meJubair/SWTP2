@@ -141,8 +141,11 @@ const Calendars = () => {
                     </TableCell>
 
                     <TableCell>
-                      {new Date(calendar.startDate).toLocaleDateString()} -{" "}
-                      {calendar.endDate
+                      {calendar?.startDate
+                        ? new Date(calendar.startDate).toLocaleDateString()
+                        : ""}{" "}
+                      -{" "}
+                      {calendar?.endDate
                         ? new Date(calendar.endDate).toLocaleDateString()
                         : ""}
                     </TableCell>
