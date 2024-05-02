@@ -7,7 +7,7 @@ import BackgroundColourSelector from "../components/BackgroundColourSelector";
 import UploadImage from "../components/UploadImage";
 import { useDispatch, useSelector } from "react-redux";
 import { ReduxCalendarState } from "../store/stateTypes";
-import { useLocation } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { setCalendarTitle, setAuthorName } from "../store/calendarSlice";
 import { SliderPicker } from "react-color";
 
@@ -32,15 +32,18 @@ const EditorViewMain: React.FC = () => {
     setDateArray(newDateArray);
   };
 
-  const calendarLocation = useLocation().state;
+  const params: string | undefined = useParams().new;
 
   const dispatch = useDispatch();
 
   // Calendar object from the Redux store
-  const calendars = useSelector(
+  const calendarsArray = useSelector(
     (state: ReduxCalendarState) => state.calendar.calendars
   );
-  console.log("Calendars:", calendars);
+
+  const calendarIndex = calendarsArray.findIndex(
+    (calendar) => calendar.calendarId === params
+  );
 
   // Set the calendar title
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -52,7 +55,7 @@ const EditorViewMain: React.FC = () => {
     }, 1500);
     dispatch(
       setCalendarTitle({
-        calendarIndex: calendarLocation?.index,
+        calendarIndex: calendarIndex,
         newTitle: e.target.value,
       })
     );
@@ -61,7 +64,7 @@ const EditorViewMain: React.FC = () => {
   const handleAuthorNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(
       setAuthorName({
-        calendarIndex: calendarLocation?.index,
+        calendarIndex: calendarIndex,
         newAuthorName: e.target.value,
       })
     );
@@ -195,7 +198,7 @@ const EditorViewMain: React.FC = () => {
                 <Box sx={{ width: "33%", marginBottom: "2px" }}>
                   <TextField
                     label="Calendar title"
-                    value={calendars[calendarLocation?.index]?.title}
+                    value={calendarsArray[calendarIndex]?.title}
                     onChange={handleTitleChange}
                   />
                   <Box sx={{ width: "100%" }}>
@@ -206,7 +209,7 @@ const EditorViewMain: React.FC = () => {
                   </Box>
                   <TextField
                     label="Author name"
-                    value={calendars[calendarLocation?.index]?.authorName}
+                    value={calendarsArray[calendarIndex]?.authorName}
                     onChange={handleAuthorNameChange}
                   />
                 </Box>
@@ -219,7 +222,7 @@ const EditorViewMain: React.FC = () => {
 
                 <TextField
                   label="Tags"
-                  value={calendars[calendarLocation?.index]?.tags}
+                  value={calendarsArray[calendarIndex]?.tags}
                   onKeyDown={handleTagsChange}
                 />
               </Box>
@@ -268,11 +271,11 @@ const EditorViewMain: React.FC = () => {
               margin: "0",
             }}
           >
-            {isTyping ? "Typing..." : calendars[calendarLocation?.index]?.title}
+            {isTyping ? "Typing..." : calendarsArray[calendarIndex]?.title}
           </Box>
-          {calendars[calendarLocation?.index]?.authorName ? (
+          {calendarsArray[calendarIndex]?.authorName ? (
             <Typography variant="subtitle2" sx={{ color: textColour }}>
-              By {calendars[calendarLocation?.index]?.authorName}
+              By {calendarsArray[calendarIndex]?.authorName}
             </Typography>
           ) : (
             ""
@@ -286,20 +289,18 @@ const EditorViewMain: React.FC = () => {
               justifyContent: "center",
             }}
           >
-            {calendars[calendarLocation?.index]?.calendarDoors?.map(
-              (door: any) => (
-                <Box
-                  key={door.doorNumber}
-                  sx={{
-                    background: "#d9d9d9",
-                    padding: "20px",
-                    borderRadius: "5px",
-                  }}
-                >
-                  {door.doorNumber}
-                </Box>
-              )
-            )}
+            {calendarsArray[calendarIndex]?.calendarDoors?.map((door: any) => (
+              <Box
+                key={door.doorNumber}
+                sx={{
+                  background: "#d9d9d9",
+                  padding: "20px",
+                  borderRadius: "5px",
+                }}
+              >
+                {door.doorNumber}
+              </Box>
+            ))}
           </Box>
         </Box>
       </Box>
