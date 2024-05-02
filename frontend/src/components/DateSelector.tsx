@@ -5,7 +5,7 @@ import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import { setStartDate, setEndDate } from "../store/calendarSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { useLocation } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { ReduxCalendarState } from "../store/stateTypes";
 
 interface CalendarDate {
@@ -27,15 +27,25 @@ const DateSelector: React.FC<DateSelectorProps> = ({
     endDate: null,
   });
 
+  const params: string | undefined = useParams().new;
   const dispatch = useDispatch();
-  const calendarLocation = useLocation().state;
+
+  const calendarArray = useSelector(
+    (state: ReduxCalendarState) => state.calendar.calendars
+  );
+
+  const calendarIndex = calendarArray.findIndex(
+    (calendar) => calendar.calendarId === params
+  );
 
   const calendarStartDate = useSelector(
-    (state: ReduxCalendarState) => state.calendar.calendars[0]?.startDate
+    (state: ReduxCalendarState) =>
+      state.calendar.calendars[calendarIndex]?.startDate
   );
 
   const calendarEndDate = useSelector(
-    (state: ReduxCalendarState) => state.calendar.calendars[0]?.endDate
+    (state: ReduxCalendarState) =>
+      state.calendar.calendars[calendarIndex]?.endDate
   );
 
   // Create calendar doors based on the date range
@@ -75,8 +85,8 @@ const DateSelector: React.FC<DateSelectorProps> = ({
       // The date object is saved in the Redux store in Zulu time format (e.g. "2024-05-01T21:00:00.000Z")
       dispatch(
         setStartDate({
-          calendarIndex: calendarLocation?.index,
-          newStartDate: selectedDate,
+          calendarIndex: calendarIndex,
+          newStartDate: selectedDate.toISOString(),
         })
       );
       setDate((prevDate) => ({
@@ -100,8 +110,8 @@ const DateSelector: React.FC<DateSelectorProps> = ({
         // The date object is saved in the Redux store in Zulu time format (e.g. "2024-05-01T21:00:00.000Z")
         dispatch(
           setEndDate({
-            calendarIndex: calendarLocation?.index,
-            newEndDate: selectedDate,
+            calendarIndex: calendarIndex,
+            newEndDate: selectedDate.toISOString(),
           })
         );
         setDate((prevDate) => ({
