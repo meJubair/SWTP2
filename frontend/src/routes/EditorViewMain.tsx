@@ -68,9 +68,7 @@ const EditorViewMain: React.FC = () => {
   };
 
   const handleTagsChange = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      console.log("Tags:", e.currentTarget.value);
-    }
+    console.log(e.key);
   };
 
   const handleTitleColorChange = (colour: any) => {
@@ -189,36 +187,40 @@ const EditorViewMain: React.FC = () => {
               alignItems: "center",
               justifyContent: "center",
               margin: "20px auto",
-              width: "60%",
-              textAlign: "center",
+              width: "100%",
             }}
           >
             {showGeneralSettings && (
-              <Box sx={{ display: "flex" }}>
-                <Box>
+              <Box sx={{ display: "flex", width: "100%" }}>
+                <Box sx={{ width: "33%", marginBottom: "2px" }}>
                   <TextField
                     label="Calendar title"
                     value={calendars[calendarLocation?.index]?.title}
                     onChange={handleTitleChange}
                   />
+                  <Box sx={{ width: "100%" }}>
+                    <SliderPicker
+                      color={textColour}
+                      onChange={handleTitleColorChange}
+                    />
+                  </Box>
                   <TextField
                     label="Author name"
                     value={calendars[calendarLocation?.index]?.authorName}
                     onChange={handleAuthorNameChange}
                   />
-                  <SliderPicker
-                    color={textColour}
-                    onChange={handleTitleColorChange}
+                </Box>
+                <Box sx={{ width: "33%" }}>
+                  <DateSelector
+                    setDateArray={handleSetDateArray}
+                    dateArray={dateArray}
                   />
                 </Box>
+
                 <TextField
                   label="Tags"
-                  value={calendars[calendarLocation?.index]?.authorName}
+                  value={calendars[calendarLocation?.index]?.tags}
                   onKeyDown={handleTagsChange}
-                />
-                <DateSelector
-                  setDateArray={handleSetDateArray}
-                  dateArray={dateArray}
                 />
               </Box>
             )}
