@@ -20,6 +20,10 @@ export const calendarSlice = createSlice({
       const { calendarIndex, newTitle } = action.payload;
       state.calendars[calendarIndex].title = newTitle;
     },
+    setAuthorName: (state, action: PayloadAction<{calendarIndex: number, newAuthorName: string}>) => {
+      const { calendarIndex, newAuthorName } = action.payload;
+      state.calendars[calendarIndex].authorName = newAuthorName;
+    },
     setStartDate: (state, action) => {
       const { calendarIndex, newStartDate } = action.payload;
       state.calendars[calendarIndex].startDate = newStartDate;
@@ -42,5 +46,5 @@ export const calendarSlice = createSlice({
   },
 });
 
-export const { setCalendars, setCalendarDoors, setCalendarTitle, setStartDate, setEndDate } = calendarSlice.actions;
+export const { setCalendars, setCalendarDoors, setCalendarTitle, setAuthorName, setStartDate, setEndDate } = calendarSlice.actions;
 export default calendarSlice.reducer;
