@@ -33,14 +33,42 @@ const removeCalendar = async (uid: string, calendarId: string) => {
 };
 
 // Update a single value of calendar document in database
-const updateSingleValue = async(uid:string, calendarId: string, newValue: Partial<CalendarData>) => {
+const updateSingleValue = async (
+  uid: string,
+  calendarId: string,
+  newValue: Partial<CalendarData>
+) => {
   try {
-    const response = await axios.patch(`${baseUrl}/${uid}/${calendarId}`, newValue);
-    return response
+    const response = await axios.patch(
+      `${baseUrl}/${uid}/${calendarId}`,
+      newValue
+    );
+    return response;
+  } catch (error) {
+    console.error("Error when patching a value", error);
   }
-  catch (error) {
-    console.error("Error when patching a value", error)
-  }
-}
+};
 
-export { getUserCalendarData, createNewCalendar, removeCalendar, updateSingleValue };
+const updateCalendarObject = async (
+  uid: string,
+  calendarId: string,
+  calendar: CalendarData
+) => {
+  try {
+    const response = await axios.put(
+      `${baseUrl}/${uid}/${calendarId}`,
+      calendar
+    );
+    return response;
+  } catch (error) {
+    console.error("Error when updating calendar object:", error);
+  }
+};
+
+export {
+  getUserCalendarData,
+  createNewCalendar,
+  removeCalendar,
+  updateSingleValue,
+  updateCalendarObject
+};
