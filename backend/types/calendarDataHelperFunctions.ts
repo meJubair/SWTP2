@@ -5,7 +5,9 @@ const getCalendarDataKeys = (): (keyof CalendarData)[] => {
   return [
     "calendarId",
     "title",
+    "titleColour",
     "authorName",
+    "authorNameColour",
     "startDate",
     "endDate",
     "published",

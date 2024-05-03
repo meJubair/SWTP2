@@ -20,9 +20,17 @@ export const calendarSlice = createSlice({
       const { calendarIndex, newTitle } = action.payload;
       state.calendars[calendarIndex].title = newTitle;
     },
+    setCalendarTitleColour: (state, action: PayloadAction<{calendarIndex: number, newTitleColour: string}>) => {
+      const { calendarIndex, newTitleColour } = action.payload;
+      state.calendars[calendarIndex].titleColour = newTitleColour;
+    },
     setAuthorName: (state, action: PayloadAction<{calendarIndex: number, newAuthorName: string}>) => {
       const { calendarIndex, newAuthorName } = action.payload;
       state.calendars[calendarIndex].authorName = newAuthorName;
+    },
+    setAuthorNameColour: (state, action: PayloadAction<{calendarIndex: number, newAuthorNameColour: string}>) => {
+      const { calendarIndex, newAuthorNameColour } = action.payload;
+      state.calendars[calendarIndex].authorNameColour = newAuthorNameColour;
     },
     setStartDate: (state, action) => {
       const { calendarIndex, newStartDate } = action.payload;
@@ -31,6 +39,10 @@ export const calendarSlice = createSlice({
     setEndDate: (state, action) => {
       const { calendarIndex, newEndDate } = action.payload;
       state.calendars[calendarIndex].endDate = newEndDate;
+    },
+    setCalendarTags: (state, action: PayloadAction<{calendarIndex: number, newTags: string[]}>) => {
+      const { calendarIndex, newTags } = action.payload;
+      state.calendars[calendarIndex].tags = newTags;
     },
     setCalendarDoors: (state, action) => {
       state.calendars = state.calendars.map((calendar: CalendarData) => {
@@ -46,5 +58,5 @@ export const calendarSlice = createSlice({
   },
 });
 
-export const { setCalendars, setCalendarDoors, setCalendarTitle, setAuthorName, setStartDate, setEndDate } = calendarSlice.actions;
+export const { setCalendars, setCalendarDoors, setCalendarTitle, setCalendarTitleColour, setAuthorName, setAuthorNameColour, setStartDate, setEndDate, setCalendarTags } = calendarSlice.actions;
 export default calendarSlice.reducer;
