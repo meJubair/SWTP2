@@ -11,7 +11,7 @@ import { useParams } from "react-router-dom";
 import { setCalendarTitle, setAuthorName } from "../store/calendarSlice";
 import { SliderPicker } from "react-color";
 import AutoSave from "../components/AutoSave";
-import { updateSingleValue } from "../services/calendarService";
+import { updateCalendarObject } from "../services/calendarService";
 import { CalendarData } from "../../../backend/types/calendarInterface";
 
 const EditorViewMain: React.FC = () => {
@@ -53,15 +53,14 @@ const EditorViewMain: React.FC = () => {
     (calendar) => calendar.calendarId === params
   );
 
-  const calendar = calendarsArray[calendarIndex];
+  const calendar: CalendarData = calendarsArray[calendarIndex];
   const calendarId = calendar.calendarId;
 
-  // Generic function for updating single value in database
-  const handleSync = async (field: string, value: Partial<CalendarData>) => {
+  // Update calendar object in the database
+  const handleSync = async () => {
     setSaved(false);
     try {
-      const updatedValue = { [field]: value };
-      await updateSingleValue(uid, calendarId, updatedValue);
+      await updateCalendarObject(uid, calendarId, calendar);
     } catch (error) {
       console.log(error);
     } finally {
@@ -73,8 +72,7 @@ const EditorViewMain: React.FC = () => {
   useEffect(() => {
     const asyncWrapper = async () => {
       if (!isTyping) {
-        await handleSync("title", calendar.title);
-        await handleSync("authorName", calendar.authorName);
+        await handleSync();
       }
     };
     asyncWrapper();
