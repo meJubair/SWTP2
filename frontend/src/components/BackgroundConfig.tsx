@@ -2,6 +2,7 @@ import React, { useRef, useState } from 'react';
 import { Paper, Typography, Tab, Tabs } from '@mui/material';
 import BackgroundColourSelector from './BackgroundColourSelector';
 import UploadImage from './UploadImage';
+import GradientSelector from './GradientSelector';
 
 interface BackGroundConfigProps {
     onConfigChange: (config: BackgroundConfigType) => void;
@@ -16,6 +17,7 @@ export interface BackgroundConfigType {
 const BackGroundConfig: React.FC<BackGroundConfigProps> = ({onConfigChange}) => {
     const [activeOption, setActiveOption] = useState<string>('color');
     const [uploadedImageUrl, setUploadedImageUrl] = useState<string | null>(null);
+    const [gradient, setGradient] = useState<string>('');
 
     const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -52,6 +54,15 @@ const BackGroundConfig: React.FC<BackGroundConfigProps> = ({onConfigChange}) => 
     setUploadedImageUrl(null);
   };
 
+// Callback function to handle changes to the gradient value
+const handleGradientChange = (gradient: string) => {
+    setGradient(gradient); // Update the gradient state
+    onConfigChange({
+        color: "",
+        gradient,
+        image: null,
+    });
+};
     return (
         <Paper>
             {/* Configuration Tabs */}
@@ -68,9 +79,9 @@ const BackGroundConfig: React.FC<BackGroundConfigProps> = ({onConfigChange}) => 
                  <BackgroundColourSelector onColorChange={handleColorChange} />
                 </>
             )}
-            {activeOption === 'gradient' && (
-                <Typography variant="body1">Configure Gradient</Typography>
-            )}
+              {activeOption === 'gradient' && (
+                 <GradientSelector onChange={handleGradientChange} /> 
+            )} 
             {activeOption === 'image' && (
                    <>
                    <Typography variant="body1" my={2} mx={2}>Upload Image</Typography>
