@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
@@ -6,10 +6,13 @@ import DateSelector from "../components/DateSelector";
 import BackgroundColourSelector from "../components/BackgroundColourSelector";
 import UploadImage from "../components/UploadImage";
 import { useDispatch, useSelector } from "react-redux";
-import { ReduxCalendarState } from "../store/stateTypes";
+import { ReduxCalendarState, ReduxUserState } from "../store/stateTypes";
 import { useParams } from "react-router-dom";
 import { setCalendarTitle, setAuthorName } from "../store/calendarSlice";
 import { SliderPicker } from "react-color";
+import AutoSave from "../components/AutoSave";
+import { updateSingleValue } from "../services/calendarService";
+import { CalendarData } from "../../../backend/types/calendarInterface";
 
 const EditorViewMain: React.FC = () => {
   const [isTyping, setIsTyping] = useState<boolean>(false);
@@ -24,13 +27,18 @@ const EditorViewMain: React.FC = () => {
   const [showImageUpload, setShowImageUpload] = useState<boolean>(false);
   const [uploadedImageUrl, setUploadedImageUrl] = useState<string | null>(null);
   const [textColour, setTextColour] = useState<string>("#000000");
+  const [saved, setSaved] = useState<boolean>(true);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   // The logic to update the dateArray state is passed down to the DateSelector component
   const handleSetDateArray = (newDateArray: Date[]) => {
     setDateArray(newDateArray);
   };
+
+  const uid = useSelector((state: ReduxUserState) => state.user.uid);
 
   const params: string | undefined = useParams().new;
 
@@ -45,14 +53,51 @@ const EditorViewMain: React.FC = () => {
     (calendar) => calendar.calendarId === params
   );
 
-  // Set the calendar title
-  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setIsTyping(true);
+  const calendar = calendarsArray[calendarIndex];
+  const calendarId = calendar.calendarId;
 
-    // Timeout to check if user is still typing
-    setTimeout(() => {
+  // Generic function for updating single value in database
+  const handleSync = async (field: string, value: Partial<CalendarData>) => {
+    setSaved(false);
+    try {
+      const updatedValue = { [field]: value };
+      await updateSingleValue(uid, calendarId, updatedValue);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setSaved(true);
+    }
+  };
+
+  // Update data in the database after user has stopped typing
+  useEffect(() => {
+    const asyncWrapper = async () => {
+      if (!isTyping) {
+        await handleSync("title", calendar.title);
+        await handleSync("authorName", calendar.authorName);
+      }
+    };
+    asyncWrapper();
+  }, [isTyping]);
+
+  // Set 1500ms timer after user has stopped typing and reset timer if user starts typing before timer has ended
+  const typingResetTimer = () => {
+    // Reset the timer every time user starts typing
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+    }
+
+    // Start the timer to detect writing completion
+    timerRef.current = setTimeout(() => {
       setIsTyping(false);
     }, 1500);
+  };
+
+  // Set the calendar title and update Redux state
+  const handleTitleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    setIsTyping(true);
+    typingResetTimer();
+    // update Redux state
     dispatch(
       setCalendarTitle({
         calendarIndex: calendarIndex,
@@ -61,7 +106,10 @@ const EditorViewMain: React.FC = () => {
     );
   };
 
+  // Set the author name and update Redux state
   const handleAuthorNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setIsTyping(true);
+    typingResetTimer();
     dispatch(
       setAuthorName({
         calendarIndex: calendarIndex,
@@ -139,6 +187,7 @@ const EditorViewMain: React.FC = () => {
 
   return (
     <Box>
+      <AutoSave sync={saved} />
       <Box
         sx={{
           width: "100%",
@@ -198,7 +247,7 @@ const EditorViewMain: React.FC = () => {
                 <Box sx={{ width: "33%", marginBottom: "2px" }}>
                   <TextField
                     label="Calendar title"
-                    value={calendarsArray[calendarIndex]?.title}
+                    value={calendar.title}
                     onChange={handleTitleChange}
                   />
                   <Box sx={{ width: "100%" }}>
@@ -209,7 +258,7 @@ const EditorViewMain: React.FC = () => {
                   </Box>
                   <TextField
                     label="Author name"
-                    value={calendarsArray[calendarIndex]?.authorName}
+                    value={calendar.authorName}
                     onChange={handleAuthorNameChange}
                   />
                 </Box>
@@ -222,7 +271,7 @@ const EditorViewMain: React.FC = () => {
 
                 <TextField
                   label="Tags"
-                  value={calendarsArray[calendarIndex]?.tags}
+                  value={calendar.tags}
                   onKeyDown={handleTagsChange}
                 />
               </Box>
@@ -271,15 +320,11 @@ const EditorViewMain: React.FC = () => {
               margin: "0",
             }}
           >
-            {isTyping ? "Typing..." : calendarsArray[calendarIndex]?.title}
+            {calendar.title === "" ? "Title" : calendar.title}
           </Box>
-          {calendarsArray[calendarIndex]?.authorName ? (
-            <Typography variant="subtitle2" sx={{ color: textColour }}>
-              By {calendarsArray[calendarIndex]?.authorName}
-            </Typography>
-          ) : (
-            ""
-          )}
+          <Typography variant="subtitle2" sx={{ color: textColour }}>
+            {calendar.authorName ? calendar.authorName : "Author name"}
+          </Typography>
           <Box
             sx={{
               display: "grid",
@@ -289,7 +334,7 @@ const EditorViewMain: React.FC = () => {
               justifyContent: "center",
             }}
           >
-            {calendarsArray[calendarIndex]?.calendarDoors?.map((door: any) => (
+            {calendar.calendarDoors?.map((door: any) => (
               <Box
                 key={door.doorNumber}
                 sx={{
