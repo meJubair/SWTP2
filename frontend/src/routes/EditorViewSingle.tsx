@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Paper, Typography, Grid, IconButton, Tooltip, Drawer, Box, TextField } from '@mui/material';
 import { TextFields, FormatPaint, Image, Videocam, Code } from '@mui/icons-material';
-import TextConfig, { TextConfigType } from '../components/TextConfig';
-import BackgroundConfig, {BackgroundConfigType} from '../components/BackgroundConfig';
+import TextConfig, { TextConfigType } from '../components/editor-view-single/TextConfig';
+import BackgroundConfig, {BackgroundConfigType} from '../components/editor-view-single/BackgroundConfig';
 
 enum ContentType {
   Text = 'text',
