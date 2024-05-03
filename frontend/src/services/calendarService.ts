@@ -1,5 +1,6 @@
 import axios from "axios";
 const baseUrl: string = "http://localhost:3001/api/calendars";
+import { CalendarData } from "../../../backend/types/calendarInterface";
 
 // Get user's calendar data from the database from calendars/uid/calendars collection
 const getUserCalendarData = async (uid: string) => {
@@ -31,4 +32,15 @@ const removeCalendar = async (uid: string, calendarId: string) => {
   }
 };
 
-export { getUserCalendarData, createNewCalendar, removeCalendar };
+// Update a single value of calendar document in database
+const updateSingleValue = async(uid:string, calendarId: string, newValue: Partial<CalendarData>) => {
+  try {
+    const response = await axios.patch(`${baseUrl}/${uid}/${calendarId}`, newValue);
+    return response
+  }
+  catch (error) {
+    console.error("Error when patching a value", error)
+  }
+}
+
+export { getUserCalendarData, createNewCalendar, removeCalendar, updateSingleValue };
