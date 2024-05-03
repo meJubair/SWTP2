@@ -136,7 +136,13 @@ const Calendars = () => {
                     </TableCell>
 
                     <TableCell>
-                      {calendar.startDate} - {calendar.endDate}
+                      {calendar?.startDate
+                        ? new Date(calendar.startDate).toLocaleDateString()
+                        : ""}{" "}
+                      -{" "}
+                      {calendar?.endDate
+                        ? new Date(calendar.endDate).toLocaleDateString()
+                        : ""}
                     </TableCell>
                     <TableCell>{calendar.calendarDoors.length}</TableCell>
                     <TableCell>{calendar.tags.join(", ")}</TableCell>
