@@ -8,8 +8,13 @@ import UploadImage from "../components/UploadImage";
 import { useDispatch, useSelector } from "react-redux";
 import { ReduxCalendarState, ReduxUserState } from "../store/stateTypes";
 import { useParams } from "react-router-dom";
-import { setCalendarTitle, setAuthorName } from "../store/calendarSlice";
-import { SliderPicker } from "react-color";
+import {
+  setCalendarTitle,
+  setCalendarTitleColour,
+  setAuthorName,
+  setAuthorNameColour,
+  setCalendarTags,
+} from "../store/calendarSlice";
 import AutoSave from "../components/AutoSave";
 import { updateCalendarObject } from "../services/calendarService";
 import { CalendarData } from "../../../backend/types/calendarInterface";
@@ -26,7 +31,10 @@ const EditorViewMain: React.FC = () => {
   const [background, setBackground] = useState<string>("#ffffff");
   const [showImageUpload, setShowImageUpload] = useState<boolean>(false);
   const [uploadedImageUrl, setUploadedImageUrl] = useState<string | null>(null);
-  const [textColour, setTextColour] = useState<string>("#000000");
+  const [titleTextColour, setTitleTextColour] = useState<string>("#0b2027");
+  const [authorTextColour, setAuthorTextColour] = useState<string>("#0b2027");
+  const [tags, setTags] = useState<string[]>([]);
+  const [singleTag, setSingleTag] = useState<string>("");
   const [saved, setSaved] = useState<boolean>(true);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -117,12 +125,47 @@ const EditorViewMain: React.FC = () => {
   };
 
   const handleTagsChange = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    console.log(e.key);
+    if (e.key === "Enter" && singleTag !== "") {
+      // Check if the Enter key is pressed and the tag is not empty
+      setTags((prevTags) => [...prevTags, singleTag]); // Add the tag to the tags array
+      setSingleTag(""); // Reset the input field
+      dispatch(
+        setCalendarTags({
+          calendarIndex: calendarIndex,
+          newTags: [...tags, singleTag],
+        })
+      );
+    }
+    console.log("Tags:", tags);
   };
 
-  const handleTitleColorChange = (colour: any) => {
-    const newColour = colour.hex;
-    setTextColour(newColour);
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSingleTag(e.target.value);
+  };
+
+  const handleTitleColorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newColour = e.target.value;
+    console.log("New colour:", newColour);
+    setTitleTextColour(newColour);
+    dispatch(
+      setCalendarTitleColour({
+        calendarIndex: calendarIndex,
+        newTitleColour: newColour,
+      })
+    );
+  };
+
+  const handleAuthorNameColourChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const newColour = e.target.value;
+    setAuthorTextColour(newColour);
+    dispatch(
+      setAuthorNameColour({
+        calendarIndex: calendarIndex,
+        newAuthorNameColour: newColour,
+      })
+    );
   };
 
   const calendarOptions = [
@@ -244,21 +287,38 @@ const EditorViewMain: React.FC = () => {
               <Box sx={{ display: "flex", width: "100%" }}>
                 <Box sx={{ width: "33%", marginBottom: "2px" }}>
                   <TextField
+                    sx={{ background: "white", borderRadius: "5px" }}
                     label="Calendar title"
                     value={calendar.title}
                     onChange={handleTitleChange}
                   />
-                  <Box sx={{ width: "100%" }}>
-                    <SliderPicker
-                      color={textColour}
+                  <Box
+                    sx={{
+                      width: "150px",
+                      margin: "10px 0",
+                    }}
+                  >
+                    <TextField
+                      label="Title color"
+                      type="color"
                       onChange={handleTitleColorChange}
+                      fullWidth
                     />
                   </Box>
                   <TextField
+                    sx={{ background: "white", borderRadius: "5px" }}
                     label="Author name"
                     value={calendar.authorName}
                     onChange={handleAuthorNameChange}
                   />
+                  <Box sx={{ width: "150px", margin: "10px 0" }}>
+                    <TextField
+                      label="Author color"
+                      type="color"
+                      onChange={handleAuthorNameColourChange}
+                      fullWidth
+                    />
+                  </Box>
                 </Box>
                 <Box sx={{ width: "33%" }}>
                   <DateSelector
@@ -266,12 +326,17 @@ const EditorViewMain: React.FC = () => {
                     dateArray={dateArray}
                   />
                 </Box>
-
-                <TextField
-                  label="Tags"
-                  value={calendar.tags}
-                  onKeyDown={handleTagsChange}
-                />
+                <Box>
+                  <Typography>
+                    Type in a tag and press Enter to add it
+                  </Typography>
+                  <TextField
+                    label="Tags"
+                    onKeyDown={handleTagsChange}
+                    onChange={handleChange}
+                    value={singleTag}
+                  />
+                </Box>
               </Box>
             )}
             {showBgColourSelector && (
@@ -313,7 +378,7 @@ const EditorViewMain: React.FC = () => {
             component="h2"
             sx={{
               textAlign: "center",
-              color: textColour,
+              color: titleTextColour,
               fontSize: "2rem",
               margin: "0",
             }}
