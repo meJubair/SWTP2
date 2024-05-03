@@ -17,7 +17,7 @@ export interface BackgroundConfigType {
 const BackGroundConfig: React.FC<BackGroundConfigProps> = ({onConfigChange}) => {
     const [activeOption, setActiveOption] = useState<string>('color');
     const [uploadedImageUrl, setUploadedImageUrl] = useState<string | null>(null);
-    const [gradient, setGradient] = useState<string>('');
+    const [, setGradient] = useState<string>('');
 
     const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -56,7 +56,7 @@ const BackGroundConfig: React.FC<BackGroundConfigProps> = ({onConfigChange}) => 
 
 // Callback function to handle changes to the gradient value
 const handleGradientChange = (gradient: string) => {
-    setGradient(gradient); // Update the gradient state
+    setGradient(gradient);
     onConfigChange({
         color: "",
         gradient,
