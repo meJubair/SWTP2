@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Paper, Typography, Button, TextField, Grid, Box, IconButton, Tooltip } from '@mui/material';
-import { TextFields, FormatPaint, Image, Videocam, Code } from '@mui/icons-material'; // Import Material-UI icons
+import { Paper, Typography, Grid, IconButton, Tooltip, Drawer, Box, TextField } from '@mui/material';
+import { TextFields, FormatPaint, Image, Videocam, Code } from '@mui/icons-material';
 import TextConfig, { TextConfigType } from '../components/TextConfig';
 import BackGroundConfig, {BackgroundConfigType} from '../components/BackgroundConfig';
 
@@ -29,8 +29,8 @@ const DoorContent: React.FC<DoorContentProps> = () => {
   const [activeType, setActiveType] = useState<ContentType | null>(null);
   const [modalContent, setModalContent] = useState<{ [key: string]: string }>({});
   const [textConfig, setTextConfig] = useState<TextConfigType>(defaultTextConfig);
-  const [menuExpanded, setMenuExpanded] = useState<boolean>(false);
-  const [hoveredType, setHoveredType] = useState<ContentType | null>(null); 
+  const [hoveredType, setHoveredType] = useState<ContentType | null>(null);
+  const [slideOut, setSlideOut] = useState<boolean>(false); 
 
   const validInputLabels: Array<keyof TextConfigType> = ['title', 'subtitle', 'description'];
   const [currentInputLabel, setCurrentInputLabel] = useState<keyof TextConfigType | null>(null);
@@ -60,7 +60,7 @@ const DoorContent: React.FC<DoorContentProps> = () => {
 
   const handleTypeSelection = (type: ContentType) => {
     setActiveType(type);
-    setMenuExpanded(false);
+    setSlideOut(false);
   };
 
   const generateTextStyle = (label: keyof TextConfigType): React.CSSProperties => {
@@ -76,79 +76,59 @@ const DoorContent: React.FC<DoorContentProps> = () => {
     return {};
   };
 
+  const iconMapping = {
+    [ContentType.Text]: <TextFields />,
+    [ContentType.Background]: <FormatPaint />,
+    [ContentType.Image]: <Image />,
+    [ContentType.Video]: <Videocam />,
+    [ContentType.Embed]: <Code />,
+    default: <TextFields />,
+  };
+
   useEffect(() => {
-    setActiveType(ContentType.Text);;
+    setActiveType(ContentType.Text);
   }, []);
 
   return (
     <div>
-      <Grid container spacing={2} style={{ height: '100vh' }}>
+      <Grid container spacing={2} style={{ height: '100vh'}}>
         {/* First Column: Side Menu */}
-        <Grid item xs={menuExpanded ? 3 : 2}>
-          <Paper
-            style={{
-              paddingTop: '20px',
-              height: '100%',
-              backgroundColor: '#0091AD',
-              overflow: 'hidden',
-            }}
-            onMouseEnter={() => setMenuExpanded(true)}
-            onMouseLeave={() => setMenuExpanded(false)}
-          >
-            <Grid container direction="column" alignItems="center">
-              {Object.values(ContentType).map((type) => (
-                <Grid item key={type}>
-                  {/* Render either text or icon based on hover state */}
-                  {menuExpanded || hoveredType === type ? (
-                    <Button
-                      onClick={() => handleTypeSelection(type)}
-                      fullWidth
-                      style={{
-                        color: '#ffffff',
-                        backgroundColor: activeType === type ? '#0B2027' : 'transparent',
-                      }}
-                      onMouseEnter={() => setHoveredType(type)}
-                      onMouseLeave={() => setHoveredType(null)}
-                    >
-                      {type}
-                    </Button>
-                  ) : (
-                    <Tooltip title={type.charAt(0).toUpperCase() + type.slice(1)} placement="right">
-                      <IconButton onClick={() => handleTypeSelection(type)} style={{ 
-                        color: '#ffffff',
-                        backgroundColor: activeType === type ? '#0B2027' : 'transparent' }}
-                        >
-                        {type === ContentType.Text ? (
-                          <TextFields />
-                        ) : type === ContentType.Background ? (
-                          <FormatPaint />
-                        ) : type === ContentType.Image ? (
-                          <Image />
-                        ) : type === ContentType.Video ? (
-                          <Videocam />
-                        ) : (
-                          <Code />
-                        )}
-                      </IconButton>
-                    </Tooltip>
-                  )}
-                </Grid>
-              ))}
-            </Grid>
-          </Paper>
-        </Grid>
+        <Drawer
+          open={Boolean(hoveredType)}
+          onClose={() => setHoveredType(null)}
+          variant="permanent"
+          PaperProps={{ style: { width: 'fit-content', backgroundColor: '#0091AD', marginTop: '64px', paddingTop: '20px'} }}
+        >
+          <Grid container direction="column" alignItems="center">
+            {Object.values(ContentType).map((type) => (
+              <Grid item key={type}>
+                <Tooltip title={type.charAt(0).toUpperCase() + type.slice(1)} placement='right'>
+                <IconButton
+                  onClick={() => handleTypeSelection(type)}
+                  style={{
+                    color: '#ffffff',
+                    backgroundColor: activeType === type ? '#0B2027' : 'transparent',
+                  }}
+                  onMouseEnter={() => setHoveredType(type)}
+                  onMouseLeave={() => setHoveredType(null)}
+                >
+                  {iconMapping[type] || iconMapping.default}
+                </IconButton>
+                </Tooltip>
+              </Grid>
+            ))}
+          </Grid>
+        </Drawer>
 
         {/* Second Column: Content Editor */}
-        {activeType && (
-          <Grid item xs={menuExpanded ? 3 : 3}>
-          <Paper style={{ padding: '20px', height: '100%', backgroundColor: '#eeeeee' }}>
-            <Typography variant="h6" gutterBottom>
-              {activeType.charAt(0).toUpperCase() + activeType.slice(1)} Content
-            </Typography>
-            {activeType === ContentType.Text ? (
+        {activeType && !slideOut && (
+          <Grid item xs={3} style={{ paddingLeft: '50px' }}>
+            <Paper style={{ padding: '20px', height: '100%', backgroundColor: '#eeeeee' }}>
+              <Typography variant="h6" gutterBottom>
+                {activeType.charAt(0).toUpperCase() + activeType.slice(1)} Content
+              </Typography>
+              {activeType === ContentType.Text ? (
                 <TextConfig values={textConfig} onChange={handleTextConfigChange} />
-              ) : activeType === ContentType.Background ? (
-                <BackGroundConfig onConfigChange={setBackground} />
               ) : (
                 <TextField
                   label={activeType.charAt(0).toUpperCase() + activeType.slice(1)}
@@ -159,35 +139,26 @@ const DoorContent: React.FC<DoorContentProps> = () => {
                   minRows={4}
                 />
               )}
-          </Paper>
-        </Grid>
+            </Paper>
+          </Grid>
         )}
-
+        
         {/* Third Column for End Users */}
-        <Grid item xs={menuExpanded ? 6 : 7}>
-          <Paper style={{ padding: '20px', height: '100%', backgroundColor: '#eeeeee' }}>
-            <Grid container direction="column" alignItems="center" spacing={2}>
-              <Grid item>
-                <Box 
-                  p={15} 
-                  sx={{
-                    backgroundColor: background.color,
-                    backgroundImage: background.image ? `url(${background.image})` : 'none',
-                    backgroundSize: 'contain',
-                    backgroundPosition: 'center',
-                    backgroundRepeat: 'no-repeat',
-                  }}
-                >
-                  {validInputLabels.map((label) => (
-                    <Typography key={label} variant="body1" style={generateTextStyle(label)}>
-                      {textConfig[label]}
-                    </Typography>
-                  ))}
-                </Box>
-              </Grid>
-            </Grid>
+          <Grid item xs={slideOut ? 12 : 9}
+            onClick={() => {
+              setSlideOut(prevSlideOut => !prevSlideOut);
+            }}>
+          <Paper style={{ padding: '20px', backgroundColor: '#eeeeee', height: '100%'}}>
+              <Box bgcolor="#ffffff" p={5}>
+                {validInputLabels.map((label) => (
+                  <Typography key={label} variant="body1" style={generateTextStyle(label)}>
+                    {textConfig[label]}
+                  </Typography>
+                ))}
+              </Box>
           </Paper>
-        </Grid>
+      </Grid>
+
       </Grid>
     </div>
   );

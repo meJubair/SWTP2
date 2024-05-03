@@ -1,15 +1,58 @@
-import { FC } from "react";
+import { FC, useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { ReduxUserState } from "../store/stateTypes";
+import { setUserName, setUid, setUserLogin } from "../store/userSlice";
+import CircularProgress from "@mui/material/CircularProgress";
+import { getAuth } from "../services/authService";
+import Box from "@mui/material/Box";
 
 interface ProtectedRouteProps {
   component: FC;
 }
 // Pass function component as a prop
 const ProtectedRoute: FC<ProtectedRouteProps> = ({ component: Component }) => {
+  const dispatch = useDispatch();
+  const [authLoaded, setAuthLoaded] = useState(false);
+
+  // Check user authData from the backend.
+  // If user is signed then update Redux state and change authLoaded to true.
+  useEffect(() => {
+    const fetchUserAuthData = async () => {
+      const response = await getAuth();
+      if (response && response.status === 200) {
+        const authData = response.data;
+        dispatch(setUserName(authData.authData.loggedUserName));
+        dispatch(setUid(authData.authData.auth.uid));
+        dispatch(setUserLogin(authData.login));
+        setAuthLoaded(true);
+      }
+      // Set authLoaded to true regardless of the result
+      setAuthLoaded(true);
+    };
+    fetchUserAuthData();
+  }, [dispatch]);
+
+  // Get username from Redux state
   const userName = useSelector((state: ReduxUserState) => state.user.userName);
 
+  // If authLoaded is false display a spinner.
+  if (!authLoaded) {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          height: "calc(100vh - 64px)",
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  // If user authLoaded is true then check if user is authenticated and let user navigate to protected route. Else redirect to /login
   return userName ? <Component /> : <Navigate to="/login" replace />;
 };
 

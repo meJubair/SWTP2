@@ -4,20 +4,26 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import DateSelector from "../components/DateSelector";
 import BackgroundColourSelector from "../components/BackgroundColourSelector";
-import CalendarDoor from "../components/CalendarDoor";
 import UploadImage from "../components/UploadImage";
+import { useDispatch, useSelector } from "react-redux";
+import { ReduxCalendarState } from "../store/stateTypes";
+import { useParams } from "react-router-dom";
+import { setCalendarTitle, setAuthorName } from "../store/calendarSlice";
+import { SliderPicker } from "react-color";
 
 const EditorViewMain: React.FC = () => {
-  const [calendarTitle, setCalendarTitle] = useState<string>("");
   const [isTyping, setIsTyping] = useState<boolean>(false);
-  const [showDatePicker, setShowDatePicker] = useState<boolean>(true);
+  const [showGeneralSettings, setShowGeneralSettings] = useState<boolean>(true);
   const [showBgColourSelector, setShowBgColourSelector] =
     useState<boolean>(false);
-  const [activeOption, setActiveOption] = useState<string | null>("Date");
+  const [activeOption, setActiveOption] = useState<string | null>(
+    "General settings"
+  );
   const [dateArray, setDateArray] = useState<Date[]>([]);
   const [background, setBackground] = useState<string>("#ffffff");
   const [showImageUpload, setShowImageUpload] = useState<boolean>(false);
   const [uploadedImageUrl, setUploadedImageUrl] = useState<string | null>(null);
+  const [textColour, setTextColour] = useState<string>("#000000");
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -26,26 +32,63 @@ const EditorViewMain: React.FC = () => {
     setDateArray(newDateArray);
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setCalendarTitle(e.target.value);
+  const params: string | undefined = useParams().new;
+
+  const dispatch = useDispatch();
+
+  // Calendar object from the Redux store
+  const calendarsArray = useSelector(
+    (state: ReduxCalendarState) => state.calendar.calendars
+  );
+
+  const calendarIndex = calendarsArray.findIndex(
+    (calendar) => calendar.calendarId === params
+  );
+
+  // Set the calendar title
+  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setIsTyping(true);
 
     // Timeout to check if user is still typing
     setTimeout(() => {
       setIsTyping(false);
     }, 1500);
+    dispatch(
+      setCalendarTitle({
+        calendarIndex: calendarIndex,
+        newTitle: e.target.value,
+      })
+    );
+  };
+
+  const handleAuthorNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    dispatch(
+      setAuthorName({
+        calendarIndex: calendarIndex,
+        newAuthorName: e.target.value,
+      })
+    );
+  };
+
+  const handleTagsChange = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    console.log(e.key);
+  };
+
+  const handleTitleColorChange = (colour: any) => {
+    const newColour = colour.hex;
+    setTextColour(newColour);
   };
 
   const calendarOptions = [
-    { id: 1, name: "Date" },
+    { id: 1, name: "General settings" },
     { id: 2, name: "Background color" },
     { id: 3, name: "Upload image" },
   ];
 
   const handleClick = (optionName: string) => {
-    if (optionName === "Date") {
+    if (optionName === "General settings") {
       setActiveOption(optionName);
-      setShowDatePicker(true);
+      setShowGeneralSettings(true);
       setShowBgColourSelector(false);
       setShowImageUpload(false);
     }
@@ -53,14 +96,14 @@ const EditorViewMain: React.FC = () => {
     if (optionName === "Background color") {
       setActiveOption(optionName);
       setShowBgColourSelector(true);
-      setShowDatePicker(false);
+      setShowGeneralSettings(false);
       setShowImageUpload(false);
     }
 
     if (optionName === "Upload image") {
       setActiveOption(optionName);
       setShowImageUpload(true);
-      setShowDatePicker(false);
+      setShowGeneralSettings(false);
       setShowBgColourSelector(false);
     }
   };
@@ -96,9 +139,6 @@ const EditorViewMain: React.FC = () => {
 
   return (
     <Box>
-      <Box component="h2" sx={{ textAlign: "center" }}>
-        {isTyping ? "Typing..." : calendarTitle}
-      </Box>
       <Box
         sx={{
           width: "100%",
@@ -108,11 +148,6 @@ const EditorViewMain: React.FC = () => {
           alignItems: "center",
         }}
       >
-        <TextField
-          label="Calendar title"
-          value={calendarTitle}
-          onChange={handleChange}
-        />
         <Typography variant="h3" sx={{ margin: "30px 0 5px" }}>
           Calendar Options
         </Typography>
@@ -155,15 +190,42 @@ const EditorViewMain: React.FC = () => {
               alignItems: "center",
               justifyContent: "center",
               margin: "20px auto",
-              width: "60%",
-              textAlign: "center",
+              width: "100%",
             }}
           >
-            {showDatePicker && (
-              <DateSelector
-                setDateArray={handleSetDateArray}
-                dateArray={dateArray}
-              />
+            {showGeneralSettings && (
+              <Box sx={{ display: "flex", width: "100%" }}>
+                <Box sx={{ width: "33%", marginBottom: "2px" }}>
+                  <TextField
+                    label="Calendar title"
+                    value={calendarsArray[calendarIndex]?.title}
+                    onChange={handleTitleChange}
+                  />
+                  <Box sx={{ width: "100%" }}>
+                    <SliderPicker
+                      color={textColour}
+                      onChange={handleTitleColorChange}
+                    />
+                  </Box>
+                  <TextField
+                    label="Author name"
+                    value={calendarsArray[calendarIndex]?.authorName}
+                    onChange={handleAuthorNameChange}
+                  />
+                </Box>
+                <Box sx={{ width: "33%" }}>
+                  <DateSelector
+                    setDateArray={handleSetDateArray}
+                    dateArray={dateArray}
+                  />
+                </Box>
+
+                <TextField
+                  label="Tags"
+                  value={calendarsArray[calendarIndex]?.tags}
+                  onKeyDown={handleTagsChange}
+                />
+              </Box>
             )}
             {showBgColourSelector && (
               <BackgroundColourSelector onColorChange={handleColorChange} />
@@ -178,15 +240,18 @@ const EditorViewMain: React.FC = () => {
             )}
           </Box>
         </Box>
+        <Typography variant="h3" sx={{ margin: "30px 0 0" }}>
+          Calendar Preview
+        </Typography>
         <Box
           sx={{
-            display: "grid",
-            gridTemplateColumns: "repeat(4, 1fr)",
-            gap: "20px",
-            margin: "50px 0",
-            background: background,
-            padding: "2rem",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
             width: "80%",
+            background: background,
+            padding: "1rem",
+            margin: "10px 0 50px",
             height: "800px",
             border: "1px solid black",
             borderRadius: "5px",
@@ -197,13 +262,46 @@ const EditorViewMain: React.FC = () => {
             backgroundPosition: "center",
           }}
         >
-          {dateArray?.map((date) => (
-            <CalendarDoor
-              key={date.getDate()}
-              value={date}
-              dateArray={dateArray}
-            />
-          ))}
+          <Box
+            component="h2"
+            sx={{
+              textAlign: "center",
+              color: textColour,
+              fontSize: "2rem",
+              margin: "0",
+            }}
+          >
+            {isTyping ? "Typing..." : calendarsArray[calendarIndex]?.title}
+          </Box>
+          {calendarsArray[calendarIndex]?.authorName ? (
+            <Typography variant="subtitle2" sx={{ color: textColour }}>
+              By {calendarsArray[calendarIndex]?.authorName}
+            </Typography>
+          ) : (
+            ""
+          )}
+          <Box
+            sx={{
+              display: "grid",
+              gridTemplateColumns: "repeat(4, 1fr)",
+              gap: "20px",
+              width: "80%",
+              justifyContent: "center",
+            }}
+          >
+            {calendarsArray[calendarIndex]?.calendarDoors?.map((door: any) => (
+              <Box
+                key={door.doorNumber}
+                sx={{
+                  background: "#d9d9d9",
+                  padding: "20px",
+                  borderRadius: "5px",
+                }}
+              >
+                {door.doorNumber}
+              </Box>
+            ))}
+          </Box>
         </Box>
       </Box>
     </Box>

@@ -1,4 +1,5 @@
 import { initializeApp } from "firebase/app";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import {
   createUserWithEmailAndPassword,
   getAuth,
@@ -6,14 +7,18 @@ import {
 } from "firebase/auth";
 import {
   collection,
+  doc,
   getDocs,
   addDoc,
   getFirestore,
   query,
   where,
+  updateDoc,
+  deleteDoc,
 } from "firebase/firestore";
 import { FIREBASE_API_KEY } from "../utils/config";
 import { CalendarData } from "../types/calendarInterface";
+import { getCalendarDataKeys } from "../types/calendarDataHelperFunctions";
 
 const firebaseConfig = {
   apiKey: FIREBASE_API_KEY,
@@ -28,6 +33,9 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
+// Initialize storage
+const storage = getStorage();
+
 // Access to the project authentication
 const auth = getAuth(app);
 
@@ -35,9 +43,11 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 
 // Get all from "calendars"
-const getCalendarDataFromFirebase = async () => {
+const getUserCalendarDataFromFirebase = async (uid: string) => {
   try {
-    const querySnapshot = await getDocs(collection(db, "calendars"));
+    const querySnapshot = await getDocs(
+      collection(db, `calendars/${uid}/calendars`)
+    );
     const calendars = querySnapshot.docs.map((doc) => doc.data());
     return calendars;
   } catch (error) {
@@ -61,6 +71,7 @@ const registerWithEmailAndPassword = async (
       password
     );
     const user = response.user;
+
     await addDoc(collection(db, "users"), {
       uid: user.uid,
       name,
@@ -124,22 +135,132 @@ const logout = async () => {
 };
 
 // Create a new calendar document in calendars/uid/calendars
-const addCalendarToFirebase = async (uid: string, calendar: CalendarData) => {
+const addCalendarToFirebase = async (uid: string) => {
+  // Create a new blank calendar object in the
+  const calendar: CalendarData = {
+    calendarId: "",
+    title: "",
+    authorName: "",
+    startDate: "",
+    endDate: "",
+    published: false,
+    tags: [],
+    backgroundUrl: "",
+    backgroundColour: "",
+    calendarDoors: [],
+  };
   try {
+    // Reference the calendars collection
     const calendarRef = collection(db, `calendars/${uid}/calendars`);
-    await addDoc(calendarRef, calendar);
+    // Add a new calendar document to the collection
+    const docRef = await addDoc(calendarRef, calendar);
+
+    // Set the newly created document's id to calendarId property
+    const calendarId = docRef.id;
+    calendar.calendarId = calendarId;
+
+    // Update the document's calendarId in the document
+    await updateDoc(docRef, { calendarId });
+    // Return the newly created calendar
+    return calendar;
   } catch (error) {
     console.error("Error creating new calendar:", error);
+  }
+};
+
+// Remove user's calendar from the database
+const removeCalendarFromFirebase = async (calendarId: string, uid: string) => {
+  try {
+    if (!calendarId || !uid) {
+      throw new Error("CalendarId and/or uid are missing");
+    }
+    // Reference to the collection
+    const calendarRef = collection(db, `calendars/${uid}/calendars/`);
+    // Delete the document in the collection
+    await deleteDoc(doc(calendarRef, calendarId));
+  } catch (error) {
+    console.error("Error removing calendar:", error);
+    throw error;
+  }
+};
+
+// Upload user's files to FirebaseStorage in users/<uid>/<filename>
+const uploadToFirebaseStorage = async (
+  file: Express.Multer.File,
+  uid: string
+) => {
+  try {
+    // Create a reference to user's storage location/path
+    const userStorageRef = ref(storage, `users/${uid}/${file.originalname}`);
+
+    // Determine the correct MIME type or use "default"
+    const mimeType = file.mimetype || "application/octet-stream";
+
+    await uploadBytes(userStorageRef, file.buffer, { contentType: mimeType }); // Upload the file in to the storage
+  } catch (error) {
+    console.error("Error uploading file:", error);
+    throw error;
+  }
+};
+
+// Update a single field value in a calendar document
+const updateCalendarField = async (
+  uid: string,
+  calendarId: string,
+  fieldToUpdate: Partial<CalendarData> // Expect single field of CalendarData
+) => {
+  try {
+    if (!uid || !calendarId || !fieldToUpdate) {
+      throw new Error("missing parameter");
+    }
+
+    // Reference to the user's calendar collection
+    const collectionRef = collection(db, `calendars/${uid}/calendars`);
+
+    // Reference to the specific document to be updated
+    const docRef = doc(collectionRef, calendarId);
+
+    // Extract the field name and it's updated value
+    const [property, updatedValue] = Object.entries(fieldToUpdate)[0];
+
+    // Get allowed keys from the CalendarData interface
+    const allowedKeys: string[] = getCalendarDataKeys();
+
+    // Check if property exists in allowed keys array
+    if (allowedKeys.includes(property)) {
+      // Update the specific field in the document with the new value
+      await updateDoc(docRef, { [property]: updatedValue });
+    } else {
+      throw new Error(`Invalid key: ${property}`);
+    }
+  } catch (error) {
+    console.log("Error when updating a value:", error);
+    throw error;
+  }
+};
+
+const getFileDownloadUrl = async (uid: string, fileName: string) => {
+  try {
+    const fileRef = ref(storage, `users/${uid}/${fileName}`);
+    const fileUrl = await getDownloadURL(fileRef);
+    return fileUrl;
+  } catch (error) {
+    console.error("Error when fetching URL data:", error);
+    throw error;
   }
 };
 
 export {
   auth,
   db,
-  getCalendarDataFromFirebase,
+  getUserCalendarDataFromFirebase,
   registerWithEmailAndPassword,
   loginWithEmailAndPassword,
   getAuthData,
   logout,
   addCalendarToFirebase,
+  uploadToFirebaseStorage,
+  getFileDownloadUrl,
+  removeCalendarFromFirebase,
+  updateCalendarField,
 };
