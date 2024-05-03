@@ -79,7 +79,7 @@ const handleGradientChange = (gradient: string) => {
                  <BackgroundColourSelector onColorChange={handleColorChange} />
                 </>
             )}
-              { gradient && activeOption === 'gradient' && (
+              {activeOption === 'gradient' && (
                  <GradientSelector onChange={handleGradientChange} /> 
             )} 
             {activeOption === 'image' && (
