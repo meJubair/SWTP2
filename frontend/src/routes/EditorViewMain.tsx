@@ -126,6 +126,7 @@ const EditorViewMain: React.FC = () => {
 
   const handleTagsChange = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && singleTag !== "") {
+      setIsTyping(true)
       // Check if the Enter key is pressed and the tag is not empty
       setTags((prevTags) => [...prevTags, singleTag]); // Add the tag to the tags array
       setSingleTag(""); // Reset the input field
@@ -135,6 +136,7 @@ const EditorViewMain: React.FC = () => {
           newTags: [...tags, singleTag],
         })
       );
+      typingResetTimer()
     }
     console.log("Tags:", tags);
   };
@@ -144,6 +146,7 @@ const EditorViewMain: React.FC = () => {
   };
 
   const handleTitleColorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setIsTyping(true)
     const newColour = e.target.value;
     console.log("New colour:", newColour);
     setTitleTextColour(newColour);
@@ -153,11 +156,13 @@ const EditorViewMain: React.FC = () => {
         newTitleColour: newColour,
       })
     );
+    typingResetTimer()
   };
 
   const handleAuthorNameColourChange = (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
+    setIsTyping(true)
     const newColour = e.target.value;
     setAuthorTextColour(newColour);
     dispatch(
@@ -166,6 +171,7 @@ const EditorViewMain: React.FC = () => {
         newAuthorNameColour: newColour,
       })
     );
+    typingResetTimer()
   };
 
   const calendarOptions = [
@@ -303,6 +309,7 @@ const EditorViewMain: React.FC = () => {
                       type="color"
                       onChange={handleTitleColorChange}
                       fullWidth
+                      value={calendar.titleColour}
                     />
                   </Box>
                   <TextField
@@ -317,6 +324,7 @@ const EditorViewMain: React.FC = () => {
                       type="color"
                       onChange={handleAuthorNameColourChange}
                       fullWidth
+                      value={calendar.authorNameColour}
                     />
                   </Box>
                 </Box>
@@ -385,7 +393,7 @@ const EditorViewMain: React.FC = () => {
           >
             {calendar.title === "" ? "Title" : calendar.title}
           </Box>
-          <Typography variant="subtitle2" sx={{ color: textColour }}>
+          <Typography variant="subtitle2" sx={{ color: authorTextColour }}>
             {calendar.authorName ? calendar.authorName : "Author name"}
           </Typography>
           <Box
