@@ -36,7 +36,7 @@ const EditorViewMain: React.FC = () => {
   const calendars = useSelector(
     (state: ReduxCalendarState) => state.calendar.calendars
   );
-  console.log("Calendars:", calendars);
+  /* console.log("Calendars:", calendars); */
 
   // Set the calendar title
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
