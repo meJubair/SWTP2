@@ -1,5 +1,5 @@
 import axios from "axios";
-const baseUrl: string = "http://localhost:3001/auth";
+const baseUrl: string = "http://localhost:3002/auth";
 
 const registerUser = async (userObject: {
   username: string;

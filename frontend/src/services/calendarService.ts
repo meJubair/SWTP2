@@ -1,5 +1,5 @@
 import axios from "axios";
-const baseUrl: string = "http://localhost:3001/api/calendars";
+const baseUrl: string = "http://localhost:3002/api/calendars";
 
 // Get user's calendar data from the database from calendars/uid/calendars collection
 const getUserCalendarData = async (uid: string) => {
