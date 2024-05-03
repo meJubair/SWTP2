@@ -156,6 +156,7 @@ const DoorContent: React.FC<DoorContentProps> = () => {
               sx={{
                   backgroundColor: background.color,
                   backgroundImage: background.image ? `url(${background.image})` : 'none',
+                  background: background.gradient,
               }}
             >
             {validInputLabels.map((label) => (
