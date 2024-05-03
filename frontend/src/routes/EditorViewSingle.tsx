@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Paper, Typography, Grid, IconButton, Tooltip, Drawer, Box, TextField } from '@mui/material';
 import { TextFields, FormatPaint, Image, Videocam, Code } from '@mui/icons-material';
 import TextConfig, { TextConfigType } from '../components/TextConfig';
-import BackGroundConfig, {BackgroundConfigType} from '../components/BackgroundConfig';
+import BackgroundConfig, {BackgroundConfigType} from '../components/BackgroundConfig';
 
 enum ContentType {
   Text = 'text',
@@ -129,6 +129,8 @@ const DoorContent: React.FC<DoorContentProps> = () => {
               </Typography>
               {activeType === ContentType.Text ? (
                 <TextConfig values={textConfig} onChange={handleTextConfigChange} />
+              ) : activeType === ContentType.Background ? (
+                <BackgroundConfig onConfigChange={setBackground} />
               ) : (
                 <TextField
                   label={activeType.charAt(0).toUpperCase() + activeType.slice(1)}
@@ -148,20 +150,26 @@ const DoorContent: React.FC<DoorContentProps> = () => {
             onClick={() => {
               setSlideOut(prevSlideOut => !prevSlideOut);
             }}>
-          <Paper style={{ padding: '20px', backgroundColor: '#eeeeee', height: '100%'}}>
-              <Box bgcolor="#ffffff" p={5}>
-                {validInputLabels.map((label) => (
-                  <Typography key={label} variant="body1" style={generateTextStyle(label)}>
-                    {textConfig[label]}
-                  </Typography>
-                ))}
-              </Box>
+          <Paper style={{ padding: '50px', backgroundColor: '#eeeeee', height: '100%'}}>
+            <Box 
+              p={2} 
+              sx={{
+                  backgroundColor: background.color,
+                  backgroundImage: background.image ? `url(${background.image})` : 'none',
+              }}
+          >
+            {validInputLabels.map((label) => (
+              <Typography key={label} variant="body1" style={generateTextStyle(label)}>
+                {textConfig[label]}
+              </Typography>
+              ))}
+            </Box>
           </Paper>
-      </Grid>
+        </Grid>
 
-      </Grid>
-    </div>
-  );
-};
+        </Grid>
+      </div>
+    );
+} ;
 
 export default DoorContent;
