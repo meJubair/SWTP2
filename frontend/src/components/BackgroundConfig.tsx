@@ -93,7 +93,6 @@ const handleGradientChange = (gradient: string) => {
                  />
                  </>
             )}
-            
         </Paper>
     );
 };
