@@ -72,7 +72,6 @@ const handleGradientChange = (gradient: string) => {
                 <Tab label="Image" value="image" />
             </Tabs>
 
-            {/* Render active configuration option */}
             {activeOption === 'color' && (
                 <>
                 <Typography variant="body1" my={2} mx={2}>Select Color</Typography>
