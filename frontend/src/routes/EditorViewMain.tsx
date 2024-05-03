@@ -100,7 +100,7 @@ const EditorViewMain: React.FC = () => {
   const handleTitleColorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newColour = e.target.value;
     console.log("New colour:", newColour);
-    setTitleTextColour(newColour ? newColour : "#0b2027");
+    setTitleTextColour(newColour);
     dispatch(
       setCalendarTitleColour({
         calendarIndex: calendarIndex,
@@ -113,7 +113,7 @@ const EditorViewMain: React.FC = () => {
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
     const newColour = e.target.value;
-    setAuthorTextColour(newColour ? newColour : "#0b2027");
+    setAuthorTextColour(newColour);
     dispatch(
       setAuthorNameColour({
         calendarIndex: calendarIndex,
