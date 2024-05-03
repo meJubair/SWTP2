@@ -157,7 +157,7 @@ const DoorContent: React.FC<DoorContentProps> = () => {
                   backgroundColor: background.color,
                   backgroundImage: background.image ? `url(${background.image})` : 'none',
               }}
-          >
+            >
             {validInputLabels.map((label) => (
               <Typography key={label} variant="body1" style={generateTextStyle(label)}>
                 {textConfig[label]}
