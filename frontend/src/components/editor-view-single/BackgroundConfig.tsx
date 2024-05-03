@@ -37,7 +37,7 @@ const BackGroundConfig: React.FC<BackGroundConfigProps> = ({onConfigChange}) => 
    // Handle image upload from device or URL
     const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
         const files = e.target.files?.[0];
-        const imageUrl = files ? URL.createObjectURL(files) : e.target.value ? e.target.value : null;
+        const imageUrl = files ? URL.createObjectURL(files) : e.target.value || null;
         setUploadedImageUrl(imageUrl);
         onConfigChange({
             color: "",
