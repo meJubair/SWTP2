@@ -3,10 +3,10 @@ import UploadImage from '../UploadImage';
 import { Typography } from '@mui/material';
 
 interface ImageConfigProps {
-  passImage: (imageUrl: string) => void;
+  onChange: (imageUrl: string) => void;
 }
 
-const ImageConfig: React.FC<ImageConfigProps> = ({ passImage}) => {
+const ImageConfig: React.FC<ImageConfigProps> = ({ onChange}) => {
     const [uploadedImageUrl, setUploadedImageUrl] = useState<string | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -18,11 +18,11 @@ const ImageConfig: React.FC<ImageConfigProps> = ({ passImage}) => {
     if (files) {
       const imageUrl = URL.createObjectURL(files);
         setUploadedImageUrl(imageUrl); 
-        passImage(imageUrl);
-        
+        onChange(imageUrl);
+
     } else if (imageUrl) {
       setUploadedImageUrl(imageUrl);
-        passImage(imageUrl);
+        onChange(imageUrl);
     }
   };
 

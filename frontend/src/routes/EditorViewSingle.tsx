@@ -135,7 +135,7 @@ const DoorContent: React.FC<DoorContentProps> = () => {
               ) : activeType === ContentType.Background ? (
                 <BackgroundConfig onConfigChange={setBackground} />
               ) : activeType === ContentType.Image ? (
-                <ImageConfig passImage={setUploadedImageUrl}/>
+                <ImageConfig onChange={setUploadedImageUrl}/>
               ) : (
                 <TextField
                   label={activeType.charAt(0).toUpperCase() + activeType.slice(1)}
