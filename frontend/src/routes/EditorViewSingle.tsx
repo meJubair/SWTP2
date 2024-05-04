@@ -42,7 +42,8 @@ const DoorContent: React.FC<DoorContentProps> = () => {
     image: null,
   });
 
-  const [uploadedImageUrl, setUploadedImageUrl] = useState<string | null>(null);
+  const [uploadedImageUrl, setUploadedImageUrl] = useState<string | null>('https://source.unsplash.com/random/365x225');
+
 
   const handleTextConfigChange = (field: keyof TextConfigType, value: any) => {
     setTextConfig((prevConfig: TextConfigType) => ({
@@ -167,7 +168,11 @@ const DoorContent: React.FC<DoorContentProps> = () => {
                   alignItems: 'center',
               }}
             >
-              {uploadedImageUrl && <img src={uploadedImageUrl} alt="Uploaded Image" style={{width: '50%', height: '50%'}} />}
+              {uploadedImageUrl && <img
+                src={uploadedImageUrl}
+                alt={uploadedImageUrl ? 'Uploaded Image' : 'Default Image'}
+                style={{ width: '50%', height: '50%' }}
+              />}
 
             {validInputLabels.map((label) => (
               <Typography key={label} variant="body1" style={generateTextStyle(label)}>
