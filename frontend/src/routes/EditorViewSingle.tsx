@@ -3,6 +3,7 @@ import { Paper, Typography, Grid, IconButton, Tooltip, Drawer, Box, TextField } 
 import { TextFields, FormatPaint, Image, Videocam, Code } from '@mui/icons-material';
 import TextConfig, { TextConfigType } from '../components/editor-view-single/TextConfig';
 import BackgroundConfig, {BackgroundConfigType} from '../components/editor-view-single/BackgroundConfig';
+import ImageConfig from '../components/editor-view-single/ImageConfig';
 
 enum ContentType {
   Text = 'text',
@@ -40,6 +41,8 @@ const DoorContent: React.FC<DoorContentProps> = () => {
     gradient: '',
     image: null,
   });
+
+  const [uploadedImageUrl, setUploadedImageUrl] = useState<string | null>(null);
 
   const handleTextConfigChange = (field: keyof TextConfigType, value: any) => {
     setTextConfig((prevConfig: TextConfigType) => ({
@@ -131,6 +134,8 @@ const DoorContent: React.FC<DoorContentProps> = () => {
                 <TextConfig values={textConfig} onChange={handleTextConfigChange} />
               ) : activeType === ContentType.Background ? (
                 <BackgroundConfig onConfigChange={setBackground} />
+              ) : activeType === ContentType.Image ? (
+                <ImageConfig passImage={setUploadedImageUrl}/>
               ) : (
                 <TextField
                   label={activeType.charAt(0).toUpperCase() + activeType.slice(1)}
@@ -159,6 +164,8 @@ const DoorContent: React.FC<DoorContentProps> = () => {
                   background: background.gradient,
               }}
             >
+              {uploadedImageUrl && <img src={uploadedImageUrl} alt="Uploaded Image" style={{width: '400px', height: '250px'}} />}
+
             {validInputLabels.map((label) => (
               <Typography key={label} variant="body1" style={generateTextStyle(label)}>
                 {textConfig[label]}
