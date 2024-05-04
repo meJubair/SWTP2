@@ -162,9 +162,12 @@ const DoorContent: React.FC<DoorContentProps> = () => {
                   backgroundColor: background.color,
                   backgroundImage: background.image ? `url(${background.image})` : 'none',
                   background: background.gradient,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
               }}
             >
-              {uploadedImageUrl && <img src={uploadedImageUrl} alt="Uploaded Image" style={{width: '400px', height: '250px'}} />}
+              {uploadedImageUrl && <img src={uploadedImageUrl} alt="Uploaded Image" style={{width: '50%', height: '50%'}} />}
 
             {validInputLabels.map((label) => (
               <Typography key={label} variant="body1" style={generateTextStyle(label)}>
