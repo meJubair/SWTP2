@@ -140,7 +140,9 @@ const addCalendarToFirebase = async (uid: string) => {
   const calendar: CalendarData = {
     calendarId: "",
     title: "",
+    titleColour: "",
     authorName: "",
+    authorNameColour: "",
     startDate: "",
     endDate: "",
     published: false,

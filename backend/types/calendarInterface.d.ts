@@ -1,7 +1,9 @@
 interface CalendarData {
   calendarId: string;
   title: string;
+  titleColour: string;
   authorName: string;
+  authorNameColour: string;
   startDate: string;
   endDate: string;
   published: boolean;
