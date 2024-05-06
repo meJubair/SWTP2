@@ -31,7 +31,8 @@ const CalendarTags: React.FC<CalendarTagsProps> = ({ removeTag }) => {
         <Box
           key={index}
           sx={{
-            background: "#d9d9d9",
+            background: "#0b2027",
+            color: "#8affe8",
             padding: "10px",
             borderRadius: "5px",
             margin: "5px",
@@ -56,7 +57,9 @@ const CalendarTags: React.FC<CalendarTagsProps> = ({ removeTag }) => {
           >
             <Typography>x</Typography>
           </Box>
-          <Typography>{calendarTags[index]}</Typography>
+          <Typography sx={{ textTransform: "capitalize" }}>
+            {calendarTags[index]}
+          </Typography>
         </Box>
       ))}
     </Box>
