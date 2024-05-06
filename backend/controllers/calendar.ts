@@ -7,6 +7,7 @@ import {
   getFileDownloadUrl,
   removeCalendarFromFirebase,
   updateCalendarField,
+  updateCalendarObjectInFirebase,
 } from "../services/firebaseService";
 import { CalendarData } from "../types/calendarInterface";
 
@@ -48,6 +49,31 @@ calendarRouter.patch(
       const fieldToUpdate: Partial<CalendarData> = request.body;
       await updateCalendarField(uid, calendarId, fieldToUpdate);
       response.status(204).end();
+    } catch (error) {
+      response.status(500).json({ error: error });
+    }
+  }
+);
+
+// Update calendar object in the database
+calendarRouter.put(
+  "/:uid/:calendarId",
+  async (request: Request, response: Response) => {
+    try {
+      const { uid, calendarId } = request.params;
+      const calendar: CalendarData = request.body;
+
+      // Check if calendar object is missing or falsy in the request body
+      if (!calendar) {
+        throw new Error("Calendar object is missing in the request body");
+      }
+
+      const dbResponse = await updateCalendarObjectInFirebase(
+        uid,
+        calendarId,
+        calendar
+      );
+      response.json(dbResponse);
     } catch (error) {
       response.status(500).json({ error: error });
     }
