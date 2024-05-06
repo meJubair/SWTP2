@@ -44,6 +44,14 @@ export const calendarSlice = createSlice({
       const { calendarIndex, newTags } = action.payload;
       state.calendars[calendarIndex].tags = newTags;
     },
+    setCalendarBackgroundUrl: (state, action: PayloadAction<{calendarIndex: number, newBackgroundUrl: string}>) => {
+      const { calendarIndex, newBackgroundUrl } = action.payload;
+      state.calendars[calendarIndex].backgroundUrl = newBackgroundUrl;
+    },
+    setCalendarBackgroundColour: (state, action: PayloadAction<{calendarIndex: number, newBackgroundColour: string}>) => {
+      const { calendarIndex, newBackgroundColour } = action.payload;
+      state.calendars[calendarIndex].backgroundColour = newBackgroundColour;
+    },
     setCalendarDoors: (state, action) => {
       state.calendars = state.calendars.map((calendar: CalendarData) => {
         if (calendar.title === action.payload.title) {
@@ -58,5 +66,5 @@ export const calendarSlice = createSlice({
   },
 });
 
-export const { setCalendars, setCalendarDoors, setCalendarTitle, setCalendarTitleColour, setAuthorName, setAuthorNameColour, setStartDate, setEndDate, setCalendarTags } = calendarSlice.actions;
+export const { setCalendars, setCalendarDoors, setCalendarTitle, setCalendarTitleColour, setAuthorName, setAuthorNameColour, setStartDate, setEndDate, setCalendarTags, setCalendarBackgroundUrl, setCalendarBackgroundColour } = calendarSlice.actions;
 export default calendarSlice.reducer;
