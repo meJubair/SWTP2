@@ -6,7 +6,7 @@ import DateSelector from "../components/DateSelector";
 import BackgroundColourSelector from "../components/BackgroundColourSelector";
 import UploadImage from "../components/UploadImage";
 import { useDispatch, useSelector } from "react-redux";
-import { ReduxCalendarState, ReduxUserState } from "../store/stateTypes";
+import { ReduxCalendarState, ReduxUserState, ReduxSyncState } from "../store/stateTypes";
 import { useParams } from "react-router-dom";
 import {
   setCalendarTitle,
@@ -15,12 +15,12 @@ import {
   setAuthorNameColour,
   setCalendarTags,
 } from "../store/calendarSlice";
+import { setIsTyping } from "../store/syncSlice";
 import AutoSave from "../components/AutoSave";
 import { updateCalendarObject } from "../services/calendarService";
 import { CalendarData } from "../../../backend/types/calendarInterface";
 
 const EditorViewMain: React.FC = () => {
-  const [isTyping, setIsTyping] = useState<boolean>(false);
   const [showGeneralSettings, setShowGeneralSettings] = useState<boolean>(true);
   const [showBgColourSelector, setShowBgColourSelector] =
     useState<boolean>(false);
@@ -31,8 +31,6 @@ const EditorViewMain: React.FC = () => {
   const [background, setBackground] = useState<string>("#ffffff");
   const [showImageUpload, setShowImageUpload] = useState<boolean>(false);
   const [uploadedImageUrl, setUploadedImageUrl] = useState<string | null>(null);
-  const [titleTextColour, setTitleTextColour] = useState<string>("#0b2027");
-  const [authorTextColour, setAuthorTextColour] = useState<string>("#0b2027");
   const [tags, setTags] = useState<string[]>([]);
   const [singleTag, setSingleTag] = useState<string>("");
   const [saved, setSaved] = useState<boolean>(true);
@@ -47,6 +45,8 @@ const EditorViewMain: React.FC = () => {
   };
 
   const uid = useSelector((state: ReduxUserState) => state.user.uid);
+
+  const isTyping = useSelector((state: ReduxSyncState) => state.sync.isTyping);
 
   const params: string | undefined = useParams().new;
 
@@ -95,13 +95,13 @@ const EditorViewMain: React.FC = () => {
 
     // Start the timer to detect writing completion
     timerRef.current = setTimeout(() => {
-      setIsTyping(false);
+      dispatch(setIsTyping(false))
     }, 1500);
   };
 
   // Set the calendar title and update Redux state
   const handleTitleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    setIsTyping(true);
+    dispatch(setIsTyping(true));
     typingResetTimer();
     // update Redux state
     dispatch(
@@ -114,7 +114,7 @@ const EditorViewMain: React.FC = () => {
 
   // Set the author name and update Redux state
   const handleAuthorNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setIsTyping(true);
+    dispatch(setIsTyping(true));
     typingResetTimer();
     dispatch(
       setAuthorName({
@@ -126,7 +126,7 @@ const EditorViewMain: React.FC = () => {
 
   const handleTagsChange = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && singleTag !== "") {
-      setIsTyping(true)
+      dispatch(setIsTyping(true))
       // Check if the Enter key is pressed and the tag is not empty
       setTags((prevTags) => [...prevTags, singleTag]); // Add the tag to the tags array
       setSingleTag(""); // Reset the input field
@@ -146,10 +146,9 @@ const EditorViewMain: React.FC = () => {
   };
 
   const handleTitleColorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setIsTyping(true)
+    dispatch(setIsTyping(true));
     const newColour = e.target.value;
     console.log("New colour:", newColour);
-    setTitleTextColour(newColour);
     dispatch(
       setCalendarTitleColour({
         calendarIndex: calendarIndex,
@@ -162,9 +161,8 @@ const EditorViewMain: React.FC = () => {
   const handleAuthorNameColourChange = (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setIsTyping(true)
+    dispatch(setIsTyping(true));
     const newColour = e.target.value;
-    setAuthorTextColour(newColour);
     dispatch(
       setAuthorNameColour({
         calendarIndex: calendarIndex,
@@ -382,19 +380,20 @@ const EditorViewMain: React.FC = () => {
             backgroundPosition: "center",
           }}
         >
-          <Box
-            component="h2"
+          <Typography
+            variant="h2"
             sx={{
               textAlign: "center",
-              color: titleTextColour,
+              color: calendar.titleColour,
               fontSize: "2rem",
               margin: "0",
+              fontWeight: "bold"
             }}
           >
             {calendar.title === "" ? "Title" : calendar.title}
-          </Box>
-          <Typography variant="subtitle2" sx={{ color: authorTextColour }}>
-            {calendar.authorName ? calendar.authorName : "Author name"}
+          </Typography>
+          <Typography variant="subtitle2" sx={{ color: calendar.authorNameColour }}>
+            {calendar.authorName ? `By ${calendar.authorName}` : "Author name"}
           </Typography>
           <Box
             sx={{
