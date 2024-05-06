@@ -82,6 +82,10 @@ const EditorViewMain: React.FC = () => {
 
   const handleTagsChange = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && singleTag.trim() !== "") {
+      if (calendar?.tags?.includes(singleTag.trim())) {
+        alert("Tag already exists");
+        return;
+      } // Prevent duplicate tags
       const updatedTags = [...calendar.tags, singleTag.trim()];
       dispatch(setCalendarTags({ calendarIndex, newTags: updatedTags }));
       setSingleTag(""); // Reset the input field
