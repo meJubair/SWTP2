@@ -19,6 +19,7 @@ import {
   setAuthorNameColour,
   setCalendarTags,
 } from "../store/calendarSlice";
+import CalendarTags from "../components/CalendarTags";
 import { setIsTyping } from "../store/syncSlice";
 import AutoSave from "../components/AutoSave";
 import { updateCalendarObject } from "../services/calendarService";
@@ -36,7 +37,6 @@ const EditorViewMain: React.FC = () => {
   const [background, setBackground] = useState<string>("#ffffff");
   const [showImageUpload, setShowImageUpload] = useState<boolean>(false);
   const [uploadedImageUrl, setUploadedImageUrl] = useState<string | null>(null);
-  const [tags, setTags] = useState<string[]>([]);
   const [singleTag, setSingleTag] = useState<string>("");
 
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -130,20 +130,26 @@ const EditorViewMain: React.FC = () => {
   };
 
   const handleTagsChange = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" && singleTag !== "") {
+    if (e.key === "Enter" && singleTag.trim() !== "") {
       dispatch(setIsTyping(true));
-      // Check if the Enter key is pressed and the tag is not empty
-      setTags((prevTags) => [...prevTags, singleTag]); // Add the tag to the tags array
-      setSingleTag(""); // Reset the input field
-      dispatch(
-        setCalendarTags({
-          calendarIndex: calendarIndex,
-          newTags: [...tags, singleTag],
-        })
-      );
       typingResetTimer(timerRef);
+      if (calendar?.tags?.includes(singleTag.trim())) {
+        alert("Tag already exists");
+        return;
+      } // Prevent duplicate tags
+      const updatedTags = [...calendar.tags, singleTag.trim()];
+      dispatch(setCalendarTags({ calendarIndex, newTags: updatedTags }));
+      setSingleTag(""); // Reset the input field
     }
-    console.log("Tags:", tags);
+  };
+
+  const removeTag = (tag: string) => {
+    dispatch(setIsTyping(true));
+    typingResetTimer(timerRef);
+    const newTags = calendar?.tags?.filter(
+      (tagItem: string) => tagItem !== tag
+    );
+    dispatch(setCalendarTags({ calendarIndex, newTags }));
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -339,7 +345,7 @@ const EditorViewMain: React.FC = () => {
                 </Box>
                 <Box>
                   <Typography>
-                    Type in a tag and press Enter to add it
+                    Type in a value and press Enter to add it to the list
                   </Typography>
                   <TextField
                     label="Tags"
@@ -347,6 +353,7 @@ const EditorViewMain: React.FC = () => {
                     onChange={handleChange}
                     value={singleTag}
                   />
+                  <CalendarTags removeTag={removeTag} />
                 </Box>
               </Box>
             )}
