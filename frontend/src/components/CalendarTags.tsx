@@ -26,10 +26,9 @@ const CalendarTags: React.FC<CalendarTagsProps> = ({ removeTag }) => {
 
   return (
     <Box display="flex">
-      {}
       {calendarTags.map((tag: string, index: number) => (
         <Box
-          key={tag}
+          key={`${tag}_${index}`}
           sx={{
             background: "#0b2027",
             color: "#8affe8",
