@@ -87,7 +87,7 @@ const EditorViewMain: React.FC = () => {
   }, [isTyping]);
 
   // Set 1500ms timer after user has stopped typing and reset timer if user starts typing before timer has ended
-  const typingResetTimer = () => {
+  const typingResetTimer = (timerRef: React.MutableRefObject<NodeJS.Timeout | null>) => {
     // Reset the timer every time user starts typing
     if (timerRef.current) {
       clearTimeout(timerRef.current);
@@ -102,7 +102,7 @@ const EditorViewMain: React.FC = () => {
   // Set the calendar title and update Redux state
   const handleTitleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(setIsTyping(true));
-    typingResetTimer();
+    typingResetTimer(timerRef);
     // update Redux state
     dispatch(
       setCalendarTitle({
@@ -115,7 +115,7 @@ const EditorViewMain: React.FC = () => {
   // Set the author name and update Redux state
   const handleAuthorNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(setIsTyping(true));
-    typingResetTimer();
+    typingResetTimer(timerRef);
     dispatch(
       setAuthorName({
         calendarIndex: calendarIndex,
@@ -136,7 +136,7 @@ const EditorViewMain: React.FC = () => {
           newTags: [...tags, singleTag],
         })
       );
-      typingResetTimer()
+      typingResetTimer(timerRef)
     }
     console.log("Tags:", tags);
   };
@@ -155,7 +155,7 @@ const EditorViewMain: React.FC = () => {
         newTitleColour: newColour,
       })
     );
-    typingResetTimer()
+    typingResetTimer(timerRef)
   };
 
   const handleAuthorNameColourChange = (
@@ -169,7 +169,7 @@ const EditorViewMain: React.FC = () => {
         newAuthorNameColour: newColour,
       })
     );
-    typingResetTimer()
+    typingResetTimer(timerRef)
   };
 
   const calendarOptions = [
