@@ -82,7 +82,7 @@ const EditorViewMain: React.FC = () => {
 
   const handleTagsChange = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && singleTag.trim() !== "") {
-      const updatedTags = [...calendar?.tags, singleTag.trim()];
+      const updatedTags = [...calendar.tags, singleTag.trim()];
       dispatch(setCalendarTags({ calendarIndex, newTags: updatedTags }));
       setSingleTag(""); // Reset the input field
     }
