@@ -14,6 +14,7 @@ import {
   setAuthorName,
   setAuthorNameColour,
   setCalendarTags,
+  setCalendarBackgroundUrl,
 } from "../store/calendarSlice";
 import CalendarTags from "../components/CalendarTags";
 
@@ -169,11 +170,14 @@ const EditorViewMain: React.FC = () => {
     if (files) {
       const imageUrl = URL.createObjectURL(files);
       setUploadedImageUrl(imageUrl);
-
-      console.log("Image url:", imageUrl);
-      console.log("Uploaded image:", files);
+      dispatch(
+        setCalendarBackgroundUrl({ calendarIndex, newBackgroundUrl: imageUrl })
+      );
     } else if (imageUrl) {
       setUploadedImageUrl(imageUrl);
+      dispatch(
+        setCalendarBackgroundUrl({ calendarIndex, newBackgroundUrl: imageUrl })
+      );
     }
   };
 
@@ -183,6 +187,7 @@ const EditorViewMain: React.FC = () => {
       fileInputRef.current.value = "";
     }
     setUploadedImageUrl(null);
+    dispatch(setCalendarBackgroundUrl({ calendarIndex, newBackgroundUrl: "" }));
   };
 
   return (
