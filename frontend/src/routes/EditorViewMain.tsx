@@ -20,11 +20,10 @@ import {
   setCalendarTags,
 } from "../store/calendarSlice";
 import CalendarTags from "../components/CalendarTags";
-import { setIsTyping } from "../store/syncSlice";
+import { setIsTyping, setSaved } from "../store/syncSlice";
 import AutoSave from "../components/AutoSave";
 import { updateCalendarObject } from "../services/calendarService";
 import { CalendarData } from "../../../backend/types/calendarInterface";
-import { setSaved } from "../store/syncSlice";
 
 const EditorViewMain: React.FC = () => {
   const [showGeneralSettings, setShowGeneralSettings] = useState<boolean>(true);
