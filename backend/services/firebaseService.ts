@@ -241,6 +241,26 @@ const updateCalendarField = async (
   }
 };
 
+// Replace whole calendar object in database
+const updateCalendarObjectInFirebase = async (
+  uid: string,
+  calendarId: string,
+  calendar: CalendarData
+) => {
+  try {
+    if (!uid || !calendarId || !calendar) {
+      throw new Error("Missing parameter");
+    }
+    const collectionRef = collection(db, `calendars/${uid}/calendars`);
+    const docRef = doc(collectionRef, calendarId);
+    const updatedCalendar = await updateDoc(docRef, { ...calendar });
+    return updatedCalendar;
+  } catch (error) {
+    console.error("Error when updating calendar object:", error);
+    throw error;
+  }
+};
+
 const getFileDownloadUrl = async (uid: string, fileName: string) => {
   try {
     const fileRef = ref(storage, `users/${uid}/${fileName}`);
@@ -265,4 +285,5 @@ export {
   getFileDownloadUrl,
   removeCalendarFromFirebase,
   updateCalendarField,
+  updateCalendarObjectInFirebase,
 };
