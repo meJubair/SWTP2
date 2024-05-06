@@ -6,7 +6,11 @@ import DateSelector from "../components/DateSelector";
 import BackgroundColourSelector from "../components/BackgroundColourSelector";
 import UploadImage from "../components/UploadImage";
 import { useDispatch, useSelector } from "react-redux";
-import { ReduxCalendarState, ReduxUserState, ReduxSyncState } from "../store/stateTypes";
+import {
+  ReduxCalendarState,
+  ReduxUserState,
+  ReduxSyncState,
+} from "../store/stateTypes";
 import { useParams } from "react-router-dom";
 import {
   setCalendarTitle,
@@ -19,6 +23,7 @@ import { setIsTyping } from "../store/syncSlice";
 import AutoSave from "../components/AutoSave";
 import { updateCalendarObject } from "../services/calendarService";
 import { CalendarData } from "../../../backend/types/calendarInterface";
+import { setSaved } from "../store/syncSlice";
 
 const EditorViewMain: React.FC = () => {
   const [showGeneralSettings, setShowGeneralSettings] = useState<boolean>(true);
@@ -33,7 +38,6 @@ const EditorViewMain: React.FC = () => {
   const [uploadedImageUrl, setUploadedImageUrl] = useState<string | null>(null);
   const [tags, setTags] = useState<string[]>([]);
   const [singleTag, setSingleTag] = useState<string>("");
-  const [saved, setSaved] = useState<boolean>(true);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -44,13 +48,12 @@ const EditorViewMain: React.FC = () => {
     setDateArray(newDateArray);
   };
 
-  const uid = useSelector((state: ReduxUserState) => state.user.uid);
+  const dispatch = useDispatch();
 
+  const uid = useSelector((state: ReduxUserState) => state.user.uid);
   const isTyping = useSelector((state: ReduxSyncState) => state.sync.isTyping);
 
   const params: string | undefined = useParams().new;
-
-  const dispatch = useDispatch();
 
   // Calendar object from the Redux store
   const calendarsArray = useSelector(
@@ -66,13 +69,13 @@ const EditorViewMain: React.FC = () => {
 
   // Update calendar object in the database
   const handleSync = async () => {
-    setSaved(false);
+    dispatch(setSaved(false));
     try {
       await updateCalendarObject(uid, calendarId, calendar);
     } catch (error) {
       console.log(error);
     } finally {
-      setSaved(true);
+      dispatch(setSaved(true));
     }
   };
 
@@ -87,7 +90,9 @@ const EditorViewMain: React.FC = () => {
   }, [isTyping]);
 
   // Set 1500ms timer after user has stopped typing and reset timer if user starts typing before timer has ended
-  const typingResetTimer = (timerRef: React.MutableRefObject<NodeJS.Timeout | null>) => {
+  const typingResetTimer = (
+    timerRef: React.MutableRefObject<NodeJS.Timeout | null>
+  ) => {
     // Reset the timer every time user starts typing
     if (timerRef.current) {
       clearTimeout(timerRef.current);
@@ -95,7 +100,7 @@ const EditorViewMain: React.FC = () => {
 
     // Start the timer to detect writing completion
     timerRef.current = setTimeout(() => {
-      dispatch(setIsTyping(false))
+      dispatch(setIsTyping(false));
     }, 1500);
   };
 
@@ -126,7 +131,7 @@ const EditorViewMain: React.FC = () => {
 
   const handleTagsChange = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && singleTag !== "") {
-      dispatch(setIsTyping(true))
+      dispatch(setIsTyping(true));
       // Check if the Enter key is pressed and the tag is not empty
       setTags((prevTags) => [...prevTags, singleTag]); // Add the tag to the tags array
       setSingleTag(""); // Reset the input field
@@ -136,7 +141,7 @@ const EditorViewMain: React.FC = () => {
           newTags: [...tags, singleTag],
         })
       );
-      typingResetTimer(timerRef)
+      typingResetTimer(timerRef);
     }
     console.log("Tags:", tags);
   };
@@ -155,7 +160,7 @@ const EditorViewMain: React.FC = () => {
         newTitleColour: newColour,
       })
     );
-    typingResetTimer(timerRef)
+    typingResetTimer(timerRef);
   };
 
   const handleAuthorNameColourChange = (
@@ -169,7 +174,7 @@ const EditorViewMain: React.FC = () => {
         newAuthorNameColour: newColour,
       })
     );
-    typingResetTimer(timerRef)
+    typingResetTimer(timerRef);
   };
 
   const calendarOptions = [
@@ -232,7 +237,7 @@ const EditorViewMain: React.FC = () => {
 
   return (
     <Box>
-      <AutoSave sync={saved} />
+      <AutoSave />
       <Box
         sx={{
           width: "100%",
@@ -387,12 +392,15 @@ const EditorViewMain: React.FC = () => {
               color: calendar.titleColour,
               fontSize: "2rem",
               margin: "0",
-              fontWeight: "bold"
+              fontWeight: "bold",
             }}
           >
             {calendar.title === "" ? "Title" : calendar.title}
           </Typography>
-          <Typography variant="subtitle2" sx={{ color: calendar.authorNameColour }}>
+          <Typography
+            variant="subtitle2"
+            sx={{ color: calendar.authorNameColour }}
+          >
             {calendar.authorName ? `By ${calendar.authorName}` : "Author name"}
           </Typography>
           <Box
