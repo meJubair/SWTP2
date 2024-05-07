@@ -92,6 +92,18 @@ const uploadCalendarBackroundImage = async (
   }
 };
 
+// Get backround image download URL from storage
+const getBackgroundImage = async (uid: string, calendarId: string) => {
+  try {
+    const response = await axios.get(
+      `${baseUrl}/${uid}/${calendarId}/calendar_background`
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error getting background image url:", error);
+  }
+};
+
 export {
   getUserCalendarData,
   createNewCalendar,
@@ -99,4 +111,5 @@ export {
   updateSingleValue,
   updateCalendarObject,
   uploadCalendarBackroundImage,
+  getBackgroundImage,
 };
