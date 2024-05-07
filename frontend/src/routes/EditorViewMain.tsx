@@ -229,7 +229,6 @@ const EditorViewMain: React.FC = () => {
     typingResetTimer(timerRef);
 
     if (files) {
-      // const imageUrl = URL.createObjectURL(files);
       await uploadCalendarBackroundImage(uid, calendarId, files);
       // Get background image download link from storage
       const imageUrl = await getBackgroundImage(uid, calendarId);
