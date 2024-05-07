@@ -23,7 +23,11 @@ import {
 import CalendarTags from "../components/CalendarTags";
 import { setIsTyping, setSaved } from "../store/syncSlice";
 import AutoSave from "../components/AutoSave";
-import { updateCalendarObject } from "../services/calendarService";
+import {
+  updateCalendarObject,
+  uploadCalendarBackroundImage,
+  getBackgroundImage,
+} from "../services/calendarService";
 import { CalendarData } from "../../../backend/types/calendarInterface";
 
 const EditorViewMain: React.FC = () => {
@@ -218,13 +222,17 @@ const EditorViewMain: React.FC = () => {
   };
 
   // Handle image upload from device or URL
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files?.[0];
     const imageUrl = e.target.value;
+    dispatch(setIsTyping(true));
+    typingResetTimer(timerRef);
 
     if (files) {
-      const imageUrl = URL.createObjectURL(files);
-      setUploadedImageUrl(imageUrl);
+      // const imageUrl = URL.createObjectURL(files);
+      await uploadCalendarBackroundImage(uid, calendarId, files);
+      // Get background image download link from storage
+      const imageUrl = await getBackgroundImage(uid, calendarId);
       dispatch(
         setCalendarBackgroundUrl({ calendarIndex, newBackgroundUrl: imageUrl })
       );
@@ -241,6 +249,8 @@ const EditorViewMain: React.FC = () => {
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
+    dispatch(setIsTyping(true));
+    typingResetTimer(timerRef);
     setUploadedImageUrl(null);
     dispatch(setCalendarBackgroundUrl({ calendarIndex, newBackgroundUrl: "" }));
   };
@@ -389,8 +399,8 @@ const EditorViewMain: React.FC = () => {
             height: "800px",
             border: "1px solid black",
             borderRadius: "5px",
-            backgroundImage: uploadedImageUrl
-              ? `url(${uploadedImageUrl})`
+            backgroundImage: calendar.backgroundUrl
+              ? `url(${calendar.backgroundUrl})`
               : "none",
             backgroundSize: "cover",
             backgroundPosition: "center",
