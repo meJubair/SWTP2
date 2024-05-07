@@ -226,7 +226,6 @@ const EditorViewMain: React.FC = () => {
     const files = e.target.files?.[0];
     const imageUrl = e.target.value;
     dispatch(setIsTyping(true));
-    typingResetTimer(timerRef);
 
     if (files) {
       await uploadCalendarBackroundImage(uid, calendarId, files);
@@ -241,6 +240,7 @@ const EditorViewMain: React.FC = () => {
         setCalendarBackgroundUrl({ calendarIndex, newBackgroundUrl: imageUrl })
       );
     }
+    typingResetTimer(timerRef);
   };
 
   // Reset the uploaded image
