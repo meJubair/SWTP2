@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import DatePicker from "react-datepicker";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import { setStartDate, setEndDate } from "../store/calendarSlice";
 import { useDispatch, useSelector } from "react-redux";
+import { setIsTyping } from "../store/syncSlice";
 import { useParams } from "react-router-dom";
 import { ReduxCalendarState } from "../store/stateTypes";
 
@@ -29,6 +30,8 @@ const DateSelector: React.FC<DateSelectorProps> = ({
 
   const params: string | undefined = useParams().new;
   const dispatch = useDispatch();
+
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   const calendarArray = useSelector(
     (state: ReduxCalendarState) => state.calendar.calendars
@@ -59,6 +62,21 @@ const DateSelector: React.FC<DateSelectorProps> = ({
     }
   }, [dateArray]);
 
+  // Set 1500ms timer after user has stopped typing and reset timer if user starts typing before timer has ended
+  const typingResetTimer = (
+    timerRef: React.MutableRefObject<NodeJS.Timeout | null>
+  ) => {
+    // Reset the timer every time user starts typing
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+    }
+
+    // Start the timer to detect writing completion
+    timerRef.current = setTimeout(() => {
+      dispatch(setIsTyping(false));
+    }, 1500);
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -76,13 +94,14 @@ const DateSelector: React.FC<DateSelectorProps> = ({
       dateRange.push(new Date(currentDate));
       currentDate.setDate(currentDate.getDate() + 1);
     }
-
     setDateArray(dateRange);
   };
 
-  const handleStartDateChange = (selectedDate: Date | null) => {
+  const handleStartDateChange = async (selectedDate: Date | null) => {
     if (selectedDate) {
       // The date object is saved in the Redux store in Zulu time format (e.g. "2024-05-01T21:00:00.000Z")
+      dispatch(setIsTyping(true));
+      typingResetTimer(timerRef);
       dispatch(
         setStartDate({
           calendarIndex: calendarIndex,
@@ -97,8 +116,10 @@ const DateSelector: React.FC<DateSelectorProps> = ({
     }
   };
 
-  const handleEndDateChange = (selectedDate: Date | null) => {
+  const handleEndDateChange = async (selectedDate: Date | null) => {
     if (selectedDate) {
+      dispatch(setIsTyping(true));
+      typingResetTimer(timerRef);
       // Check if the selected end date is within the allowed range
       const endDate = new Date(selectedDate);
       const startDate = calendarStartDate || new Date(); // Set current date if start date is not set

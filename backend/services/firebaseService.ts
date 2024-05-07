@@ -186,19 +186,21 @@ const removeCalendarFromFirebase = async (calendarId: string, uid: string) => {
   }
 };
 
-// Upload user's files to FirebaseStorage in users/<uid>/<filename>
-const uploadToFirebaseStorage = async (
+// Upload user's files to Firebase Storage in users/<uid>/<filename>
+const uploadCalendarBackroundImageToStorage = async (
   file: Express.Multer.File,
-  uid: string
+  uid: string,
+  calendarId: string
 ) => {
   try {
     // Create a reference to user's storage location/path
-    const userStorageRef = ref(storage, `users/${uid}/${file.originalname}`);
+    const userStorageRef = ref(storage, `users/${uid}/${calendarId}/calendarBackground/backgroundImage`);
 
     // Determine the correct MIME type or use "default"
     const mimeType = file.mimetype || "application/octet-stream";
 
     await uploadBytes(userStorageRef, file.buffer, { contentType: mimeType }); // Upload the file in to the storage
+    return userStorageRef
   } catch (error) {
     console.error("Error uploading file:", error);
     throw error;
@@ -241,9 +243,29 @@ const updateCalendarField = async (
   }
 };
 
-const getFileDownloadUrl = async (uid: string, fileName: string) => {
+// Replace whole calendar object in database
+const updateCalendarObjectInFirebase = async (
+  uid: string,
+  calendarId: string,
+  calendar: CalendarData
+) => {
   try {
-    const fileRef = ref(storage, `users/${uid}/${fileName}`);
+    if (!uid || !calendarId || !calendar) {
+      throw new Error("Missing parameter");
+    }
+    const collectionRef = collection(db, `calendars/${uid}/calendars`);
+    const docRef = doc(collectionRef, calendarId);
+    const updatedCalendar = await updateDoc(docRef, { ...calendar });
+    return updatedCalendar;
+  } catch (error) {
+    console.error("Error when updating calendar object:", error);
+    throw error;
+  }
+};
+
+const getCalendarBackgroundDownloadUrl = async (uid: string, calendarId: string) => {
+  try {
+    const fileRef = ref(storage, `users/${uid}/${calendarId}/calendarBackground/backgroundImage`);
     const fileUrl = await getDownloadURL(fileRef);
     return fileUrl;
   } catch (error) {
@@ -261,8 +283,9 @@ export {
   getAuthData,
   logout,
   addCalendarToFirebase,
-  uploadToFirebaseStorage,
-  getFileDownloadUrl,
+  uploadCalendarBackroundImageToStorage,
+  getCalendarBackgroundDownloadUrl,
   removeCalendarFromFirebase,
   updateCalendarField,
+  updateCalendarObjectInFirebase,
 };

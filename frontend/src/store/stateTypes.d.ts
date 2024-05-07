@@ -14,4 +14,11 @@ interface ReduxCalendarState {
   }
 }
 
-export { ReduxUserState, ReduxCalendarState }
+interface ReduxSyncState {
+  sync: {
+    isTyping: boolean
+    saved: boolean
+  }
+}
+
+export { ReduxUserState, ReduxCalendarState, ReduxSyncState }

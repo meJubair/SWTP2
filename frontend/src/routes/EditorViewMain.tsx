@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
@@ -6,7 +6,11 @@ import DateSelector from "../components/DateSelector";
 import BackgroundColourSelector from "../components/BackgroundColourSelector";
 import UploadImage from "../components/UploadImage";
 import { useDispatch, useSelector } from "react-redux";
-import { ReduxCalendarState } from "../store/stateTypes";
+import {
+  ReduxCalendarState,
+  ReduxUserState,
+  ReduxSyncState,
+} from "../store/stateTypes";
 import { useParams } from "react-router-dom";
 import {
   setCalendarTitle,
@@ -14,10 +18,19 @@ import {
   setAuthorName,
   setAuthorNameColour,
   setCalendarTags,
+  setCalendarBackgroundUrl,
 } from "../store/calendarSlice";
+import CalendarTags from "../components/CalendarTags";
+import { setIsTyping, setSaved } from "../store/syncSlice";
+import AutoSave from "../components/AutoSave";
+import {
+  updateCalendarObject,
+  uploadCalendarBackroundImage,
+  getBackgroundImage,
+} from "../services/calendarService";
+import { CalendarData } from "../../../backend/types/calendarInterface";
 
 const EditorViewMain: React.FC = () => {
-  const [isTyping, setIsTyping] = useState<boolean>(false);
   const [showGeneralSettings, setShowGeneralSettings] = useState<boolean>(true);
   const [showBgColourSelector, setShowBgColourSelector] =
     useState<boolean>(false);
@@ -28,21 +41,23 @@ const EditorViewMain: React.FC = () => {
   const [background, setBackground] = useState<string>("#ffffff");
   const [showImageUpload, setShowImageUpload] = useState<boolean>(false);
   const [uploadedImageUrl, setUploadedImageUrl] = useState<string | null>(null);
-  const [titleTextColour, setTitleTextColour] = useState<string>("#0b2027");
-  const [authorTextColour, setAuthorTextColour] = useState<string>("#0b2027");
-  const [tags, setTags] = useState<string[]>([]);
   const [singleTag, setSingleTag] = useState<string>("");
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   // The logic to update the dateArray state is passed down to the DateSelector component
   const handleSetDateArray = (newDateArray: Date[]) => {
     setDateArray(newDateArray);
   };
 
-  const params: string | undefined = useParams().new;
-
   const dispatch = useDispatch();
+
+  const uid = useSelector((state: ReduxUserState) => state.user.uid);
+  const isTyping = useSelector((state: ReduxSyncState) => state.sync.isTyping);
+
+  const params: string | undefined = useParams().new;
 
   // Calendar object from the Redux store
   const calendarsArray = useSelector(
@@ -53,14 +68,51 @@ const EditorViewMain: React.FC = () => {
     (calendar) => calendar.calendarId === params
   );
 
-  // Set the calendar title
-  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setIsTyping(true);
+  const calendar: CalendarData = calendarsArray[calendarIndex];
+  const calendarId = calendar.calendarId;
 
-    // Timeout to check if user is still typing
-    setTimeout(() => {
-      setIsTyping(false);
+  // Update calendar object in the database
+  const handleSync = async () => {
+    dispatch(setSaved(false));
+    try {
+      await updateCalendarObject(uid, calendarId, calendar);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      dispatch(setSaved(true));
+    }
+  };
+
+  // Update data in the database after user has stopped typing
+  useEffect(() => {
+    const asyncWrapper = async () => {
+      if (!isTyping) {
+        await handleSync();
+      }
+    };
+    asyncWrapper();
+  }, [isTyping]);
+
+  // Set 1500ms timer after user has stopped typing and reset timer if user starts typing before timer has ended
+  const typingResetTimer = (
+    timerRef: React.MutableRefObject<NodeJS.Timeout | null>
+  ) => {
+    // Reset the timer every time user starts typing
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+    }
+
+    // Start the timer to detect writing completion
+    timerRef.current = setTimeout(() => {
+      dispatch(setIsTyping(false));
     }, 1500);
+  };
+
+  // Set the calendar title and update Redux state
+  const handleTitleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    dispatch(setIsTyping(true));
+    typingResetTimer(timerRef);
+    // update Redux state
     dispatch(
       setCalendarTitle({
         calendarIndex: calendarIndex,
@@ -69,7 +121,10 @@ const EditorViewMain: React.FC = () => {
     );
   };
 
+  // Set the author name and update Redux state
   const handleAuthorNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    dispatch(setIsTyping(true));
+    typingResetTimer(timerRef);
     dispatch(
       setAuthorName({
         calendarIndex: calendarIndex,
@@ -79,18 +134,26 @@ const EditorViewMain: React.FC = () => {
   };
 
   const handleTagsChange = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" && singleTag !== "") {
-      // Check if the Enter key is pressed and the tag is not empty
-      setTags((prevTags) => [...prevTags, singleTag]); // Add the tag to the tags array
+    if (e.key === "Enter" && singleTag.trim() !== "") {
+      dispatch(setIsTyping(true));
+      typingResetTimer(timerRef);
+      if (calendar?.tags?.includes(singleTag.trim())) {
+        alert("Tag already exists");
+        return;
+      } // Prevent duplicate tags
+      const updatedTags = [...calendar.tags, singleTag.trim()];
+      dispatch(setCalendarTags({ calendarIndex, newTags: updatedTags }));
       setSingleTag(""); // Reset the input field
-      dispatch(
-        setCalendarTags({
-          calendarIndex: calendarIndex,
-          newTags: [...tags, singleTag],
-        })
-      );
     }
-    console.log("Tags:", tags);
+  };
+
+  const removeTag = (tag: string) => {
+    dispatch(setIsTyping(true));
+    typingResetTimer(timerRef);
+    const newTags = calendar?.tags?.filter(
+      (tagItem: string) => tagItem !== tag
+    );
+    dispatch(setCalendarTags({ calendarIndex, newTags }));
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -98,28 +161,30 @@ const EditorViewMain: React.FC = () => {
   };
 
   const handleTitleColorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    dispatch(setIsTyping(true));
     const newColour = e.target.value;
     console.log("New colour:", newColour);
-    setTitleTextColour(newColour);
     dispatch(
       setCalendarTitleColour({
         calendarIndex: calendarIndex,
         newTitleColour: newColour,
       })
     );
+    typingResetTimer(timerRef);
   };
 
   const handleAuthorNameColourChange = (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
+    dispatch(setIsTyping(true));
     const newColour = e.target.value;
-    setAuthorTextColour(newColour);
     dispatch(
       setAuthorNameColour({
         calendarIndex: calendarIndex,
         newAuthorNameColour: newColour,
       })
     );
+    typingResetTimer(timerRef);
   };
 
   const calendarOptions = [
@@ -157,19 +222,25 @@ const EditorViewMain: React.FC = () => {
   };
 
   // Handle image upload from device or URL
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files?.[0];
     const imageUrl = e.target.value;
+    dispatch(setIsTyping(true));
 
     if (files) {
-      const imageUrl = URL.createObjectURL(files);
-      setUploadedImageUrl(imageUrl);
-
-      console.log("Image url:", imageUrl);
-      console.log("Uploaded image:", files);
+      await uploadCalendarBackroundImage(uid, calendarId, files);
+      // Get background image download link from storage
+      const imageUrl = await getBackgroundImage(uid, calendarId);
+      dispatch(
+        setCalendarBackgroundUrl({ calendarIndex, newBackgroundUrl: imageUrl })
+      );
     } else if (imageUrl) {
       setUploadedImageUrl(imageUrl);
+      dispatch(
+        setCalendarBackgroundUrl({ calendarIndex, newBackgroundUrl: imageUrl })
+      );
     }
+    typingResetTimer(timerRef);
   };
 
   // Reset the uploaded image
@@ -177,11 +248,15 @@ const EditorViewMain: React.FC = () => {
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
+    dispatch(setIsTyping(true));
+    typingResetTimer(timerRef);
     setUploadedImageUrl(null);
+    dispatch(setCalendarBackgroundUrl({ calendarIndex, newBackgroundUrl: "" }));
   };
 
   return (
     <Box>
+      <AutoSave />
       <Box
         sx={{
           width: "100%",
@@ -242,7 +317,7 @@ const EditorViewMain: React.FC = () => {
                   <TextField
                     sx={{ background: "white", borderRadius: "5px" }}
                     label="Calendar title"
-                    value={calendarsArray[calendarIndex]?.title}
+                    value={calendar.title}
                     onChange={handleTitleChange}
                   />
                   <Box
@@ -256,12 +331,13 @@ const EditorViewMain: React.FC = () => {
                       type="color"
                       onChange={handleTitleColorChange}
                       fullWidth
+                      value={calendar.titleColour}
                     />
                   </Box>
                   <TextField
                     sx={{ background: "white", borderRadius: "5px" }}
                     label="Author name"
-                    value={calendarsArray[calendarIndex]?.authorName}
+                    value={calendar.authorName}
                     onChange={handleAuthorNameChange}
                   />
                   <Box sx={{ width: "150px", margin: "10px 0" }}>
@@ -270,6 +346,7 @@ const EditorViewMain: React.FC = () => {
                       type="color"
                       onChange={handleAuthorNameColourChange}
                       fullWidth
+                      value={calendar.authorNameColour}
                     />
                   </Box>
                 </Box>
@@ -281,7 +358,7 @@ const EditorViewMain: React.FC = () => {
                 </Box>
                 <Box>
                   <Typography>
-                    Type in a tag and press Enter to add it
+                    Type in a value and press Enter to add it to the list
                   </Typography>
                   <TextField
                     label="Tags"
@@ -289,6 +366,7 @@ const EditorViewMain: React.FC = () => {
                     onChange={handleChange}
                     value={singleTag}
                   />
+                  <CalendarTags removeTag={removeTag} />
                 </Box>
               </Box>
             )}
@@ -320,31 +398,31 @@ const EditorViewMain: React.FC = () => {
             height: "800px",
             border: "1px solid black",
             borderRadius: "5px",
-            backgroundImage: uploadedImageUrl
-              ? `url(${uploadedImageUrl})`
+            backgroundImage: calendar.backgroundUrl
+              ? `url(${calendar.backgroundUrl})`
               : "none",
             backgroundSize: "cover",
             backgroundPosition: "center",
           }}
         >
-          <Box
-            component="h2"
+          <Typography
+            variant="h2"
             sx={{
               textAlign: "center",
-              color: titleTextColour,
+              color: calendar.titleColour,
               fontSize: "2rem",
               margin: "0",
+              fontWeight: "bold",
             }}
           >
-            {isTyping ? "Typing..." : calendarsArray[calendarIndex]?.title}
-          </Box>
-          {calendarsArray[calendarIndex]?.authorName ? (
-            <Typography variant="subtitle2" sx={{ color: authorTextColour }}>
-              By {calendarsArray[calendarIndex]?.authorName}
-            </Typography>
-          ) : (
-            ""
-          )}
+            {calendar.title === "" ? "Title" : calendar.title}
+          </Typography>
+          <Typography
+            variant="subtitle2"
+            sx={{ color: calendar.authorNameColour }}
+          >
+            {calendar.authorName ? `By ${calendar.authorName}` : "Author name"}
+          </Typography>
           <Box
             sx={{
               display: "grid",
@@ -354,7 +432,7 @@ const EditorViewMain: React.FC = () => {
               justifyContent: "center",
             }}
           >
-            {calendarsArray[calendarIndex]?.calendarDoors?.map((door: any) => (
+            {calendar.calendarDoors?.map((door: any) => (
               <Box
                 key={door.doorNumber}
                 sx={{
