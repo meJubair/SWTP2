@@ -19,7 +19,6 @@ import {
   setAuthorNameColour,
   setCalendarTags,
   setCalendarBackgroundUrl,
-  setCalendarBackgroundColour,
 } from "../store/calendarSlice";
 import CalendarTags from "../components/CalendarTags";
 import { setIsTyping, setSaved } from "../store/syncSlice";
@@ -216,13 +215,6 @@ const EditorViewMain: React.FC = () => {
     }
   };
 
-  // Set background colour of the calendar
-  const handleColorChange = (color: string) => {
-    dispatch(
-      setCalendarBackgroundColour({ calendarIndex, newBackgroundColour: color })
-    );
-  };
-
   // Handle image upload from device or URL
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files?.[0];
@@ -372,9 +364,7 @@ const EditorViewMain: React.FC = () => {
                 </Box>
               </Box>
             )}
-            {showBgColourSelector && (
-              <BackgroundColourSelector onColorChange={handleColorChange} />
-            )}
+            {showBgColourSelector && <BackgroundColourSelector />}
             {showImageUpload && (
               <UploadImage
                 handleImageUpload={handleImageUpload}
