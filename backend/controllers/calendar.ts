@@ -3,8 +3,8 @@ import multer from "multer";
 import {
   getUserCalendarDataFromFirebase,
   addCalendarToFirebase,
-  uploadToFirebaseStorage,
-  getFileDownloadUrl,
+  uploadCalendarBackroundImageToStorage,
+  getCalendarBackgroundDownloadUrl,
   removeCalendarFromFirebase,
   updateCalendarField,
   updateCalendarObjectInFirebase,
@@ -94,19 +94,20 @@ calendarRouter.delete(
   }
 );
 
-// Handle file upload using Multer (upload.single("file"))
+// Handle calendar background image upload using Multer (upload.single("file"))
+// Make sure that the file is under a key of "file"
 calendarRouter.post(
-  "/upload",
+  "/:uid/:calendarId/upload/calendar_background",
   upload.single("file"),
   async (request: Request, response: Response) => {
     try {
       const file = request.file;
-      const { uid } = request.body;
+      const { uid, calendarId } = request.params;
       if (!file || !uid) {
         response.json(400).json({ error: "File or UID not provided" });
         return;
       }
-      await uploadToFirebaseStorage(file, uid); // Upload the file in to Firebase Storage
+      await uploadCalendarBackroundImageToStorage(file, uid, calendarId); // Upload the file in to Firebase Storage
       response.status(200).end("File succesfully uploaded");
     } catch (error) {
       response.status(500).json({ error: error });
@@ -114,13 +115,13 @@ calendarRouter.post(
   }
 );
 
-// Endpoint for getting file download URL from the storage
+// Endpoint for getting background image file download URL from the storage
 calendarRouter.get(
-  "/getfileurl",
+  "/:uid/:calendarId/calendar_background",
   async (request: Request, response: Response) => {
     try {
-      const { uid, fileName } = request.body;
-      const fileUrl = await getFileDownloadUrl(uid, fileName);
+      const { uid, calendarId } = request.params;
+      const fileUrl = await getCalendarBackgroundDownloadUrl(uid, calendarId);
       response.json(fileUrl);
     } catch (error) {
       console.log(error);

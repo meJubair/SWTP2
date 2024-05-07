@@ -186,19 +186,21 @@ const removeCalendarFromFirebase = async (calendarId: string, uid: string) => {
   }
 };
 
-// Upload user's files to FirebaseStorage in users/<uid>/<filename>
-const uploadToFirebaseStorage = async (
+// Upload user's files to Firebase Storage in users/<uid>/<filename>
+const uploadCalendarBackroundImageToStorage = async (
   file: Express.Multer.File,
-  uid: string
+  uid: string,
+  calendarId: string
 ) => {
   try {
     // Create a reference to user's storage location/path
-    const userStorageRef = ref(storage, `users/${uid}/${file.originalname}`);
+    const userStorageRef = ref(storage, `users/${uid}/${calendarId}/calendarBackground/backgroundImage`);
 
     // Determine the correct MIME type or use "default"
     const mimeType = file.mimetype || "application/octet-stream";
 
     await uploadBytes(userStorageRef, file.buffer, { contentType: mimeType }); // Upload the file in to the storage
+    return userStorageRef
   } catch (error) {
     console.error("Error uploading file:", error);
     throw error;
@@ -261,9 +263,9 @@ const updateCalendarObjectInFirebase = async (
   }
 };
 
-const getFileDownloadUrl = async (uid: string, fileName: string) => {
+const getCalendarBackgroundDownloadUrl = async (uid: string, calendarId: string) => {
   try {
-    const fileRef = ref(storage, `users/${uid}/${fileName}`);
+    const fileRef = ref(storage, `users/${uid}/${calendarId}/calendarBackground/backgroundImage`);
     const fileUrl = await getDownloadURL(fileRef);
     return fileUrl;
   } catch (error) {
@@ -281,8 +283,8 @@ export {
   getAuthData,
   logout,
   addCalendarToFirebase,
-  uploadToFirebaseStorage,
-  getFileDownloadUrl,
+  uploadCalendarBackroundImageToStorage,
+  getCalendarBackgroundDownloadUrl,
   removeCalendarFromFirebase,
   updateCalendarField,
   updateCalendarObjectInFirebase,
