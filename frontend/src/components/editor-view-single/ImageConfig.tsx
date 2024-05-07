@@ -6,7 +6,7 @@ interface ImageConfigProps {
   onChange: (imageUrl: string) => void;
 }
 
-const ImageConfig: React.FC<ImageConfigProps> = ({ onChange}) => {
+const ImageConfig: React.FC<ImageConfigProps> = ({ onChange }) => {
     const [uploadedImageUrl, setUploadedImageUrl] = useState<string | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
