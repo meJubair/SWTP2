@@ -1,5 +1,4 @@
 import React, { useEffect, useRef } from "react";
-import { SketchPicker } from "react-color";
 import { useDispatch, useSelector } from "react-redux";
 import { setCalendarBackgroundColour } from "../store/calendarSlice";
 import {
@@ -11,10 +10,10 @@ import { useParams } from "react-router-dom";
 import { setIsTyping, setSaved } from "../store/syncSlice";
 import { CalendarData } from "../../../backend/types/calendarInterface";
 import { updateCalendarObject } from "../services/calendarService";
+import TextField from "@mui/material/TextField";
+import Box from "@mui/material/Box";
 
-const BackgroundColourSelector: React.FC<{
-  onColorChange: (color: string) => void;
-}> = ({ onColorChange }) => {
+const BackgroundColourSelector: React.FC = () => {
   const dispatch = useDispatch();
   const params: string | undefined = useParams().new;
   const timerRef = useRef<NodeJS.Timeout | null>(null);
@@ -33,7 +32,7 @@ const BackgroundColourSelector: React.FC<{
   const calendar: CalendarData = calendarsArray[calendarIndex];
   const calendarId = calendar?.calendarId;
 
-  const bgColour = calendarsArray[calendarIndex].backgroundColour;
+  const bgColour = calendarsArray[calendarIndex]?.backgroundColour;
 
   useEffect(() => {
     const saveData = async () => {
@@ -65,10 +64,9 @@ const BackgroundColourSelector: React.FC<{
     }, 1500);
   };
 
-  const handleChange = (color: any) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(setIsTyping(true));
-    const newColour = color.hex;
-    onColorChange(newColour); // Pass the new colour to the EditorViewMain component
+    const newColour = e.target.value;
     dispatch(
       setCalendarBackgroundColour({
         calendarIndex,
@@ -78,7 +76,17 @@ const BackgroundColourSelector: React.FC<{
     typingResetTimer(timerRef);
   };
 
-  return <SketchPicker color={bgColour} onChange={handleChange} />;
+  return (
+    <Box sx={{ width: "50%", margin: "30px 0" }}>
+      <TextField
+        label="Background colour"
+        type="color"
+        onChange={handleChange}
+        value={bgColour}
+        fullWidth
+      />
+    </Box>
+  );
 };
 
 export default BackgroundColourSelector;
