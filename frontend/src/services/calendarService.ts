@@ -65,10 +65,38 @@ const updateCalendarObject = async (
   }
 };
 
+// Upload calendarBackroundImage to the storage
+const uploadCalendarBackroundImage = async (
+  uid: string,
+  calendarId: string,
+  file: File
+) => {
+  try {
+    // Create a new FormData object to handle the file with Multer
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const response = await axios.post(
+      `${baseUrl}/${uid}/${calendarId}/upload/calendar_background`,
+      formData,
+      {
+        // Set content type for file upload to work with Multer
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+    return response;
+  } catch (error) {
+    console.error("Error when uploading backround image:", error);
+  }
+};
+
 export {
   getUserCalendarData,
   createNewCalendar,
   removeCalendar,
   updateSingleValue,
-  updateCalendarObject
+  updateCalendarObject,
+  uploadCalendarBackroundImage,
 };
