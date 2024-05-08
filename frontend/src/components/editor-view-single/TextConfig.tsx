@@ -55,7 +55,7 @@ const TextConfig: React.FC<TextConfigProps> = ({ onChange, values }) => {
         <Typography variant="h6">Font Size</Typography>
         <Slider
           value={values.fontSize}
-          // onChange={(e, value) => onChange('fontSize', value as number)}
+          onChange={(_, value) => onChange("fontSize", value as number)}
           min={8}
           max={72}
           step={1}
