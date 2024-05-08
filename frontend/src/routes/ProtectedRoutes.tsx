@@ -3,9 +3,8 @@ import { Navigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { ReduxUserState } from "../store/stateTypes";
 import { setUserName, setUid, setUserLogin } from "../store/userSlice";
-import CircularProgress from "@mui/material/CircularProgress";
+import LoadingSpinner from "../components/LoadingSpinner";
 import { getAuth } from "../services/authService";
-import Box from "@mui/material/Box";
 
 interface ProtectedRouteProps {
   component: FC;
@@ -38,18 +37,7 @@ const ProtectedRoute: FC<ProtectedRouteProps> = ({ component: Component }) => {
 
   // If authLoaded is false display a spinner.
   if (!authLoaded) {
-    return (
-      <Box
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          height: "calc(100vh - 64px)",
-        }}
-      >
-        <CircularProgress />
-      </Box>
-    );
+    return <LoadingSpinner />
   }
 
   // If user authLoaded is true then check if user is authenticated and let user navigate to protected route. Else redirect to /login
