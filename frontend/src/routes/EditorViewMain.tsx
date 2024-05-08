@@ -28,7 +28,7 @@ import {
   uploadCalendarBackroundImage,
   getBackgroundImage,
 } from "../services/calendarService";
-import { CalendarData } from "../../../backend/types/calendarInterface";
+import { CalendarData, DoorData } from "../../../backend/types/calendarInterface";
 
 const EditorViewMain: React.FC = () => {
   const [showGeneralSettings, setShowGeneralSettings] = useState<boolean>(true);
@@ -424,7 +424,7 @@ const EditorViewMain: React.FC = () => {
               justifyContent: "center",
             }}
           >
-            {calendar.calendarDoors?.map((door: any) => (
+            {calendar.calendarDoors?.map((door: DoorData) => (
               <Box
                 key={door.doorNumber}
                 sx={{
