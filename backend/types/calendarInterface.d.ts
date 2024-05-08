@@ -1,4 +1,3 @@
-
 // Calendar object
 interface CalendarData {
   calendarId: string;
