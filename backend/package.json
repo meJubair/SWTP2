@@ -1,14 +1,14 @@
 {
   "name": "backend",
   "version": "1.0.0",
-  "description": "",
+  "description": "Backend application for managing user authentication and calendar CRUD operations using TypeScript, Express, and Firebase services.",
   "main": "index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon index.ts",
     "start": "node index.js"
   },
-  "keywords": [],
+  "keywords": ["typescript", "express", "firebase", "firestore", "authentication", "calendar"],
   "author": "",
   "license": "ISC",
   "dependencies": {
