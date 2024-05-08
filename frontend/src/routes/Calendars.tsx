@@ -11,7 +11,8 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import { useEffect } from "react";
+import LoadingSpinner from "../components/LoadingSpinner";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setCalendars } from "../store/calendarSlice";
 import { ReduxCalendarState, ReduxUserState } from "../store/stateTypes";
@@ -22,6 +23,7 @@ import {
 } from "../services/calendarService";
 
 const Calendars = () => {
+  const [loading, setLoading] = useState<boolean>(true);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const calendars = useSelector(
@@ -36,6 +38,7 @@ const Calendars = () => {
       if (response && response.status === 200) {
         const data = response.data;
         dispatch(setCalendars(data));
+        setLoading(false);
       }
     };
     fetchCalendarData();
@@ -44,10 +47,12 @@ const Calendars = () => {
   // Create a new calendar instance in the database and redirect the user into calendars/calendarId
   const handleCreateCalendar = async (uid: string) => {
     try {
+      setLoading(true);
       const response = await createNewCalendar(uid);
       if (response && response.status === 200) {
         // Update the Redux state with the newly created calendar instance
         dispatch(setCalendars([...calendars, response.data]));
+        setLoading(false);
         navigate(`${response.data.calendarId}`);
       }
     } catch (error) {
@@ -57,6 +62,7 @@ const Calendars = () => {
 
   const handleDeleteCalendar = async (uid: string, calendarId: string) => {
     try {
+      setLoading(true);
       // Remove calendar from database
       await removeCalendar(uid, calendarId);
       // Remove calendar from Redux state
@@ -65,10 +71,15 @@ const Calendars = () => {
           calendars.filter((calendar) => calendar.calendarId !== calendarId)
         )
       );
+      setLoading(false);
     } catch (error) {
       console.log(error);
     }
   };
+
+  if (loading) {
+    return <LoadingSpinner />;
+  }
 
   return (
     <Box sx={{ height: "calc(100vh - 64px)" }}>
