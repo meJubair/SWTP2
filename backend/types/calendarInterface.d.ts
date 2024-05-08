@@ -1,3 +1,5 @@
+
+// Calendar object
 interface CalendarData {
   calendarId: string;
   title: string;
@@ -13,11 +15,12 @@ interface CalendarData {
   calendarDoors: DoorData[];
 }
 
+// Calendar door data
 interface DoorData {
   doorNumber: number;
-  title: DoorDataTextConfig;
-  subtitle: DoorDataTextConfig;
-  description: DoorDataTextConfig;
+  title: DoorDataTextStyles;
+  subtitle: DoorDataTextStyles;
+  description: DoorDataTextStyles;
   doorBackgroundColour: string;
   doorBackgroundGradient: string;
   youtubeVideoId: string;
@@ -25,7 +28,8 @@ interface DoorData {
   videoFileDownloadUrl: string;
 }
 
-interface DoorDataTextConfig {
+// Text styles config
+interface DoorDataTextStyles {
   textContent: string;
   fontSize: number;
   colour: string;
