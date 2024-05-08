@@ -38,7 +38,6 @@ const EditorViewMain: React.FC = () => {
     "General settings"
   );
   const [dateArray, setDateArray] = useState<Date[]>([]);
-  const [background, setBackground] = useState<string>("#ffffff");
   const [showImageUpload, setShowImageUpload] = useState<boolean>(false);
   const [uploadedImageUrl, setUploadedImageUrl] = useState<string | null>(null);
   const [singleTag, setSingleTag] = useState<string>("");
@@ -70,6 +69,7 @@ const EditorViewMain: React.FC = () => {
 
   const calendar: CalendarData = calendarsArray[calendarIndex];
   const calendarId = calendar.calendarId;
+  const background = calendar.backgroundColour;
 
   // Update calendar object in the database
   const handleSync = async () => {
@@ -163,7 +163,6 @@ const EditorViewMain: React.FC = () => {
   const handleTitleColorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(setIsTyping(true));
     const newColour = e.target.value;
-    console.log("New colour:", newColour);
     dispatch(
       setCalendarTitleColour({
         calendarIndex: calendarIndex,
@@ -214,11 +213,6 @@ const EditorViewMain: React.FC = () => {
       setShowGeneralSettings(false);
       setShowBgColourSelector(false);
     }
-  };
-
-  // Set background colour of the calendar
-  const handleColorChange = (color: string) => {
-    setBackground(color);
   };
 
   // Handle image upload from device or URL
@@ -370,9 +364,7 @@ const EditorViewMain: React.FC = () => {
                 </Box>
               </Box>
             )}
-            {showBgColourSelector && (
-              <BackgroundColourSelector onColorChange={handleColorChange} />
-            )}
+            {showBgColourSelector && <BackgroundColourSelector />}
             {showImageUpload && (
               <UploadImage
                 handleImageUpload={handleImageUpload}

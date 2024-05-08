@@ -1,39 +1,91 @@
-import React, { useState } from "react";
-import { SketchPicker } from "react-color";
+import React, { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setCalendarBackgroundColour } from "../store/calendarSlice";
-import { ReduxCalendarState } from "../store/stateTypes";
+import {
+  ReduxCalendarState,
+  ReduxSyncState,
+  ReduxUserState,
+} from "../store/stateTypes";
 import { useParams } from "react-router-dom";
+import { setIsTyping, setSaved } from "../store/syncSlice";
+import { CalendarData } from "../../../backend/types/calendarInterface";
+import { updateCalendarObject } from "../services/calendarService";
+import TextField from "@mui/material/TextField";
+import Box from "@mui/material/Box";
 
-const BackgroundColourSelector: React.FC<{
-  onColorChange: (color: string) => void;
-}> = ({ onColorChange }) => {
-  const [bgColour, setBgColour] = useState<string>("#ffffff");
-
+const BackgroundColourSelector: React.FC = () => {
   const dispatch = useDispatch();
   const params: string | undefined = useParams().new;
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
 
-  const calendarArray = useSelector(
+  const isTyping = useSelector((state: ReduxSyncState) => state.sync.isTyping);
+  const uid = useSelector((state: ReduxUserState) => state.user.uid);
+
+  const calendarsArray = useSelector(
     (state: ReduxCalendarState) => state.calendar.calendars
   );
 
-  const calendarIndex = calendarArray.findIndex(
+  const calendarIndex = calendarsArray.findIndex(
     (calendar) => calendar.calendarId === params
   );
 
-  const handleChange = (color: any) => {
-    const newColour = color.hex;
-    setBgColour(newColour);
-    onColorChange(newColour); // Pass the new colour to the EditorViewMain component
+  const calendar: CalendarData = calendarsArray[calendarIndex];
+  const calendarId = calendar?.calendarId;
+  const bgColour = calendar?.backgroundColour;
+
+  useEffect(() => {
+    const saveData = async () => {
+      if (!isTyping) {
+        await handleSave();
+      }
+    };
+    saveData();
+  }, [isTyping]);
+
+  const handleSave = async () => {
+    dispatch(setSaved(false));
+
+    try {
+      await updateCalendarObject(uid, calendarId, calendar);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      dispatch(setSaved(true));
+    }
+  };
+
+  const typingResetTimer = (
+    timerRef: React.MutableRefObject<NodeJS.Timeout | null>
+  ) => {
+    if (timerRef.current) clearTimeout(timerRef.current);
+    timerRef.current = setTimeout(() => {
+      dispatch(setIsTyping(false));
+    }, 1500);
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    dispatch(setIsTyping(true));
+    const newColour = e.target.value;
     dispatch(
       setCalendarBackgroundColour({
         calendarIndex,
         newBackgroundColour: newColour,
       })
     );
+    typingResetTimer(timerRef);
   };
 
-  return <SketchPicker color={bgColour} onChange={handleChange} />;
+  return (
+    <Box sx={{ width: "50%", margin: "30px 0" }}>
+      <TextField
+        label="Background colour"
+        type="color"
+        onChange={handleChange}
+        value={bgColour}
+        fullWidth
+      />
+    </Box>
+  );
 };
 
 export default BackgroundColourSelector;
