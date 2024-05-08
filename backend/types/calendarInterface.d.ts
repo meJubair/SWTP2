@@ -37,4 +37,4 @@ interface DoorDataTextStyles {
   fontFamily: string;
 }
 
-export { CalendarData, DoorData };
+export { CalendarData, DoorData, DoorDataTextStyles };
