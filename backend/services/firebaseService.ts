@@ -1,5 +1,13 @@
 import { initializeApp } from "firebase/app";
-import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import {
+  getStorage,
+  ref,
+  uploadBytes,
+  getDownloadURL,
+  deleteObject,
+  listAll,
+  StorageReference,
+} from "firebase/storage";
 import {
   createUserWithEmailAndPassword,
   getAuth,
@@ -170,6 +178,22 @@ const addCalendarToFirebase = async (uid: string) => {
   }
 };
 
+// Remove all items (files) and subfolders recursively from the given folder reference in Firebase Storage
+const deleteFolderContents = async (folderRef: StorageReference) => {
+  // Lists all the items in the Ref
+  const items = await listAll(folderRef);
+
+  // Delete all items (files) within the folder
+  const itemDeletionPromises = items.items.map((item) => deleteObject(item));
+  await Promise.all(itemDeletionPromises);
+
+  // Recursively delete subfolders (prefixes)
+  const subFolderPromises = items.prefixes.map((prefix) =>
+    deleteFolderContents(prefix)
+  );
+  await Promise.all(subFolderPromises);
+};
+
 // Remove user's calendar from the database
 const removeCalendarFromFirebase = async (calendarId: string, uid: string) => {
   try {
@@ -180,6 +204,9 @@ const removeCalendarFromFirebase = async (calendarId: string, uid: string) => {
     const calendarRef = collection(db, `calendars/${uid}/calendars/`);
     // Delete the document in the collection
     await deleteDoc(doc(calendarRef, calendarId));
+    // Remove the calendarId folder and subfolders from the storage
+    const userStorageRef = ref(storage, `users/${uid}/${calendarId}`);
+    await deleteFolderContents(userStorageRef);
   } catch (error) {
     console.error("Error removing calendar:", error);
     throw error;
@@ -194,13 +221,16 @@ const uploadCalendarBackroundImageToStorage = async (
 ) => {
   try {
     // Create a reference to user's storage location/path
-    const userStorageRef = ref(storage, `users/${uid}/${calendarId}/calendarBackground/backgroundImage`);
+    const userStorageRef = ref(
+      storage,
+      `users/${uid}/${calendarId}/calendarBackground/backgroundImage`
+    );
 
     // Determine the correct MIME type or use "default"
     const mimeType = file.mimetype || "application/octet-stream";
 
     await uploadBytes(userStorageRef, file.buffer, { contentType: mimeType }); // Upload the file in to the storage
-    return userStorageRef
+    return userStorageRef;
   } catch (error) {
     console.error("Error uploading file:", error);
     throw error;
@@ -263,9 +293,15 @@ const updateCalendarObjectInFirebase = async (
   }
 };
 
-const getCalendarBackgroundDownloadUrl = async (uid: string, calendarId: string) => {
+const getCalendarBackgroundDownloadUrl = async (
+  uid: string,
+  calendarId: string
+) => {
   try {
-    const fileRef = ref(storage, `users/${uid}/${calendarId}/calendarBackground/backgroundImage`);
+    const fileRef = ref(
+      storage,
+      `users/${uid}/${calendarId}/calendarBackground/backgroundImage`
+    );
     const fileUrl = await getDownloadURL(fileRef);
     return fileUrl;
   } catch (error) {
