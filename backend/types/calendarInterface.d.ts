@@ -15,10 +15,23 @@ interface CalendarData {
 
 interface DoorData {
   doorNumber: number;
-  textContent: string;
+  title: DoorDataTextConfig;
+  subtitle: DoorDataTextConfig;
+  description: DoorDataTextConfig;
+  doorBackgroundColour: string;
+  doorBackgroundGradient: string;
   youtubeVideoId: string;
-  imageFileUrl: string;
-  videFileUrl: string;
+  backgroundImageFileDownloadUrl: string;
+  videoFileDownloadUrl: string;
+}
+
+interface DoorDataTextConfig {
+  textContent: string;
+  fontSize: number;
+  colour: string;
+  backgroundColor: string;
+  fontWeight: string;
+  fontFamily: string;
 }
 
 export { CalendarData, DoorData };
