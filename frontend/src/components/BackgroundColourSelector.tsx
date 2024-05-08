@@ -1,15 +1,10 @@
-import React, { useEffect, useRef } from "react";
+import React, { useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setCalendarBackgroundColour } from "../store/calendarSlice";
-import {
-  ReduxCalendarState,
-  ReduxSyncState,
-  ReduxUserState,
-} from "../store/stateTypes";
+import { ReduxCalendarState } from "../store/stateTypes";
 import { useParams } from "react-router-dom";
-import { setIsTyping, setSaved } from "../store/syncSlice";
+import { setIsTyping } from "../store/syncSlice";
 import { CalendarData } from "../../../backend/types/calendarInterface";
-import { updateCalendarObject } from "../services/calendarService";
 import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
 
@@ -17,9 +12,6 @@ const BackgroundColourSelector: React.FC = () => {
   const dispatch = useDispatch();
   const params: string | undefined = useParams().new;
   const timerRef = useRef<NodeJS.Timeout | null>(null);
-
-  const isTyping = useSelector((state: ReduxSyncState) => state.sync.isTyping);
-  const uid = useSelector((state: ReduxUserState) => state.user.uid);
 
   const calendarsArray = useSelector(
     (state: ReduxCalendarState) => state.calendar.calendars
@@ -30,29 +22,7 @@ const BackgroundColourSelector: React.FC = () => {
   );
 
   const calendar: CalendarData = calendarsArray[calendarIndex];
-  const calendarId = calendar?.calendarId;
   const bgColour = calendar?.backgroundColour;
-
-  useEffect(() => {
-    const saveData = async () => {
-      if (!isTyping) {
-        await handleSave();
-      }
-    };
-    saveData();
-  }, [isTyping]);
-
-  const handleSave = async () => {
-    dispatch(setSaved(false));
-
-    try {
-      await updateCalendarObject(uid, calendarId, calendar);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      dispatch(setSaved(true));
-    }
-  };
 
   const typingResetTimer = (
     timerRef: React.MutableRefObject<NodeJS.Timeout | null>
