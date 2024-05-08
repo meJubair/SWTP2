@@ -8,7 +8,7 @@ This backend application is built using TypeScript and the Express library, util
 - TypeScript: TypeScript is used throughout the project, bringing type safety and enhanced developer experience to the codebase.
 - Firebase Integration: The application leverages Firebase storage and database services to store user and calendar data securely.
   - Firebase Database: Utilized for storing structured data such as user profiles and calendar data, providing real-time synchronization and offline support.
-  - Firebase Storage: Used for storing various media files or binary data associated with user accounts or calendar events.
+  - Firebase Storage: Used for storing various media files or binary data associated with user accounts or calendar media.
 
 ## File stucture description
 
