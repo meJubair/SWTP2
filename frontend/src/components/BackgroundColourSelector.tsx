@@ -31,7 +31,7 @@ const BackgroundColourSelector: React.FC = () => {
 
   const calendar: CalendarData = calendarsArray[calendarIndex];
   const calendarId = calendar?.calendarId;
-  const bgColour = calendar.backgroundColour;
+  const bgColour = calendar?.backgroundColour;
 
   useEffect(() => {
     const saveData = async () => {
