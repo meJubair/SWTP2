@@ -1,3 +1,4 @@
+// Calendar object
 interface CalendarData {
   calendarId: string;
   title: string;
@@ -13,12 +14,27 @@ interface CalendarData {
   calendarDoors: DoorData[];
 }
 
+// Calendar door data
 interface DoorData {
   doorNumber: number;
-  textContent: string;
+  title: DoorDataTextStyles;
+  subtitle: DoorDataTextStyles;
+  description: DoorDataTextStyles;
+  doorBackgroundColour: string;
+  doorBackgroundGradient: string;
   youtubeVideoId: string;
-  imageFileUrl: string;
-  videFileUrl: string;
+  backgroundImageFileDownloadUrl: string;
+  videoFileDownloadUrl: string;
 }
 
-export { CalendarData, DoorData };
+// Text styles config
+interface DoorDataTextStyles {
+  textContent: string;
+  fontSize: number;
+  colour: string;
+  backgroundColor: string;
+  fontWeight: string;
+  fontFamily: string;
+}
+
+export { CalendarData, DoorData, DoorDataTextStyles };
