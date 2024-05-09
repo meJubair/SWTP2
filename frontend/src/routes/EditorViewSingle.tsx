@@ -1,27 +1,9 @@
-import React, { useState, useEffect } from "react";
-import {
-  Paper,
-  Typography,
-  Grid,
-  IconButton,
-  Tooltip,
-  Drawer,
-  Box,
-  TextField,
-} from "@mui/material";
-import {
-  TextFields,
-  FormatPaint,
-  Image,
-  Videocam,
-  Code,
-} from "@mui/icons-material";
-import TextConfig, {
-  TextConfigType,
-} from "../components/editor-view-single/TextConfig";
-import BackgroundConfig, {
-  BackgroundConfigType,
-} from "../components/editor-view-single/BackgroundConfig";
+import React, { useState, useEffect } from 'react';
+import { Paper, Typography, Grid, IconButton, Tooltip, Drawer, Box, TextField } from '@mui/material';
+import { TextFields, FormatPaint, Image, Videocam, Code } from '@mui/icons-material';
+import TextConfig, { TextConfigType } from '../components/editor-view-single/TextConfig';
+import BackgroundConfig, {BackgroundConfigType} from '../components/editor-view-single/BackgroundConfig';
+import ImageConfig from '../components/editor-view-single/ImageConfig';
 
 enum ContentType {
   Text = "text",
@@ -68,6 +50,9 @@ const DoorContent: React.FC<DoorContentProps> = () => {
     gradient: "",
     image: null,
   });
+
+  const [uploadedImageUrl, setUploadedImageUrl] = useState<string | null>('https://source.unsplash.com/random/365x225');
+
 
   const handleTextConfigChange = (field: keyof TextConfigType, value: any) => {
     setTextConfig((prevConfig: TextConfigType) => ({
@@ -185,6 +170,8 @@ const DoorContent: React.FC<DoorContentProps> = () => {
                 />
               ) : activeType === ContentType.Background ? (
                 <BackgroundConfig onConfigChange={setBackground} />
+              ) : activeType === ContentType.Image ? (
+                <ImageConfig onChange={setUploadedImageUrl}/>
               ) : (
                 <TextField
                   label={
@@ -221,21 +208,24 @@ const DoorContent: React.FC<DoorContentProps> = () => {
             <Box
               p={2}
               sx={{
-                backgroundColor: background.color,
-                backgroundImage: background.image
-                  ? `url(${background.image})`
-                  : "none",
-                background: background.gradient,
+                  backgroundColor: background.color,
+                  backgroundImage: background.image ? `url(${background.image})` : 'none',
+                  background: background.gradient,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
               }}
             >
-              {validInputLabels.map((label) => (
-                <Typography
-                  key={label}
-                  variant="body1"
-                  style={generateTextStyle(label)}
-                >
-                  {textConfig[label]}
-                </Typography>
+              {uploadedImageUrl && <img
+                src={uploadedImageUrl}
+                alt={uploadedImageUrl ? 'Uploaded Image' : 'Default Image'}
+                style={{ width: '50%', height: '50%' }}
+              />}
+
+            {validInputLabels.map((label) => (
+              <Typography key={label} variant="body1" style={generateTextStyle(label)}>
+                {textConfig[label]}
+              </Typography>
               ))}
             </Box>
           </Paper>
