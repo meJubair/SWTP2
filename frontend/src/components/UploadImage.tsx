@@ -18,7 +18,7 @@ const UploadImage: React.FC<UploadImageProps> = ({
   fileInputRef,
 }) => {
   return (
-    <Box>
+    <Box sx={{ display: "flex", flexDirection: "column", maxWidth: "350px" }}>
       <Typography variant="body2" sx={{ marginBottom: "5px" }}>
         Uploading an image from your device or entering an image URL will set
         the background image automatically.
