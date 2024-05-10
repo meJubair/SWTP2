@@ -356,13 +356,23 @@ const EditorViewMain: React.FC = () => {
                   </Box>
                 </Box>
                 <Box sx={{ width: "33%" }}>
-                  <DateSelector
-                    setDateArray={handleSetDateArray}
-                    dateArray={dateArray}
-                  />
+                  <Box sx={{ display: "flex", justifyContent: "center" }}>
+                    <DateSelector
+                      setDateArray={handleSetDateArray}
+                      dateArray={dateArray}
+                    />
+                  </Box>
                 </Box>
-                <Box>
-                  <Typography>
+                <Box
+                  sx={{
+                    width: "33%",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    gap: "1rem"
+                  }}
+                >
+                  <Typography sx={{ maxWidth: "250px" }}>
                     Type in a value and press Enter to add it to the list
                   </Typography>
                   <TextField
