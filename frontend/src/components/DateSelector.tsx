@@ -155,7 +155,6 @@ const DateSelector: React.FC<DateSelectorProps> = ({
         alignItems: "center",
         width: "300px",
         gap: "1rem",
-        padding: "1rem 0",
       }}
     >
       <Grid container spacing={3}>
@@ -196,7 +195,7 @@ const DateSelector: React.FC<DateSelectorProps> = ({
           />
         </Grid>
       </Grid>
-      <Box sx={{ textAlign: "center", margin: "20px 0 0" }}>
+      <Box sx={{ textAlign: "center", mt: "1rem" }}>
         <Button
           variant="contained"
           type="submit"
