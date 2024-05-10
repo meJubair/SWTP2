@@ -260,12 +260,12 @@ const EditorViewMain: React.FC = () => {
           alignItems: "center",
         }}
       >
-        <Typography variant="h3" sx={{ margin: "30px 0 5px" }}>
+        <Typography variant="h2" sx={{ m: "2rem 0px 1rem", fontWeight: "bold" }}>
           Calendar Options
         </Typography>
         <Box
           sx={{
-            background: "#70a9a1",
+            backgroundColor: "#70a9a1",
             width: "80%",
             padding: "0 50px",
             borderRadius: "5px",
@@ -309,7 +309,7 @@ const EditorViewMain: React.FC = () => {
               <Box sx={{ display: "flex", width: "100%" }}>
                 <Box sx={{ width: "33%", marginBottom: "2px" }}>
                   <TextField
-                    sx={{ background: "white", borderRadius: "5px" }}
+                    sx={{ borderRadius: "5px" }}
                     label="Calendar title"
                     value={calendar.title}
                     onChange={handleTitleChange}
@@ -322,14 +322,16 @@ const EditorViewMain: React.FC = () => {
                   >
                     <TextField
                       label="Title color"
+                      InputLabelProps={{shrink:true}}
                       type="color"
                       onChange={handleTitleColorChange}
                       fullWidth
                       value={calendar.titleColour}
+                      
                     />
                   </Box>
                   <TextField
-                    sx={{ background: "white", borderRadius: "5px" }}
+                    sx={{ borderRadius: "5px" }}
                     label="Author name"
                     value={calendar.authorName}
                     onChange={handleAuthorNameChange}
@@ -337,6 +339,7 @@ const EditorViewMain: React.FC = () => {
                   <Box sx={{ width: "150px", margin: "10px 0" }}>
                     <TextField
                       label="Author color"
+                      InputLabelProps={{shrink:true}}
                       type="color"
                       onChange={handleAuthorNameColourChange}
                       fullWidth
@@ -375,7 +378,7 @@ const EditorViewMain: React.FC = () => {
             )}
           </Box>
         </Box>
-        <Typography variant="h3" sx={{ margin: "30px 0 0" }}>
+        <Typography variant="h2" sx={{ m: "3.5rem 0px 1rem", fontWeight:"bold" }}>
           Calendar Preview
         </Typography>
         <Box
