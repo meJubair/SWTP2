@@ -28,7 +28,10 @@ import {
   uploadCalendarBackroundImage,
   getBackgroundImage,
 } from "../services/calendarService";
-import { CalendarData, DoorData } from "../../../backend/types/calendarInterface";
+import {
+  CalendarData,
+  DoorData,
+} from "../../../backend/types/calendarInterface";
 
 const EditorViewMain: React.FC = () => {
   const [showGeneralSettings, setShowGeneralSettings] = useState<boolean>(true);
@@ -250,7 +253,6 @@ const EditorViewMain: React.FC = () => {
 
   return (
     <Box>
-      <AutoSave />
       <Box
         sx={{
           width: "100%",
@@ -260,7 +262,10 @@ const EditorViewMain: React.FC = () => {
           alignItems: "center",
         }}
       >
-        <Typography variant="h2" sx={{ m: "2rem 0px 1rem", fontWeight: "bold" }}>
+        <Typography
+          variant="h2"
+          sx={{ m: "2rem 0px 1rem", fontWeight: "bold" }}
+        >
           Calendar Options
         </Typography>
         <Box
@@ -270,8 +275,12 @@ const EditorViewMain: React.FC = () => {
             padding: "0 50px",
             borderRadius: "5px",
             height: "400px",
+            position: "relative",
           }}
         >
+          <Box sx={{ position: "absolute", top: "-1.5rem", right: 0 }}>
+            <AutoSave />
+          </Box>
           <Box
             sx={{
               display: "flex",
@@ -322,12 +331,11 @@ const EditorViewMain: React.FC = () => {
                   >
                     <TextField
                       label="Title color"
-                      InputLabelProps={{shrink:true}}
+                      InputLabelProps={{ shrink: true }}
                       type="color"
                       onChange={handleTitleColorChange}
                       fullWidth
                       value={calendar.titleColour}
-                      
                     />
                   </Box>
                   <TextField
@@ -339,7 +347,7 @@ const EditorViewMain: React.FC = () => {
                   <Box sx={{ width: "150px", margin: "10px 0" }}>
                     <TextField
                       label="Author color"
-                      InputLabelProps={{shrink:true}}
+                      InputLabelProps={{ shrink: true }}
                       type="color"
                       onChange={handleAuthorNameColourChange}
                       fullWidth
@@ -378,7 +386,10 @@ const EditorViewMain: React.FC = () => {
             )}
           </Box>
         </Box>
-        <Typography variant="h2" sx={{ m: "3.5rem 0px 1rem", fontWeight:"bold" }}>
+        <Typography
+          variant="h2"
+          sx={{ m: "2rem 0px 1rem", fontWeight: "bold" }}
+        >
           Calendar Preview
         </Typography>
         <Box
@@ -389,7 +400,7 @@ const EditorViewMain: React.FC = () => {
             width: "80%",
             background: background,
             padding: "1rem",
-            margin: "10px 0 50px",
+            mb: "50px",
             height: "800px",
             border: "1px solid black",
             borderRadius: "5px",
