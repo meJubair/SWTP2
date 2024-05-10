@@ -49,6 +49,7 @@ const Register = () => {
           }}
         >
           <TextField
+            color="secondary"
             label="Username"
             fullWidth
             required
@@ -58,6 +59,7 @@ const Register = () => {
             }
           />
           <TextField
+            color="secondary"
             label="Email"
             fullWidth
             required
@@ -67,6 +69,7 @@ const Register = () => {
             }
           />
           <TextField
+            color="secondary"
             label="Password"
             type="password"
             fullWidth

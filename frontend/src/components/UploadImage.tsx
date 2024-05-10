@@ -18,7 +18,7 @@ const UploadImage: React.FC<UploadImageProps> = ({
   fileInputRef,
 }) => {
   return (
-    <Box>
+    <Box sx={{ display: "flex", flexDirection: "column", maxWidth: "350px" }}>
       <Typography variant="body2" sx={{ marginBottom: "5px" }}>
         Uploading an image from your device or entering an image URL will set
         the background image automatically.
@@ -38,13 +38,11 @@ const UploadImage: React.FC<UploadImageProps> = ({
         sx={{ margin: "10px 0" }}
         value={imageUrl}
       />
-      <Button
-        variant="contained"
-        onClick={handleReset}
-        sx={{ margin: "10px 0" }}
-      >
-        Reset
-      </Button>
+      <Box sx={{ display: "flex", justifyContent: "center", my: "10px" }}>
+        <Button variant="contained" onClick={handleReset}>
+          Reset
+        </Button>
+      </Box>
       <Typography variant="body2">
         <Typography variant="subtitle1" component="span">
           NB:

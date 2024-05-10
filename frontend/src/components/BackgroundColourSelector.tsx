@@ -46,9 +46,10 @@ const BackgroundColourSelector: React.FC = () => {
   };
 
   return (
-    <Box sx={{ width: "50%", margin: "30px 0" }}>
+    <Box sx={{ width: "50%", mt: "1.5rem", maxWidth:"250px" }}>
       <TextField
         label="Background colour"
+        InputLabelProps={{shrink:true}}
         type="color"
         onChange={handleChange}
         value={bgColour}

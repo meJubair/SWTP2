@@ -28,7 +28,10 @@ import {
   uploadCalendarBackroundImage,
   getBackgroundImage,
 } from "../services/calendarService";
-import { CalendarData, DoorData } from "../../../backend/types/calendarInterface";
+import {
+  CalendarData,
+  DoorData,
+} from "../../../backend/types/calendarInterface";
 
 const EditorViewMain: React.FC = () => {
   const [showGeneralSettings, setShowGeneralSettings] = useState<boolean>(true);
@@ -250,7 +253,6 @@ const EditorViewMain: React.FC = () => {
 
   return (
     <Box>
-      <AutoSave />
       <Box
         sx={{
           width: "100%",
@@ -260,18 +262,25 @@ const EditorViewMain: React.FC = () => {
           alignItems: "center",
         }}
       >
-        <Typography variant="h3" sx={{ margin: "30px 0 5px" }}>
+        <Typography
+          variant="h2"
+          sx={{ m: "2rem 0px 1rem", fontWeight: "bold" }}
+        >
           Calendar Options
         </Typography>
         <Box
           sx={{
-            background: "#70a9a1",
+            backgroundColor: "#70a9a1",
             width: "80%",
             padding: "0 50px",
             borderRadius: "5px",
             height: "400px",
+            position: "relative",
           }}
         >
+          <Box sx={{ position: "absolute", top: "-1.5rem", right: 0 }}>
+            <AutoSave />
+          </Box>
           <Box
             sx={{
               display: "flex",
@@ -307,51 +316,65 @@ const EditorViewMain: React.FC = () => {
           >
             {showGeneralSettings && (
               <Box sx={{ display: "flex", width: "100%" }}>
-                <Box sx={{ width: "33%", marginBottom: "2px" }}>
-                  <TextField
-                    sx={{ background: "white", borderRadius: "5px" }}
-                    label="Calendar title"
-                    value={calendar.title}
-                    onChange={handleTitleChange}
-                  />
+                <Box
+                  sx={{
+                    display: "flex",
+                    width: "33%",
+                    justifyContent:"center"
+                  }}
+                >
                   <Box
                     sx={{
-                      width: "150px",
-                      margin: "10px 0",
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: "1rem",
+                      width:"250px"
                     }}
                   >
                     <TextField
+                      label="Calendar title"
+                      value={calendar.title}
+                      onChange={handleTitleChange}
+                    />
+                    <TextField
                       label="Title color"
+                      InputLabelProps={{ shrink: true }}
                       type="color"
                       onChange={handleTitleColorChange}
-                      fullWidth
                       value={calendar.titleColour}
                     />
-                  </Box>
-                  <TextField
-                    sx={{ background: "white", borderRadius: "5px" }}
-                    label="Author name"
-                    value={calendar.authorName}
-                    onChange={handleAuthorNameChange}
-                  />
-                  <Box sx={{ width: "150px", margin: "10px 0" }}>
+                    <TextField
+                      label="Author name"
+                      value={calendar.authorName}
+                      onChange={handleAuthorNameChange}
+                    />
                     <TextField
                       label="Author color"
+                      InputLabelProps={{ shrink: true }}
                       type="color"
                       onChange={handleAuthorNameColourChange}
-                      fullWidth
                       value={calendar.authorNameColour}
                     />
                   </Box>
                 </Box>
                 <Box sx={{ width: "33%" }}>
-                  <DateSelector
-                    setDateArray={handleSetDateArray}
-                    dateArray={dateArray}
-                  />
+                  <Box sx={{ display: "flex", justifyContent: "center" }}>
+                    <DateSelector
+                      setDateArray={handleSetDateArray}
+                      dateArray={dateArray}
+                    />
+                  </Box>
                 </Box>
-                <Box>
-                  <Typography>
+                <Box
+                  sx={{
+                    width: "33%",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    gap: "1rem",
+                  }}
+                >
+                  <Typography sx={{ maxWidth: "250px" }}>
                     Type in a value and press Enter to add it to the list
                   </Typography>
                   <TextField
@@ -375,7 +398,10 @@ const EditorViewMain: React.FC = () => {
             )}
           </Box>
         </Box>
-        <Typography variant="h3" sx={{ margin: "30px 0 0" }}>
+        <Typography
+          variant="h2"
+          sx={{ m: "2rem 0px 1rem", fontWeight: "bold" }}
+        >
           Calendar Preview
         </Typography>
         <Box
@@ -386,7 +412,7 @@ const EditorViewMain: React.FC = () => {
             width: "80%",
             background: background,
             padding: "1rem",
-            margin: "10px 0 50px",
+            mb: "50px",
             height: "800px",
             border: "1px solid black",
             borderRadius: "5px",
