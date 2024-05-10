@@ -316,41 +316,43 @@ const EditorViewMain: React.FC = () => {
           >
             {showGeneralSettings && (
               <Box sx={{ display: "flex", width: "100%" }}>
-                <Box sx={{ width: "33%", marginBottom: "2px" }}>
-                  <TextField
-                    sx={{ borderRadius: "5px" }}
-                    label="Calendar title"
-                    value={calendar.title}
-                    onChange={handleTitleChange}
-                  />
+                <Box
+                  sx={{
+                    display: "flex",
+                    width: "33%",
+                    justifyContent:"center"
+                  }}
+                >
                   <Box
                     sx={{
-                      width: "150px",
-                      margin: "10px 0",
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: "1rem",
+                      width:"250px"
                     }}
                   >
+                    <TextField
+                      label="Calendar title"
+                      value={calendar.title}
+                      onChange={handleTitleChange}
+                    />
                     <TextField
                       label="Title color"
                       InputLabelProps={{ shrink: true }}
                       type="color"
                       onChange={handleTitleColorChange}
-                      fullWidth
                       value={calendar.titleColour}
                     />
-                  </Box>
-                  <TextField
-                    sx={{ borderRadius: "5px" }}
-                    label="Author name"
-                    value={calendar.authorName}
-                    onChange={handleAuthorNameChange}
-                  />
-                  <Box sx={{ width: "150px", margin: "10px 0" }}>
+                    <TextField
+                      label="Author name"
+                      value={calendar.authorName}
+                      onChange={handleAuthorNameChange}
+                    />
                     <TextField
                       label="Author color"
                       InputLabelProps={{ shrink: true }}
                       type="color"
                       onChange={handleAuthorNameColourChange}
-                      fullWidth
                       value={calendar.authorNameColour}
                     />
                   </Box>
@@ -369,7 +371,7 @@ const EditorViewMain: React.FC = () => {
                     display: "flex",
                     flexDirection: "column",
                     alignItems: "center",
-                    gap: "1rem"
+                    gap: "1rem",
                   }}
                 >
                   <Typography sx={{ maxWidth: "250px" }}>
