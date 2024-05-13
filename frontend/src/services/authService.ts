@@ -39,7 +39,6 @@ const getAuth = async () => {
   }
 };
 
-// Return true if request to /logout was succesful
 const signOut = async () => {
   try {
     const response = await axios.get(`${baseUrl}/logout`);
