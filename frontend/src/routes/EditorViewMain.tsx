@@ -11,7 +11,7 @@ import {
   ReduxUserState,
   ReduxSyncState,
 } from "../store/stateTypes";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import {
   setCalendarTitle,
   setCalendarTitleColour,
@@ -434,24 +434,35 @@ const EditorViewMain: React.FC = () => {
           </Typography>
           <Box
             sx={{
-              display: "grid",
-              gridTemplateColumns: "repeat(4, 1fr)",
-              gap: "20px",
-              width: "80%",
+              display: "flex",
               justifyContent: "center",
+              flexWrap: "wrap",
+              gap: "20px",
+              width: "100%",
+              margin: "40px 0 0",
             }}
           >
             {calendar.calendarDoors?.map((door: DoorData) => (
-              <Box
-                key={door.doorNumber}
-                sx={{
-                  background: "#d9d9d9",
-                  padding: "20px",
-                  borderRadius: "5px",
-                }}
+              <Link
+                to={`/calendars/${calendar.calendarId}/${door.doorNumber}`}
+                style={{ textDecoration: "none", color: "#0b2027" }}
               >
-                {door.doorNumber}
-              </Box>
+                <Box
+                  key={door.doorNumber}
+                  sx={{
+                    padding: "20px",
+                    border: "1px dashed #0b2027",
+                    width: "100px",
+                    height: "100px",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    cursor: "pointer",
+                  }}
+                >
+                  {door.doorNumber}
+                </Box>
+              </Link>
             ))}
           </Box>
         </Box>
