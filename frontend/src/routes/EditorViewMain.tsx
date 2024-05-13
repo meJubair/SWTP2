@@ -449,7 +449,6 @@ const EditorViewMain: React.FC = () => {
                 key={door.doorNumber}
               >
                 <Box
-                  key={door.doorNumber}
                   sx={{
                     padding: "20px",
                     border: "1px dashed #0b2027",
