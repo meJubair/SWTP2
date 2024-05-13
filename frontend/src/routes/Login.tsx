@@ -7,6 +7,8 @@ import Typography from "@mui/material/Typography";
 import { loginUser, getAuth } from "../services/authService";
 import { useDispatch } from "react-redux";
 import { setUserLogin, setUid, setUserName } from "../store/userSlice";
+import AlertHandler from "../components/AlertHandler";
+import { setAlert } from "../store/alertSlice";
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -17,6 +19,15 @@ const Login = () => {
   const resetStates = () => {
     setEmail("");
     setPassword("");
+  };
+
+  // Handle the state management for alertSlice
+  const handleAlert = (
+    isVisible: boolean,
+    message: string,
+    severity: string
+  ) => {
+    dispatch(setAlert({ isVisible, message, severity }));
   };
 
   // Send credentials to the server. If response is 200 then update auth data to Redux state and redirect to /calendars.
@@ -33,7 +44,12 @@ const Login = () => {
         navigate("/calendars");
       } else {
         resetStates();
-        window.alert("Login failed. Please check your credentials.");
+        handleAlert(
+          true,
+          "Login failed. Please check your credentials.",
+          "warning"
+        );
+        // window.alert("Login failed. Please check your credentials.");
       }
     } catch (error) {
       console.error("Error during login", error);
@@ -42,6 +58,7 @@ const Login = () => {
 
   return (
     <Box>
+      <AlertHandler />
       <Box component="h2" sx={{ textAlign: "center" }}>
         Login
       </Box>
