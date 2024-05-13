@@ -31,18 +31,20 @@ const Login = () => {
   };
 
   // Send credentials to the server. If response is 200 then update auth data to Redux state and redirect to /calendars.
+  // If there's an error then display alert
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       const response = await loginUser({ email, password });
       if (response && response.status === 200) {
         const data = await getAuth();
-        const authData = data?.data.authData;
-        dispatch(setUserLogin(data?.data.login));
-        dispatch(setUid(authData.auth.uid));
+        const authData = data.authData;
+        dispatch(setUserLogin(data.login));
+        dispatch(setUid(authData.uid));
         dispatch(setUserName(authData.loggedUserName));
         navigate("/calendars");
-      } else {
+      } else if (response && response.status === 401){
+        console.log(response.status)
         resetStates();
         handleAlert(
           true,
@@ -51,6 +53,7 @@ const Login = () => {
         );
       }
     } catch (error) {
+      resetStates();
       handleAlert(true, `Error during login: ${error}`, "error" )
       console.error("Error during login", error);
     }
