@@ -49,7 +49,6 @@ const Login = () => {
           "Login failed. Please check your credentials.",
           "warning"
         );
-        // window.alert("Login failed. Please check your credentials.");
       }
     } catch (error) {
       console.error("Error during login", error);
