@@ -51,6 +51,7 @@ const Login = () => {
         );
       }
     } catch (error) {
+      handleAlert(true, `Error during login: ${error}`, "error" )
       console.error("Error during login", error);
     }
   };
