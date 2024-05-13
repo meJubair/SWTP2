@@ -22,9 +22,10 @@ const loginUser = async (userObject: { email: string; password: string }) => {
     if (axios.isAxiosError(error) && error.response?.status === 401) {
       const errorMessage = error.response?.data?.error;
       throw new Error(errorMessage);
+    } else if (axios.isAxiosError(error) && error.message === "Network Error") {
+      console.error("Login failed:", error);
+      throw new Error(error.message);
     }
-    console.error("Login failed:", error);
-    throw error;
   }
 };
 
