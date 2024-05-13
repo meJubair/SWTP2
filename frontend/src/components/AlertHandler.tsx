@@ -40,6 +40,7 @@ const AlertHandler = () => {
           transform: "translate(-50%, -50%)",
           zIndex: "5",
         }}
+        onClick={() => dispatch(setIsVisible(false))}
       >
         {message}
       </Alert>
