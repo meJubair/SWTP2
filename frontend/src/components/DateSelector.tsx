@@ -66,6 +66,8 @@ const DateSelector: React.FC = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
+    dispatch(setIsTyping(true));
+
     // Calculate the number of days between the start and end dates
     const dateRange: Date[] = [];
 
@@ -86,12 +88,14 @@ const DateSelector: React.FC = () => {
     for (let i = 0; i < dateRange.length; i++) {
       calendarDoorArray.push({ ...doorDataObject, doorNumber: i + 1 });
     }
+
     dispatch(
       setCalendarDoors({
         calendarIndex: calendarIndex,
         newDoors: calendarDoorArray,
       })
     );
+    typingResetTimer(timerRef);
   };
 
   const handleStartDateChange = async (selectedDate: Date | null) => {
