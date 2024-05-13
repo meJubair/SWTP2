@@ -446,6 +446,7 @@ const EditorViewMain: React.FC = () => {
               <Link
                 to={`/calendars/${calendar.calendarId}/${door.doorNumber}`}
                 style={{ textDecoration: "none", color: "#0b2027" }}
+                key={door.doorNumber}
               >
                 <Box
                   key={door.doorNumber}
