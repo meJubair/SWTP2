@@ -19,16 +19,22 @@ const loginUser = async (userObject: { email: string; password: string }) => {
     const response = await axios.post(`${baseUrl}/login`, userObject);
     return response;
   } catch (error) {
+    if (axios.isAxiosError(error) && error.response?.status === 401) {
+      const errorMessage = error.response?.data?.error;
+      throw new Error(errorMessage);
+    }
     console.error("Login failed:", error);
+    throw error;
   }
 };
 
 const getAuth = async () => {
   try {
     const response = await axios.get(`${baseUrl}/authstatus`);
-    return response;
+    return response.data;
   } catch (error) {
     console.error(error);
+    throw error;
   }
 };
 
