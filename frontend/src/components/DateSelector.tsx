@@ -3,11 +3,17 @@ import DatePicker from "react-datepicker";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
-import { setStartDate, setEndDate } from "../store/calendarSlice";
+import {
+  setStartDate,
+  setEndDate,
+  setCalendarDoors,
+} from "../store/calendarSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { setIsTyping } from "../store/syncSlice";
 import { useParams } from "react-router-dom";
 import { ReduxCalendarState } from "../store/stateTypes";
+import { DoorData } from "../../../backend/types/calendarInterface";
+import { emptyCalendarDoorDataObject } from "../utility/doorObject";
 
 interface CalendarDate {
   startDate: Date | null;
@@ -80,9 +86,6 @@ const DateSelector: React.FC<DateSelectorProps> = ({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    console.log("Start date:", date.startDate);
-    console.log("End Date:", date.endDate);
-
     // Calculate the number of days between the start and end dates
     const dateRange: Date[] = [];
 
@@ -94,7 +97,21 @@ const DateSelector: React.FC<DateSelectorProps> = ({
       dateRange.push(new Date(currentDate));
       currentDate.setDate(currentDate.getDate() + 1);
     }
-    setDateArray(dateRange);
+
+    // Set the empty calendar door data object for each door
+    const doorDataObject = emptyCalendarDoorDataObject;
+
+    const calendarDoorArray: DoorData[] = [];
+
+    for (let i = 0; i < dateRange.length; i++) {
+      calendarDoorArray.push({ ...doorDataObject, doorNumber: i + 1 });
+    }
+    dispatch(
+      setCalendarDoors({
+        calendarIndex: calendarIndex,
+        newDoors: calendarDoorArray,
+      })
+    );
   };
 
   const handleStartDateChange = async (selectedDate: Date | null) => {
