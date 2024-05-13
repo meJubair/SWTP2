@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { CalendarData } from "../../../backend/types/calendarInterface";
+import { CalendarData, DoorData } from "../../../backend/types/calendarInterface";
 
 interface CalendarState {
   calendars: CalendarData[];
@@ -52,17 +52,10 @@ export const calendarSlice = createSlice({
       const { calendarIndex, newBackgroundColour } = action.payload;
       state.calendars[calendarIndex].backgroundColour = newBackgroundColour;
     },
-    setCalendarDoors: (state, action) => {
-      state.calendars = state.calendars.map((calendar: CalendarData) => {
-        if (calendar.title === action.payload.title) {
-          return {
-            ...calendar,
-            calendarDoors: action.payload.calendarDoors,
-          };
-        }
-        return calendar;
-      });
-    },    
+    setCalendarDoors: (state, action: PayloadAction<{calendarIndex: number, newDoors: DoorData[]}>) => {
+      const { calendarIndex, newDoors } = action.payload;
+      state.calendars[calendarIndex].calendarDoors = newDoors;
+    }  
   },
 });
 
