@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useState, useRef } from "react";
 import DatePicker from "react-datepicker";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -20,15 +20,7 @@ interface CalendarDate {
   endDate: Date | null;
 }
 
-interface DateSelectorProps {
-  setDateArray: (newDateArray: Date[]) => void;
-  dateArray: Date[];
-}
-
-const DateSelector: React.FC<DateSelectorProps> = ({
-  setDateArray,
-  dateArray,
-}) => {
+const DateSelector: React.FC = () => {
   const [date, setDate] = useState<CalendarDate>({
     startDate: null,
     endDate: null,
@@ -57,18 +49,6 @@ const DateSelector: React.FC<DateSelectorProps> = ({
       state.calendar.calendars[calendarIndex]?.endDate
   );
 
-  // Create calendar doors based on the date range
-  useEffect(() => {
-    const createCalendarDoors = async () => {
-      console.log("Date array:", dateArray.length);
-    };
-
-    if (dateArray.length > 0) {
-      createCalendarDoors();
-    }
-  }, [dateArray]);
-
-  // Set 1500ms timer after user has stopped typing and reset timer if user starts typing before timer has ended
   const typingResetTimer = (
     timerRef: React.MutableRefObject<NodeJS.Timeout | null>
   ) => {
