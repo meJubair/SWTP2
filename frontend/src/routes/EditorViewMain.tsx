@@ -40,7 +40,6 @@ const EditorViewMain: React.FC = () => {
   const [activeOption, setActiveOption] = useState<string | null>(
     "General settings"
   );
-  const [dateArray, setDateArray] = useState<Date[]>([]);
   const [showImageUpload, setShowImageUpload] = useState<boolean>(false);
   const [uploadedImageUrl, setUploadedImageUrl] = useState<string | null>(null);
   const [singleTag, setSingleTag] = useState<string>("");
@@ -48,11 +47,6 @@ const EditorViewMain: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const timerRef = useRef<NodeJS.Timeout | null>(null);
-
-  // The logic to update the dateArray state is passed down to the DateSelector component
-  const handleSetDateArray = (newDateArray: Date[]) => {
-    setDateArray(newDateArray);
-  };
 
   const dispatch = useDispatch();
 
@@ -320,7 +314,7 @@ const EditorViewMain: React.FC = () => {
                   sx={{
                     display: "flex",
                     width: "33%",
-                    justifyContent:"center"
+                    justifyContent: "center",
                   }}
                 >
                   <Box
@@ -328,7 +322,7 @@ const EditorViewMain: React.FC = () => {
                       display: "flex",
                       flexDirection: "column",
                       gap: "1rem",
-                      width:"250px"
+                      width: "250px",
                     }}
                   >
                     <TextField
@@ -359,10 +353,7 @@ const EditorViewMain: React.FC = () => {
                 </Box>
                 <Box sx={{ width: "33%" }}>
                   <Box sx={{ display: "flex", justifyContent: "center" }}>
-                    <DateSelector
-                      setDateArray={handleSetDateArray}
-                      dateArray={dateArray}
-                    />
+                    <DateSelector />
                   </Box>
                 </Box>
                 <Box
