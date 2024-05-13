@@ -43,18 +43,14 @@ const Login = () => {
         dispatch(setUid(authData.uid));
         dispatch(setUserName(authData.loggedUserName));
         navigate("/calendars");
-      } else if (response && response.status === 401){
-        console.log(response.status)
-        resetStates();
-        handleAlert(
-          true,
-          "Login failed. Please check your credentials.",
-          "warning"
-        );
       }
     } catch (error) {
       resetStates();
-      handleAlert(true, `Error during login: ${error}`, "error" )
+      if (`${error}` === "Error: Incorrect email or password") {
+        handleAlert(true, `${error}`, "warning");
+      } else {
+        handleAlert(true, `${error}`, "error");
+      }
       console.error("Error during login", error);
     }
   };
