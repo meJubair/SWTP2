@@ -37,9 +37,9 @@ const Login = () => {
     try {
       const response = await loginUser({ email, password });
       if (response && response.status === 200) {
-        const data = await getAuth();
-        const authData = data.authData;
-        dispatch(setUserLogin(data.login));
+        const authResponse = await getAuth();
+        const authData = authResponse?.data.authData;
+        dispatch(setUserLogin(authData.login));
         dispatch(setUid(authData.auth.uid));
         dispatch(setUserName(authData.loggedUserName));
         navigate("/calendars");
