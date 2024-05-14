@@ -13,6 +13,7 @@ import store from "./store/store";
 import { Provider } from "react-redux";
 import EditorViewSingle from "./routes/EditorViewSingle";
 import ProtectedRoute from "./routes/ProtectedRoutes";
+import AuthLoader from "./components/AuthLoader";
 
 const App: React.FC = () => {
   return (
@@ -20,6 +21,7 @@ const App: React.FC = () => {
       <CssBaseline />
       <Provider store={store}>
         <Router>
+          <AuthLoader />
           <Routes>
             <Route path="/" element={<Root />}>
               <Route path="/" element={<Homepage />} />
