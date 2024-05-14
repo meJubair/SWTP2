@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
@@ -14,7 +14,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
-import { signOut, getAuth } from "../services/authService";
+import { signOut } from "../services/authService";
 import { useSelector, useDispatch } from "react-redux";
 import { setUserLogin, setUid, setUserName } from "../store/userSlice";
 import { ReduxUserState } from "../store/stateTypes";
@@ -33,32 +33,15 @@ function Header() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  // Check user authData from the backend.
-  // If user is authenticated then update the Redux state
-  useEffect(() => {
-    const fetchUserAuthData = async () => {
-      const response = await getAuth();
-      if (response && response.status === 200) {
-        const authData = response.data;
-        dispatch(setUserName(authData.authData.loggedUserName));
-        dispatch(setUid(authData.authData.auth.uid));
-        dispatch(setUserLogin(authData.login));
-      }
-    };
-    fetchUserAuthData();
-  }, [dispatch]);
-
-  // If request to api/calendars/login was a success redirects you to "/login" and reset Redux user state
+  // If request to api/calendars/logout was a success redirects you to "/login" and reset Redux user state
   const logUserOut = async () => {
     try {
       const response = await signOut();
-      if (response) {
+      if (response && response.status === 200) {
         dispatch(setUserLogin(false));
         dispatch(setUid(""));
         dispatch(setUserName(""));
         navigate("/login");
-      } else {
-        console.error("Sign out failed");
       }
     } catch (error) {
       console.log(error);
@@ -90,7 +73,7 @@ function Header() {
           </ListItem>
           <ListItem disablePadding>
             <ListItemButton>
-              <ListItemText primary={"Sign out"} onClick={logUserOut} />
+              <ListItemText primary={"Sign out"} onClick={() => logUserOut()} />
             </ListItemButton>
           </ListItem>
         </List>
@@ -165,7 +148,7 @@ function Header() {
                 <Link to={"/calendars"}>
                   <Button sx={{ color: "#0b2027" }}>My Calendars</Button>
                 </Link>
-                <Button sx={{ color: "#0b2027" }} onClick={logUserOut}>
+                <Button sx={{ color: "#0b2027" }} onClick={() => logUserOut()}>
                   Sign out
                 </Button>
               </>

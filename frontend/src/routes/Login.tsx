@@ -7,6 +7,8 @@ import Typography from "@mui/material/Typography";
 import { loginUser, getAuth } from "../services/authService";
 import { useDispatch } from "react-redux";
 import { setUserLogin, setUid, setUserName } from "../store/userSlice";
+import AlertHandler from "../components/AlertHandler";
+import { setAlert } from "../store/alertSlice";
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -19,29 +21,43 @@ const Login = () => {
     setPassword("");
   };
 
+  // Handle the state management for alertSlice
+  const handleAlert = (
+    isVisible: boolean,
+    message: string,
+    severity: string
+  ) => {
+    dispatch(setAlert({ isVisible, message, severity }));
+  };
+
   // Send credentials to the server. If response is 200 then update auth data to Redux state and redirect to /calendars.
+  // If there's an error then display alert
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       const response = await loginUser({ email, password });
       if (response && response.status === 200) {
-        const data = await getAuth();
-        const authData = data?.data.authData;
-        dispatch(setUserLogin(data?.data.login));
+        const authResponse = await getAuth();
+        const authData = authResponse?.data.authData;
+        dispatch(setUserLogin(authData.login));
         dispatch(setUid(authData.auth.uid));
         dispatch(setUserName(authData.loggedUserName));
         navigate("/calendars");
-      } else {
-        resetStates();
-        window.alert("Login failed. Please check your credentials.");
       }
     } catch (error) {
+      resetStates();
+      if (`${error}` === "Error: Incorrect email or password") {
+        handleAlert(true, `${error}`, "warning");
+      } else {
+        handleAlert(true, `${error}`, "error");
+      }
       console.error("Error during login", error);
     }
   };
 
   return (
     <Box>
+      <AlertHandler />
       <Box component="h2" sx={{ textAlign: "center" }}>
         Login
       </Box>

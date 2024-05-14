@@ -51,8 +51,15 @@ authRouter.post("/login", async (request: Request, response: Response) => {
     const { email, password } = request.body;
     await loginWithEmailAndPassword(email, password);
     response.status(200).end("Login succesful");
-  } catch (error) {
-    console.log(error);
-    response.status(500).json({ error: error });
+  } catch (error: any) {
+    console.error("Error during login:", error);
+    if (
+      error.message === "Incorrect email or password" ||
+      error.message === "Too many requests"
+    ) {
+      response.status(401).json({ error: error.message });
+    } else {
+      response.status(500).json({ error: "Internal server error" });
+    }
   }
 });

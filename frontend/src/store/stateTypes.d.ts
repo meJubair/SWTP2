@@ -1,4 +1,4 @@
-import CalendarData from "../../../backend/types/calendarInterface"
+import CalendarData from "../../../backend/types/calendarInterface";
 
 interface ReduxUserState {
   user: {
@@ -10,15 +10,23 @@ interface ReduxUserState {
 
 interface ReduxCalendarState {
   calendar: {
-    calendars: CalendarData[]
-  }
+    calendars: CalendarData[];
+  };
 }
 
 interface ReduxSyncState {
   sync: {
-    isTyping: boolean
-    saved: boolean
-  }
+    isTyping: boolean;
+    saved: boolean;
+  };
 }
 
-export { ReduxUserState, ReduxCalendarState, ReduxSyncState }
+interface ReduxAlertState {
+  alert: {
+    severity: "success" | "info" | "warning" | "error";
+    message: string;
+    isVisible: false;
+  };
+}
+
+export { ReduxUserState, ReduxCalendarState, ReduxSyncState, ReduxAlertState };
