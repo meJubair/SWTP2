@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { isAxiosError } from "axios";
 const baseUrl: string = "http://localhost:3001/auth";
 
 const registerUser = async (userObject: {
@@ -11,6 +11,15 @@ const registerUser = async (userObject: {
     console.log("User registered successfully");
   } catch (error) {
     console.error("Error registering user:", error);
+    if (isAxiosError(error) && error.response?.status === 400) {
+      throw error.response?.data.error;
+    } else if (isAxiosError(error) && error.response?.status === 409) {
+      throw error.response?.data.error;
+    } else if (isAxiosError(error) && error.message === "Network Error") {
+      throw error.message;
+    } else {
+      throw error;
+    }
   }
 };
 
@@ -32,9 +41,9 @@ const loginUser = async (userObject: { email: string; password: string }) => {
 const getAuth = async () => {
   try {
     const response = await axios.get(`${baseUrl}/authstatus`);
-    if( response.status === 200) {
+    if (response.status === 200) {
       return response;
-    } 
+    }
   } catch (error) {
     console.error(error);
     throw error;
@@ -44,7 +53,7 @@ const getAuth = async () => {
 const signOut = async () => {
   try {
     const response = await axios.get(`${baseUrl}/logout`);
-    return response
+    return response;
   } catch (error) {
     console.error(error);
   }
