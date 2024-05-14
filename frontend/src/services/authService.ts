@@ -32,7 +32,9 @@ const loginUser = async (userObject: { email: string; password: string }) => {
 const getAuth = async () => {
   try {
     const response = await axios.get(`${baseUrl}/authstatus`);
-    return response.data;
+    if( response.status === 200) {
+      return response;
+    } 
   } catch (error) {
     console.error(error);
     throw error;
@@ -42,11 +44,7 @@ const getAuth = async () => {
 const signOut = async () => {
   try {
     const response = await axios.get(`${baseUrl}/logout`);
-    if (response.status === 200) {
-      return true;
-    } else {
-      return false;
-    }
+    return response
   } catch (error) {
     console.error(error);
   }
