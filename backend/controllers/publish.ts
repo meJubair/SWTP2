@@ -2,6 +2,7 @@ import express, { Request, Response } from "express";
 import {
   addToPublishedCalendars,
   getPublishedCalendar,
+  removeFromPublishedCalendars,
 } from "../services/firebaseService";
 
 const publishRouter = express.Router();
@@ -33,5 +34,20 @@ publishRouter.post("/:uid", async (request: Request, response: Response) => {
     throw error;
   }
 });
+
+// Remove calendar from "published_calendars" collection
+publishRouter.delete(
+  "/:uid/:calendarId",
+  async (request: Request, response: Response) => {
+    try {
+      const { uid, calendarId } = request.params;
+      await removeFromPublishedCalendars(uid, calendarId);
+      response.status(204).end();
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+);
 
 export default publishRouter;
