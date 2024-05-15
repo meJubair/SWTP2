@@ -158,7 +158,13 @@ const Calendars = () => {
                     <TableCell>{calendar.calendarDoors.length}</TableCell>
                     <TableCell>{calendar.tags.join(", ")}</TableCell>
                     <TableCell>
-                      {calendar.published ? "Published" : "Unpublished"}
+                      {calendar.published ? (
+                        <Link to={`published/${uid}/${calendar.calendarId}`}>
+                          Published
+                        </Link>
+                      ) : (
+                        "Unpublished"
+                      )}
                     </TableCell>
                     <TableCell>
                       <IconButton

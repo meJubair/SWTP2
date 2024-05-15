@@ -5,6 +5,7 @@ import Typography from "@mui/material/Typography";
 import DateSelector from "../components/DateSelector";
 import BackgroundColourSelector from "../components/BackgroundColourSelector";
 import UploadImage from "../components/UploadImage";
+import Button from "@mui/material/Button";
 import { useDispatch, useSelector } from "react-redux";
 import {
   ReduxCalendarState,
@@ -19,6 +20,7 @@ import {
   setAuthorNameColour,
   setCalendarTags,
   setCalendarBackgroundUrl,
+  setPublishStatus,
 } from "../store/calendarSlice";
 import CalendarTags from "../components/CalendarTags";
 import { setIsTyping, setSaved } from "../store/syncSlice";
@@ -32,6 +34,10 @@ import {
   CalendarData,
   DoorData,
 } from "../../../backend/types/calendarInterface";
+import {
+  addToPublishedCalendars,
+  removeFromPublishedCalendars,
+} from "../services/publishService";
 
 const EditorViewMain: React.FC = () => {
   const [showGeneralSettings, setShowGeneralSettings] = useState<boolean>(true);
@@ -245,6 +251,24 @@ const EditorViewMain: React.FC = () => {
     dispatch(setCalendarBackgroundUrl({ calendarIndex, newBackgroundUrl: "" }));
   };
 
+  // If publish status is false then post published_calendars to published collection.
+  // Else remove from published_calendars collection
+  const handlePublish = async () => {
+    try {
+      if (!calendar.published) {
+        dispatch(setPublishStatus({ calendarIndex, newPublishStatus: true }));
+        await addToPublishedCalendars(uid, calendar);
+      } else {
+        dispatch(setPublishStatus({ calendarIndex, newPublishStatus: false }));
+        await removeFromPublishedCalendars(uid, calendarId);
+      }
+      dispatch(setIsTyping(true));
+      typingResetTimer(timerRef);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <Box>
       <Box
@@ -389,6 +413,9 @@ const EditorViewMain: React.FC = () => {
             )}
           </Box>
         </Box>
+        <Button variant="contained" sx={{ my: "1rem" }} onClick={handlePublish}>
+          {calendar.published ? "Unpublish calendar" : "Publish calendar"}
+        </Button>
         <Typography
           variant="h2"
           sx={{ m: "2rem 0px 1rem", fontWeight: "bold" }}
