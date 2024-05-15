@@ -34,7 +34,10 @@ import {
   CalendarData,
   DoorData,
 } from "../../../backend/types/calendarInterface";
-import { addToPublishedCalendars } from "../services/publishService";
+import {
+  addToPublishedCalendars,
+  removeFromPublishedCalendars,
+} from "../services/publishService";
 
 const EditorViewMain: React.FC = () => {
   const [showGeneralSettings, setShowGeneralSettings] = useState<boolean>(true);
@@ -248,6 +251,8 @@ const EditorViewMain: React.FC = () => {
     dispatch(setCalendarBackgroundUrl({ calendarIndex, newBackgroundUrl: "" }));
   };
 
+  // If publish status is false then post published_calendars to published collection.
+  // Else remove from published_calendars collection
   const handlePublish = async () => {
     try {
       if (!calendar.published) {
@@ -255,6 +260,7 @@ const EditorViewMain: React.FC = () => {
         await addToPublishedCalendars(uid, calendar);
       } else {
         dispatch(setPublishStatus({ calendarIndex, newPublishStatus: false }));
+        await removeFromPublishedCalendars(uid, calendarId);
       }
       dispatch(setIsTyping(true));
       typingResetTimer(timerRef);
@@ -407,23 +413,9 @@ const EditorViewMain: React.FC = () => {
             )}
           </Box>
         </Box>
-        {calendar.published ? (
-          <Button
-            variant="contained"
-            sx={{ my: "1rem" }}
-            onClick={handlePublish}
-          >
-            Unpublish calendar
-          </Button>
-        ) : (
-          <Button
-            variant="contained"
-            sx={{ my: "1rem" }}
-            onClick={handlePublish}
-          >
-            Publish calendar
-          </Button>
-        )}
+        <Button variant="contained" sx={{ my: "1rem" }} onClick={handlePublish}>
+          {calendar.published ? "Unpublish calendar" : "Publish calendar"}
+        </Button>
         <Typography
           variant="h2"
           sx={{ m: "2rem 0px 1rem", fontWeight: "bold" }}
