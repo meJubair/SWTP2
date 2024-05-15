@@ -22,4 +22,21 @@ const getPublishedCalendar = async (uid: string, calendarId: string) => {
   }
 };
 
-export { addToPublishedCalendars, getPublishedCalendar };
+const removeFromPublsihedCalendars = async (
+  uid: string,
+  calendarId: string
+) => {
+  try {
+    const response = await axios.delete(`${baseUrl}/${uid}/${calendarId}`);
+    return response;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+export {
+  addToPublishedCalendars,
+  getPublishedCalendar,
+  removeFromPublsihedCalendars,
+};
