@@ -23,6 +23,8 @@ import {
   where,
   updateDoc,
   deleteDoc,
+  setDoc,
+  getDoc,
 } from "firebase/firestore";
 import { FIREBASE_API_KEY } from "../utils/config";
 import { CalendarData } from "../types/calendarInterface";
@@ -322,6 +324,46 @@ const getCalendarBackgroundDownloadUrl = async (
   }
 };
 
+// Get a published calendar from the "published_calendars" collection
+const getPublishedCalendar = async (uid: string, calendarId: string) => {
+  try {
+    const collectionRef = collection(
+      db,
+      `published_calendars/${uid}/published_calendars`
+    );
+    const docRef = doc(collectionRef, calendarId);
+    // const calendarObject = (await getDoc(docRef)).data();
+    const calendarSnapshot = await getDoc(docRef);
+    const calendarObject = calendarSnapshot.data();
+    return calendarObject;
+  } catch (error) {
+    console.error("Error when fetching published calendar:", error);
+    throw error;
+  }
+};
+
+// Adds a calendar instance in the "published_calendars" collection
+const addToPublishedCalendars = async (uid: string, calendar: CalendarData) => {
+  try {
+    const collectionRef = collection(
+      db,
+      `published_calendars/${uid}/published_calendars`
+    );
+    const calendarId = calendar.calendarId;
+
+    // Add the calendar document with calendarId is the doc id to the "published_calendars" collection
+    const publishedCalendar = await setDoc(
+      doc(collectionRef, calendarId),
+      calendar
+    );
+
+    return publishedCalendar;
+  } catch (error) {
+    console.error("Error when posting to published calendars:", error);
+    throw error;
+  }
+};
+
 export {
   auth,
   db,
@@ -336,4 +378,6 @@ export {
   removeCalendarFromFirebase,
   updateCalendarField,
   updateCalendarObjectInFirebase,
+  getPublishedCalendar,
+  addToPublishedCalendars,
 };
