@@ -332,7 +332,6 @@ const getPublishedCalendar = async (uid: string, calendarId: string) => {
       `published_calendars/${uid}/published_calendars`
     );
     const docRef = doc(collectionRef, calendarId);
-    // const calendarObject = (await getDoc(docRef)).data();
     const calendarSnapshot = await getDoc(docRef);
     const calendarObject = calendarSnapshot.data();
     return calendarObject;
