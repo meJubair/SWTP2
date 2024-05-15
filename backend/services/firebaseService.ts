@@ -364,6 +364,24 @@ const addToPublishedCalendars = async (uid: string, calendar: CalendarData) => {
   }
 };
 
+// Remove calendar from published calendars
+const removeFromPublishedCalendars = async (
+  uid: string,
+  calendarId: string
+) => {
+  try {
+    const collectionRef = collection(
+      db,
+      `published_calendars/${uid}/published_calendars`
+    );
+    const docRef = doc(collectionRef, calendarId);
+    await deleteDoc(docRef);
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
 export {
   auth,
   db,
@@ -380,4 +398,5 @@ export {
   updateCalendarObjectInFirebase,
   getPublishedCalendar,
   addToPublishedCalendars,
+  removeFromPublishedCalendars,
 };
