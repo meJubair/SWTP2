@@ -22,7 +22,7 @@ const getPublishedCalendar = async (uid: string, calendarId: string) => {
   }
 };
 
-const removeFromPublsihedCalendars = async (
+const removeFromPublishedCalendars = async (
   uid: string,
   calendarId: string
 ) => {
@@ -38,5 +38,5 @@ const removeFromPublsihedCalendars = async (
 export {
   addToPublishedCalendars,
   getPublishedCalendar,
-  removeFromPublsihedCalendars,
+  removeFromPublishedCalendars,
 };
