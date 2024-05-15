@@ -3,21 +3,36 @@ import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { registerUser } from "../services/authService";
+import AlertHandler from "../components/AlertHandler";
+import { setAlert } from "../store/alertSlice";
+import { useDispatch } from "react-redux";
 
 const Register = () => {
   const [username, setUsername] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  // Handle the state management for alertSlice
+  const handleAlert = (
+    isVisible: boolean,
+    message: string,
+    severity: string
+  ) => {
+    dispatch(setAlert({ isVisible, message, severity }));
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       await registerUser({ username, email, password });
       resetStates();
+      navigate("/calendars");
     } catch (error) {
-      console.log(error);
+      handleAlert(true, `${error}`, "error");
     }
   };
 
@@ -30,6 +45,7 @@ const Register = () => {
 
   return (
     <Box>
+      <AlertHandler />
       <Box component="h2" sx={{ textAlign: "center" }}>
         Register
       </Box>

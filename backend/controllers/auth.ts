@@ -41,8 +41,17 @@ authRouter.post("/register", async (request: Request, response: Response) => {
     const { username, email, password } = request.body;
     await registerWithEmailAndPassword(username, email, password);
     response.status(200).end("success");
-  } catch (error) {
-    response.status(500).json({ error: "Internal server error" });
+  } catch (error: any) {
+    if (
+      error.code === "auth/invalid-email" ||
+      error.code === "auth/weak-password"
+    ) {
+      response.status(400).json({ error: error.message });
+    } else if (error.code === "auth/email-already-in-use") {
+      response.status(409).json({ error: error.message });
+    } else {
+      response.status(500).json({ error: "Internal server error" });
+    }
   }
 });
 

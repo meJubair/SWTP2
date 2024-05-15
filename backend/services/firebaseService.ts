@@ -89,6 +89,7 @@ const registerWithEmailAndPassword = async (
     console.log("Succesfully registered to database");
   } catch (error) {
     console.log("Error registering new user:", error);
+    throw error;
   }
 };
 
