@@ -264,8 +264,8 @@ const EditorViewMain: React.FC = () => {
     setOpenModal(false);
     try {
       if (!calendar.published) {
-        dispatch(setPublishStatus({ calendarIndex, newPublishStatus: true }));
         await addToPublishedCalendars(uid, calendar);
+        dispatch(setPublishStatus({ calendarIndex, newPublishStatus: true }));
         dispatch(
           setAlert({
             isVisible: true,
@@ -274,8 +274,8 @@ const EditorViewMain: React.FC = () => {
           })
         );
       } else {
-        dispatch(setPublishStatus({ calendarIndex, newPublishStatus: false }));
         await removeFromPublishedCalendars(uid, calendarId);
+        dispatch(setPublishStatus({ calendarIndex, newPublishStatus: false }));
         dispatch(
           setAlert({
             isVisible: true,
@@ -286,11 +286,21 @@ const EditorViewMain: React.FC = () => {
       }
       dispatch(setIsTyping(true));
       typingResetTimer(timerRef);
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
-      // dispatch(
-      //   setAlert({ isVisible: true, message: error, severity: "error" })
-      // );
+      if (error.message) {
+        dispatch(
+          setAlert({
+            isVisible: true,
+            message: error.message,
+            severity: "error",
+          })
+        );
+      } else {
+        dispatch(
+          setAlert({ isVisible: true, message: error, severity: "error" })
+        );
+      }
     }
   };
 
