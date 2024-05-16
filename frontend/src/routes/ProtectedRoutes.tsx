@@ -18,16 +18,19 @@ const ProtectedRoute: FC<ProtectedRouteProps> = ({ component: Component }) => {
   // If user is signed then update Redux state and change authLoaded to true.
   useEffect(() => {
     const fetchUserAuthData = async () => {
-      const response = await getAuth();
-      if (response && response.status === 200) {
-        const authData = response.data;
-        dispatch(setUserName(authData.authData.loggedUserName));
-        dispatch(setUid(authData.authData.auth.uid));
-        dispatch(setUserLogin(authData.login));
+      try {
+        const response = await getAuth();
+        if (response && response.status === 200) {
+          const authData = response.data;
+          dispatch(setUserName(authData.authData.loggedUserName));
+          dispatch(setUid(authData.authData.auth.uid));
+          dispatch(setUserLogin(authData.login));
+          setAuthLoaded(true);
+        }
+      } catch (error) {
+        console.error(error);
         setAuthLoaded(true);
       }
-      // Set authLoaded to true regardless of the result
-      setAuthLoaded(true);
     };
     fetchUserAuthData();
   }, [dispatch]);
@@ -37,7 +40,7 @@ const ProtectedRoute: FC<ProtectedRouteProps> = ({ component: Component }) => {
 
   // If authLoaded is false display a spinner.
   if (!authLoaded) {
-    return <LoadingSpinner />
+    return <LoadingSpinner />;
   }
 
   // If user authLoaded is true then check if user is authenticated and let user navigate to protected route. Else redirect to /login
