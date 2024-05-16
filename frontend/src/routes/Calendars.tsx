@@ -49,7 +49,7 @@ const Calendars = () => {
       }
     };
     fetchCalendarData();
-  }, [dispatch]);
+  }, [dispatch, uid]);
 
   // Create a new calendar instance in the database and redirect the user into calendars/calendarId
   const handleCreateCalendar = async (uid: string) => {
