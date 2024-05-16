@@ -39,6 +39,8 @@ import {
   addToPublishedCalendars,
   removeFromPublishedCalendars,
 } from "../services/publishService";
+import AlertHandler from "../components/AlertHandler";
+import { setAlert } from "../store/alertSlice";
 
 const EditorViewMain: React.FC = () => {
   const [showGeneralSettings, setShowGeneralSettings] = useState<boolean>(true);
@@ -264,14 +266,31 @@ const EditorViewMain: React.FC = () => {
       if (!calendar.published) {
         dispatch(setPublishStatus({ calendarIndex, newPublishStatus: true }));
         await addToPublishedCalendars(uid, calendar);
+        dispatch(
+          setAlert({
+            isVisible: true,
+            message: "Calendar published succesfully",
+            severity: "success",
+          })
+        );
       } else {
         dispatch(setPublishStatus({ calendarIndex, newPublishStatus: false }));
         await removeFromPublishedCalendars(uid, calendarId);
+        dispatch(
+          setAlert({
+            isVisible: true,
+            message: "Calendar unpublished succesfully",
+            severity: "success",
+          })
+        );
       }
       dispatch(setIsTyping(true));
       typingResetTimer(timerRef);
     } catch (error) {
       console.error(error);
+      // dispatch(
+      //   setAlert({ isVisible: true, message: error, severity: "error" })
+      // );
     }
   };
 
@@ -299,6 +318,7 @@ const EditorViewMain: React.FC = () => {
         onConfirm={handlePublish}
         onCancel={handleCloseModal}
       />
+      <AlertHandler />
       <Box
         sx={{
           width: "100%",
