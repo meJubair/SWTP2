@@ -22,6 +22,8 @@ import {
   createNewCalendar,
   removeCalendar,
 } from "../services/calendarService";
+import { removeFromPublishedCalendars } from "../services/publishService";
+import { CalendarData } from "../../../backend/types/calendarInterface";
 
 const Calendars = () => {
   const [loading, setLoading] = useState<boolean>(true);
@@ -79,6 +81,15 @@ const Calendars = () => {
     if (selectedCalendarId) {
       try {
         setLoading(true);
+        // If calendar is published then remove it from "published_calendars" collection
+        const calendar: CalendarData | undefined = calendars.find(
+          (calendar) => calendar.calendarId === selectedCalendarId
+        );
+
+        if (calendar && calendar.published) {
+          await removeFromPublishedCalendars(uid, calendar.calendarId);
+        }
+
         // Remove calendar from database
         await removeCalendar(uid, selectedCalendarId);
         // Remove calendar from Redux state
