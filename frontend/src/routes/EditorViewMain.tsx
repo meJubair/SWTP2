@@ -6,6 +6,7 @@ import DateSelector from "../components/DateSelector";
 import BackgroundColourSelector from "../components/BackgroundColourSelector";
 import UploadImage from "../components/UploadImage";
 import Button from "@mui/material/Button";
+import ModalDialog from "../components/ModalDialog";
 import { useDispatch, useSelector } from "react-redux";
 import {
   ReduxCalendarState,
@@ -38,6 +39,8 @@ import {
   addToPublishedCalendars,
   removeFromPublishedCalendars,
 } from "../services/publishService";
+import AlertHandler from "../components/AlertHandler";
+import { setAlert } from "../store/alertSlice";
 
 const EditorViewMain: React.FC = () => {
   const [showGeneralSettings, setShowGeneralSettings] = useState<boolean>(true);
@@ -49,6 +52,9 @@ const EditorViewMain: React.FC = () => {
   const [showImageUpload, setShowImageUpload] = useState<boolean>(false);
   const [uploadedImageUrl, setUploadedImageUrl] = useState<string | null>(null);
   const [singleTag, setSingleTag] = useState<string>("");
+  const [openModal, setOpenModal] = useState<boolean>(false);
+  const [dialogText, setDialogText] = useState<string>("");
+  const [dialogTitle, setDialogTitle] = useState<string>("");
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -251,26 +257,78 @@ const EditorViewMain: React.FC = () => {
     dispatch(setCalendarBackgroundUrl({ calendarIndex, newBackgroundUrl: "" }));
   };
 
+  // If user clicked yes on ModalDialog then close modal and run function
   // If publish status is false then post published_calendars to published collection.
   // Else remove from published_calendars collection
   const handlePublish = async () => {
+    setOpenModal(false);
     try {
       if (!calendar.published) {
-        dispatch(setPublishStatus({ calendarIndex, newPublishStatus: true }));
         await addToPublishedCalendars(uid, calendar);
+        dispatch(setPublishStatus({ calendarIndex, newPublishStatus: true }));
+        dispatch(
+          setAlert({
+            isVisible: true,
+            message: "Calendar published succesfully",
+            severity: "success",
+          })
+        );
       } else {
-        dispatch(setPublishStatus({ calendarIndex, newPublishStatus: false }));
         await removeFromPublishedCalendars(uid, calendarId);
+        dispatch(setPublishStatus({ calendarIndex, newPublishStatus: false }));
+        dispatch(
+          setAlert({
+            isVisible: true,
+            message: "Calendar unpublished succesfully",
+            severity: "success",
+          })
+        );
       }
       dispatch(setIsTyping(true));
       typingResetTimer(timerRef);
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
+      if (error.message) {
+        dispatch(
+          setAlert({
+            isVisible: true,
+            message: error.message,
+            severity: "error",
+          })
+        );
+      } else {
+        dispatch(
+          setAlert({ isVisible: true, message: error, severity: "error" })
+        );
+      }
     }
+  };
+
+  // Set the content for modal
+  const confirmPublishCalendar = () => {
+    setOpenModal(true);
+    setDialogTitle("Publish calendar");
+    setDialogText(
+      `Are you sure you want to ${
+        calendar.published ? "unpublish" : "publish"
+      } this calendar?`
+    );
+  };
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
   };
 
   return (
     <Box>
+      <ModalDialog
+        open={openModal}
+        titleText={dialogTitle}
+        dialogText={dialogText}
+        onConfirm={handlePublish}
+        onCancel={handleCloseModal}
+      />
+      <AlertHandler />
       <Box
         sx={{
           width: "100%",
@@ -413,7 +471,11 @@ const EditorViewMain: React.FC = () => {
             )}
           </Box>
         </Box>
-        <Button variant="contained" sx={{ my: "1rem" }} onClick={handlePublish}>
+        <Button
+          variant="contained"
+          sx={{ my: "1rem" }}
+          onClick={confirmPublishCalendar}
+        >
           {calendar.published ? "Unpublish calendar" : "Publish calendar"}
         </Button>
         <Typography

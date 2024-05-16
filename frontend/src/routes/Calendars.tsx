@@ -12,6 +12,7 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import LoadingSpinner from "../components/LoadingSpinner";
+import ModalDialog from "../components/ModalDialog";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setCalendars } from "../store/calendarSlice";
@@ -24,6 +25,10 @@ import {
 
 const Calendars = () => {
   const [loading, setLoading] = useState<boolean>(true);
+  const [openModal, setOpenModal] = useState<boolean>(false);
+  const [dialogText, setDialogText] = useState<string>("");
+  const [dialogTitle, setDialogTitle] = useState<string>("");
+  const [selectedCalendarId, setSelectedCalendarId] = useState<string>("");
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const calendars = useSelector(
@@ -60,21 +65,40 @@ const Calendars = () => {
     }
   };
 
-  const handleDeleteCalendar = async (uid: string, calendarId: string) => {
-    try {
-      setLoading(true);
-      // Remove calendar from database
-      await removeCalendar(uid, calendarId);
-      // Remove calendar from Redux state
-      dispatch(
-        setCalendars(
-          calendars.filter((calendar) => calendar.calendarId !== calendarId)
-        )
-      );
-      setLoading(false);
-    } catch (error) {
-      console.log(error);
+  // Open modal and ask if user wants to delete calendar
+  const confirmDeleteCalendar = (calendarId: string) => {
+    setSelectedCalendarId(calendarId);
+    setDialogTitle("Delete Calendar");
+    setDialogText("Are you sure you want to delete this calendar?");
+    setOpenModal(true);
+  };
+
+  // If user clicked "Yes" on ModalDialog delete calendar instance
+  const handleDeleteCalendar = async () => {
+    // Check selectedCalendarId
+    if (selectedCalendarId) {
+      try {
+        setLoading(true);
+        // Remove calendar from database
+        await removeCalendar(uid, selectedCalendarId);
+        // Remove calendar from Redux state
+        dispatch(
+          setCalendars(
+            calendars.filter(
+              (calendar) => calendar.calendarId !== selectedCalendarId
+            )
+          )
+        );
+        setLoading(false);
+        setOpenModal(false);
+      } catch (error) {
+        console.log(error);
+      }
     }
+  };
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
   };
 
   if (loading) {
@@ -83,6 +107,13 @@ const Calendars = () => {
 
   return (
     <Box sx={{ height: "calc(100vh - 64px)" }}>
+      <ModalDialog
+        titleText={dialogTitle}
+        dialogText={dialogText}
+        open={openModal}
+        onConfirm={handleDeleteCalendar}
+        onCancel={handleCloseModal}
+      />
       <Typography variant="h1" sx={{ textAlign: "center", py: "1rem" }}>
         My calendars
       </Typography>
@@ -169,7 +200,7 @@ const Calendars = () => {
                     <TableCell>
                       <IconButton
                         onClick={() =>
-                          handleDeleteCalendar(uid, calendar.calendarId)
+                          confirmDeleteCalendar(calendar.calendarId)
                         }
                       >
                         <DeleteIcon />
