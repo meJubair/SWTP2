@@ -86,7 +86,7 @@ const Calendars = () => {
           (calendar) => calendar.calendarId === selectedCalendarId
         );
 
-        if (calendar && calendar.published) {
+        if (calendar?.published) {
           await removeFromPublishedCalendars(uid, calendar.calendarId);
         }
 
