@@ -14,6 +14,7 @@ import { Provider } from "react-redux";
 import EditorViewSingle from "./routes/EditorViewSingle";
 import ProtectedRoute from "./routes/ProtectedRoutes";
 import AuthLoader from "./components/AuthLoader";
+import PublishedCalendar from "./routes/PublishedCalendar";
 
 const App: React.FC = () => {
   return (
@@ -45,6 +46,10 @@ const App: React.FC = () => {
                 element={<EditorViewSingle />}
               />
             </Route>
+            <Route
+              path="/calendars/published/:uid/:calendarId"
+              element={<PublishedCalendar />}
+            />
           </Routes>
         </Router>
       </Provider>
