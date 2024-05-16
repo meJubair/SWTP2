@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
@@ -81,7 +81,7 @@ const EditorViewMain: React.FC = () => {
   const background = calendar.backgroundColour;
 
   // Update calendar object in the database
-  const handleSync = async () => {
+  const handleSync = useCallback(async () => {
     dispatch(setSaved(false));
     try {
       await updateCalendarObject(uid, calendarId, calendar);
@@ -90,7 +90,7 @@ const EditorViewMain: React.FC = () => {
     } finally {
       dispatch(setSaved(true));
     }
-  };
+  }, [dispatch, uid, calendarId, calendar]);
 
   // Update data in the database after user has stopped typing
   useEffect(() => {
@@ -100,7 +100,7 @@ const EditorViewMain: React.FC = () => {
       }
     };
     asyncWrapper();
-  }, [isTyping]);
+  }, [isTyping, handleSync]);
 
   // Set 1500ms timer after user has stopped typing and reset timer if user starts typing before timer has ended
   const typingResetTimer = (
