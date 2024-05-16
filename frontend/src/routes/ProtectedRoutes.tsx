@@ -25,8 +25,10 @@ const ProtectedRoute: FC<ProtectedRouteProps> = ({ component: Component }) => {
           dispatch(setUserName(authData.authData.loggedUserName));
           dispatch(setUid(authData.authData.auth.uid));
           dispatch(setUserLogin(authData.login));
-          setAuthLoaded(true);
+        } else {
+          dispatch(setUserLogin(false));
         }
+        setAuthLoaded(true);
       } catch (error) {
         console.error(error);
         setAuthLoaded(true);
