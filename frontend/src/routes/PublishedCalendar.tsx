@@ -7,9 +7,15 @@ import {
   DoorData,
 } from "../../../backend/types/calendarInterface";
 import { useParams } from "react-router-dom";
+import Modal from "../components/Modal";
 
 const PublishedCalendar: React.FC = () => {
   const [calendar, setCalendar] = useState<CalendarData | null>(null);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [openModal, setOpenModal] = useState<boolean>(false);
+  const [doorTitle, setDoorTitle] = useState<string>("");
+  const [description, setDescription] = useState<string>("");
+  const [image, setImage] = useState<string>("");
 
   const params = useParams();
   const uid = params?.uid as string;
@@ -21,10 +27,21 @@ const PublishedCalendar: React.FC = () => {
       const response = await getPublishedCalendar(uid, calendarId);
       const data = response.data as CalendarData;
       setCalendar(data);
-      console.log("data", data);
     };
     fetchCalendarData();
   }, [uid, calendarId]);
+
+  const handleClick = (door: any) => {
+    setIsOpen(true);
+    setOpenModal(true);
+    setDoorTitle(`${door?.title?.textContent}`);
+    setDescription(`${door?.description?.textContent}`);
+    setImage(`${door?.backgroundImageFileDownloadUrl}`);
+  };
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
+  };
 
   return (
     <Box
@@ -33,8 +50,18 @@ const PublishedCalendar: React.FC = () => {
         flexDirection: "column",
         justifyContent: "center",
         alignItems: "center",
+        height: "100vh",
       }}
     >
+      {openModal && (
+        <Modal
+          image={image}
+          titleText={doorTitle}
+          dialogText={description}
+          open={openModal}
+          onCancel={handleCloseModal}
+        />
+      )}
       <Box
         sx={{
           display: "flex",
@@ -43,7 +70,7 @@ const PublishedCalendar: React.FC = () => {
           width: "80%",
           background: calendar?.backgroundColour,
           padding: "1rem",
-          mb: "50px",
+          my: "20px",
           height: "800px",
           border: "1px solid black",
           borderRadius: "5px",
@@ -94,7 +121,12 @@ const PublishedCalendar: React.FC = () => {
                 justifyContent: "center",
                 alignItems: "center",
                 cursor: "pointer",
+                background: isOpen ? door?.doorBackgroundColour : "none",
+                backgroundImage: isOpen ? image : "none",
+                backgroundSize: "cover",
+                backgroundPosition: "center",
               }}
+              onClick={() => handleClick(door)}
             >
               {door?.doorNumber}
             </Box>
